@@ -8,9 +8,16 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         component: () => import('src/pages/ChatPage.vue')
-      },
+      }
+    ]
+  },
+
+  {
+    path: '/auth',
+    component: () => import('layouts/AuthLayout.vue'),
+    children: [
       {
-        path: '/auth',
+        path: '',
         component: () => import('src/pages/AuthPage.vue')
       }
     ]

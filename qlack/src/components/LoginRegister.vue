@@ -1,0 +1,81 @@
+<template>
+  <q-form @submit="submitForm">
+    <q-input
+      v-if="tab == 'register'"
+      v-model="formData.firstName"
+      class="q-ma-md"
+      outlined
+      label="First name"
+    />
+    <q-input
+      v-if="tab == 'register'"
+      v-model="formData.lastName"
+      class="q-ma-md"
+      outlined
+      label="Last name"
+    />
+    <q-input
+      v-if="tab == 'register'"
+      v-model="formData.nickname"
+      class="q-ma-md"
+      outlined
+      label="Nickname"
+    />
+    <q-input
+      v-model="formData.email"
+      class="q-ma-md"
+      outlined
+      type="email"
+      label="Email"
+    />
+    <q-input
+      v-model="formData.password"
+      class="q-ma-md"
+      outlined
+      type="password"
+      label="Password"
+    />
+
+    <div class="row">
+      <label
+        class="q-ma-md"
+        v-if="tab == 'login'"
+      >Forgot password.</label>
+      <q-space />
+      <q-btn
+        class="q-ma-md"
+        style="self-right"
+        type="submit"
+        color="primary"
+        :label="tab"
+      />
+    </div>
+  </q-form>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'LoginRegister',
+  props: [
+    'tab'
+  ],
+  data () {
+    return {
+      formData: {
+        firstName: '',
+        lastName: '',
+        nickname: '',
+        email: '',
+        password: ''
+      }
+    }
+  },
+  methods: {
+    submitForm () {
+      console.log(this.tab)
+    }
+  }
+})
+</script>

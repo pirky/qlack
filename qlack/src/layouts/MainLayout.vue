@@ -12,7 +12,7 @@
           Qlack
         </q-toolbar-title>
 
-        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
+        <q-btn dense flat round icon="fa fa-solid fa-user-group" @click="toggleRightDrawer" />
       </q-toolbar>
     </q-header>
 

@@ -2,7 +2,6 @@
   <q-item clickable
           tag="a"
           target="_blank"
-          :class="computedClass"
   >
     <q-item-section v-if="is_private" avatar>
         <q-icon name="fa fa-solid fa-lock" />
@@ -51,10 +50,3 @@ export default defineComponent({
 
 })
 </script>
-
-<style scoped>
-  .activeChanel {
-    background-color: #eeeeee;
-    color: #393e46;
-  }
-</style>
