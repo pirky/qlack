@@ -44,7 +44,7 @@ export default defineComponent({
     computedClass () {
       // console.log(this.$store.state)
       return 'text-dark'
-      // return store.state.channel.channelName === this.title ? 'activeChanel' : 'text-dark'
+      // return store.state.module-channel.channelName === this.title ? 'activeChanel' : 'text-dark'
     }
   }
 

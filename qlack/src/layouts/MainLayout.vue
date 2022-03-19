@@ -3,7 +3,7 @@
 
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+        <q-btn dense flat round icon="menu" @click="leftDrawerOpen = !leftDrawerOpen" />
 
         <q-toolbar-title>
           <q-avatar>
@@ -12,7 +12,7 @@
           Qlack
         </q-toolbar-title>
 
-        <q-btn dense flat round icon="fa fa-solid fa-user-group" @click="toggleRightDrawer" />
+        <q-btn dense flat round icon="fa fa-solid fa-user-group" @click="rightDrawerOpen = !rightDrawerOpen" />
       </q-toolbar>
     </q-header>
 
@@ -73,7 +73,7 @@ import User from 'components/User.vue'
 const channelList = [
   {
     id: 0,
-    title: 'First channel ever',
+    title: 'First module-channel ever',
     is_private: false
   },
   {
@@ -116,22 +116,30 @@ export default defineComponent({
     User
   },
 
+  computed: {
+    leftDrawerOpen: {
+      get () {
+        return this.$store.state.mainStore.leftDrawerState
+      },
+      set (val) {
+        this.$store.commit('mainStore/updateLeftDrawerOpen', val)
+      }
+    },
+    rightDrawerOpen: {
+      get () {
+        return this.$store.state.mainStore.rightDrawerState
+      },
+      set (val) {
+        this.$store.commit('mainStore/updateRightDrawerOpen', val)
+      }
+    },
+  },
+
   data () {
     return {
-      leftDrawerOpen: false,
       rightDrawerOpen: false,
       channels: channelList,
       users: userList
-    }
-  },
-
-  methods: {
-    toggleLeftDrawer () {
-      this.leftDrawerOpen = !this.leftDrawerOpen
-    },
-
-    toggleRightDrawer () {
-      this.rightDrawerOpen = !this.rightDrawerOpen
     }
   }
 })

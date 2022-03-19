@@ -30,7 +30,7 @@ import { defineComponent } from 'vue'
 
 const channel = {
   id: 0,
-  title: 'First channel ever',
+  title: 'First module-channel ever',
   is_private: false
 }
 
