@@ -1,21 +1,21 @@
 <template>
   <q-form @submit="submitForm">
     <q-input
-      v-if="tab == 'register'"
+      v-if="tab === 'register'"
       v-model="formData.firstName"
       class="q-ma-md"
       outlined
       label="First name"
     />
     <q-input
-      v-if="tab == 'register'"
+      v-if="tab === 'register'"
       v-model="formData.lastName"
       class="q-ma-md"
       outlined
       label="Last name"
     />
     <q-input
-      v-if="tab == 'register'"
+      v-if="tab === 'register'"
       v-model="formData.nickname"
       class="q-ma-md"
       outlined
@@ -39,7 +39,7 @@
     <div class="row">
       <label
         class="q-ma-md"
-        v-if="tab == 'login'"
+        v-if="tab === 'login'"
       >Forgot password.</label>
       <q-space />
       <q-btn
