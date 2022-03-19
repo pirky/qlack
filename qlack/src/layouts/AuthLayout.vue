@@ -43,7 +43,7 @@ export default defineComponent({
 <style>
 
   .bg-image {
-    background-image: url("assets/bg_blob.svg");
+    background-image: url("../statics/bg_blob.svg");
     background-repeat: no-repeat;
     background-size: cover;
   }

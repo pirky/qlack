@@ -16,7 +16,13 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+    <q-drawer
+      class="drawer"
+      show-if-above
+      v-model="leftDrawerOpen"
+      side="left"
+      bordered
+    >
       <q-list>
         <q-item-label header>
           Channels
@@ -31,7 +37,13 @@
       </q-list>
     </q-drawer>
 
-    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
+    <q-drawer
+      class="drawer"
+      show-if-above
+      v-model="rightDrawerOpen"
+      side="right"
+      bordered
+    >
       <q-list>
         <q-item-label
           header
@@ -125,3 +137,29 @@ export default defineComponent({
 })
 
 </script>
+
+<style>
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #EEEEEE;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.drawer {
+  background-color: #393e46;
+}
+</style>

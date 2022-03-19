@@ -20,11 +20,7 @@ Pirky:
 ============================================================
 To Do:
 
-→ autentifikacia (login/registracia tabky)
 → notifikacie (aj error aj notifikacie od typka) https://quasar.dev/quasar-plugins/notify#with-actions
-→ ikona na zoznam userov ina
-→ prikazovy/spravovy riadok (custom scrollbar)
-→ prikazovy/spravovy riadok na stylovat inac
 → infinite scroll
 → bod 11 urobit s lorem ipsumom
 ------------------------------------
@@ -55,3 +51,23 @@ Otazky:
 →→ vypisat cislo kolko pise, po kliknuti bude zoznam typkov a po kliknuti na typka ukaze bublinku s textom
 
 → ako dat do infinite scrollu vlastne data, ktore pojdu po chunk-och
+============================================================
+modra hex:
+najtmavsia: #00adb5
+stredna: #018497
+svetla: #00ADB5
+
+zlta hex:
+najtmavsia: #fbae3c
+stredna: #bb8333
+svetla: #46341f
+
+pozadie:
+tmavá: #0E1823
+svetlá: #393e46
+============================================================
+Done:
+→ ikona na zoznam userov ina
+→ prikazovy/spravovy riadok (custom scrollbar)
+→ prikazovy/spravovy riadok na stylovat inac
+→ autentifikacia (login/registracia tabky)

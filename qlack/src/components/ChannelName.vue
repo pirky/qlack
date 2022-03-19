@@ -1,5 +1,5 @@
 <template>
-  <q-page-sticky expand position="top" class="bg-accent text-dark">
+  <q-page-sticky expand position="top" class="background_channel_name text-dark bg-accent">
     <q-toolbar>
       <q-item-section v-if="is_private" avatar>
         <q-icon name="fa fa-solid fa-lock"/>
@@ -9,7 +9,7 @@
         <q-icon name="fa fa-solid fa-hashtag"/>
       </q-item-section>
 
-      <q-toolbar-title>
+      <q-toolbar-title class="text-bold">
         {{ title }}
       </q-toolbar-title>
     </q-toolbar>
@@ -40,5 +40,7 @@ export default {
 </script>
 
 <style scoped>
-
+.background_channel_name {
+  opacity: 0.9;
+}
 </style>

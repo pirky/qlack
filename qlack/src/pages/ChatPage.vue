@@ -1,14 +1,17 @@
 <template>
-  <q-page class="flex column" padding style="padding: 61px 0">
-    <div class="q-pa-md column col justify-end">
-      <q-list v-for="message in messages" v-bind:key="message">
-        <Message v-bind="message"/>
-      </q-list>
-    </div>
+  <q-page class="background">
+    <q-page class="flex column" padding style="padding: 45px 0 55px 0">
+      <div class="q-pa-md column col justify-end">
+        <q-list v-for="message in messages" v-bind:key="message">
+          <Message v-bind="message"/>
+        </q-list>
+      </div>
+    </q-page>
+
+    <ChannelName v-bind="channel"/>
+    <CommandLine v-bind="channel"/>
   </q-page>
 
-  <ChannelName v-bind="channel"/>
-  <CommandLine v-bind="channel"/>
 </template>
 
 <script lang="ts">
@@ -75,5 +78,11 @@ export default defineComponent({
 </script>
 
 <style  scoped>
-
+.background {
+  background-image: url('../statics/background.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+}
 </style>

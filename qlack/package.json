@@ -1,8 +1,8 @@
 {
   "name": "qlack",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Quasar App",
+  "description": "Qlack better than slack",
+  "productName": "Qlack",
   "author": "Martin Pirkovský <martin.pirkovsky@uxtweak.com>",
   "private": true,
   "scripts": {
