@@ -1,11 +1,11 @@
 <template>
   <q-page class="background">
-    <q-page class="flex column" padding style="padding: 61px 0">
+    <q-page class="flex column q-pa-md" padding style="padding: 61px 0">
 
-      <q-infinite-scroll @load="onLoad(index, done)" reverse>
+      <q-infinite-scroll @load="onLoad" :offset="250" reverse>
         <template v-slot:loading>
           <div class="row justify-center q-my-md">
-            <q-spinner color="primary" name="dots" size="40px" />
+            <q-spinner-dots color="primary" size="40px" />
           </div>
         </template>
 
@@ -22,6 +22,7 @@
 </template>
 
 <script lang="ts">
+
 import ChannelName from 'components/ChannelName.vue'
 import CommandLine from 'components/CommandLine.vue'
 import Message from 'components/Message.vue'
@@ -34,36 +35,12 @@ const channel = {
 }
 
 const messages = [{
-  id: 61,
-  author: 'Arnost Kabel',
-  initials: 'AK',
-  time: String(61).concat(' minutes ago'),
-  text: 'Zdarec starec'
+  id: 1,
+  author: 'Janko Petrzlen',
+  initials: 'JP',
+  time: String(1).concat(' minutes ago'),
+  text: 'Wasuuup'
 }]
-
-for (let i = 0; i < 20; i++) {
-  messages.push({
-    id: 61 - i * 3 - 1,
-    author: 'Arnost Kabel',
-    initials: 'AK',
-    time: String(61 - i * 3 - 1).concat(' minutes ago'),
-    text: 'Zdarec starec'
-  })
-  messages.push({
-    id: 61 - i * 3 - 2,
-    author: 'Janko Petrzlen',
-    initials: 'JP',
-    time: String(61 - i * 3 - 2).concat(' minutes ago'),
-    text: 'Already building an app with it...'
-  })
-  messages.push({
-    id: 61 - i * 3 - 3,
-    author: 'Janko Petrzlen',
-    initials: 'JP',
-    time: String(61 - i * 3 - 3).concat(' minutes ago'),
-    text: 'Wasuuup'
-  })
-}
 
 export default defineComponent({
   name: 'ChatPage',
@@ -80,40 +57,31 @@ export default defineComponent({
       messages: messages,
       onLoad (index: number, done: () => void) {
         setTimeout(() => {
-          console.log(index)
-          for (let i = 0; i < 20; i++) {
-            messages.push({
-              id: 61 - i * 3 - 1,
+          messages.splice(0, 0,
+            {
+              id: 100 + index * 2 + 1,
+              author: 'Janko Petrzlen',
+              initials: 'JP',
+              time: String(100 + index * 2 + 1).concat(' minutes ago'),
+              text: 'Wasuuup'
+            },
+            {
+              id: 100 + index * 2,
               author: 'Arnost Kabel',
               initials: 'AK',
-              time: String(61 - i * 3 - 1).concat(' minutes ago'),
+              time: String(100 + index * 2).concat(' minutes ago'),
               text: 'Zdarec starec'
-            })
-            messages.push({
-              id: 61 - i * 3 - 2,
-              author: 'Janko Petrzlen',
-              initials: 'JP',
-              time: String(61 - i * 3 - 2).concat(' minutes ago'),
-              text: 'Already building an app with it...'
-            })
-            messages.push({
-              id: 61 - i * 3 - 3,
-              author: 'Janko Petrzlen',
-              initials: 'JP',
-              time: String(61 - i * 3 - 3).concat(' minutes ago'),
-              text: 'Wasuuup'
-            })
-          }
+            }
+          )
           done()
-        }, 2000)
+        }, 1000)
       }
     }
   }
-
 })
 </script>
 
-<style  scoped>
+<style scoped>
 .background {
   background-image: url('../statics/background.svg');
   background-repeat: no-repeat;
