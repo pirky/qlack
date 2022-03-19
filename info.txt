@@ -1,0 +1,41 @@
+============================================================
+GIT:
+------------------------------------------------------------
+checkout master
+pull
+checkout my_branch
+merge master
+resolve issues
+checkout master
+merge my_branch
+push origin master
+============================================================
+Otazky:
+nove
+
+zodpovedane
+------------------------------------------------------------
+→ Ako riesit 30 dni od poslednej spravy? Teda ked nacitavam channely tak ked preslo 30 vymazem ho, alebo nejaky event co kontroluje kazdu napr. minutu ci este existuje channel.
+→→ staci aby databaza vratila to co je do 30 dni ked nacitava data
+
+→ Co ak som prihlaseny a pocas prihlasenia vyprsi cas channelu?
+→→ neriesit
+
+→ riesit nejako 11. bod na prve odovzdanie
+→→ vypisat cislo kolko pise, po kliknuti bude zoznam typkov a po kliknuti na typka ukaze bublinku s textom
+============================================================
+COLORS:
+modra hex:
+najtmavsia: #00adb5
+stredna: #018497
+svetla: #00ADB5
+
+zlta hex:
+najtmavsia: #fbae3c
+stredna: #bb8333
+svetla: #46341f
+
+pozadie:
+tmavá: #0E1823
+svetlá: #393e46
+============================================================
