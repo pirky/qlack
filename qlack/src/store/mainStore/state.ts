@@ -3,11 +3,11 @@ export interface MainStateInterface {
   rightDrawerState: boolean
 }
 
-function state(): MainStateInterface {
+function state (): MainStateInterface {
   return {
-    leftDrawerState: true,
-    rightDrawerState: true
-  };
+    leftDrawerState: false,
+    rightDrawerState: false
+  }
 }
 
-export default state;
+export default state

@@ -1,14 +1,13 @@
-import { MutationTree } from 'vuex';
-// @ts-ignore
-import { MainStateInterface } from './state';
+import { MutationTree } from 'vuex'
+import { MainStateInterface } from './state'
 
 const mutation: MutationTree<MainStateInterface> = {
-  updateLeftDrawerOpen(state: MainStateInterface) {
-    state.leftDrawerState = !state.leftDrawerState;
+  updateLeftDrawerState (state: MainStateInterface, value: boolean) {
+    state.leftDrawerState = value
   },
-  updateRightDrawerOpen(state: MainStateInterface, value: boolean) {
-    state.rightDrawerState = value;
+  updateRightDrawerState (state: MainStateInterface, value: boolean) {
+    state.rightDrawerState = value
   }
-};
+}
 
-export default mutation;
+export default mutation

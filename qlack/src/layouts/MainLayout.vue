@@ -1,9 +1,10 @@
+/* eslint-disable */
 <template>
   <q-layout view="hHh LpR fFf">
 
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="leftDrawerOpen = !leftDrawerOpen" />
+        <q-btn dense flat round icon="menu" @click="leftDrawerState =! leftDrawerState" />
 
         <q-toolbar-title>
           <q-avatar>
@@ -12,14 +13,15 @@
           Qlack
         </q-toolbar-title>
 
-        <q-btn dense flat round icon="fa fa-solid fa-user-group" @click="rightDrawerOpen = !rightDrawerOpen" />
+        <q-btn dense flat round icon="fa fa-solid fa-user-group" @click="rightDrawerState =! rightDrawerState" />
       </q-toolbar>
+      <UserProfileDropdown/>
     </q-header>
 
     <q-drawer
       class="drawer"
       show-if-above
-      v-model="leftDrawerOpen"
+      v-model="leftDrawerState"
       side="left"
       bordered
     >
@@ -40,7 +42,7 @@
     <q-drawer
       class="drawer"
       show-if-above
-      v-model="rightDrawerOpen"
+      v-model="rightDrawerState"
       side="right"
       bordered
     >
@@ -69,6 +71,8 @@
 <script lang="ts">
 import Channel from 'components/Channel.vue'
 import User from 'components/User.vue'
+import UserProfileDropdown from 'components/UserProfileDropdown.vue'
+import { defineComponent } from 'vue'
 
 const channelList = [
   {
@@ -91,53 +95,62 @@ const channelList = [
 const userList = [
   {
     id: 0,
-    first_name: 'Arnost',
-    last_name: 'Kabel'
+    firstName: 'Arnost',
+    lastName: 'Kabel',
+    nickname: 'kablis',
+    email: 'arnost@kabel.com',
+    notificationType: 'all',
+    state: 'online'
   },
   {
     id: 1,
-    first_name: 'Janko',
-    last_name: 'Petrzlen'
+    firstName: 'Janko',
+    lastName: 'Petrzlen',
+    nickname: 'petrzlak',
+    email: 'janko@petrzlen.com',
+    notificationType: 'all',
+    state: 'dnd'
   },
   {
     id: 2,
-    first_name: 'Pelel',
-    last_name: 'Petrovsky'
+    firstName: 'Pelel',
+    lastName: 'Petrovsky',
+    nickname: 'pele',
+    email: 'pelel@petrovsky.com',
+    notificationType: 'all',
+    state: 'offline'
   }
 ]
 
-import { defineComponent } from 'vue'
-
 export default defineComponent({
   name: 'MainLayout',
-
   components: {
     Channel,
-    User
+    User,
+    UserProfileDropdown
   },
-
+  methods: {
+  },
   computed: {
-    leftDrawerOpen: {
+    leftDrawerState: {
       get () {
         return this.$store.state.mainStore.leftDrawerState
       },
-      set (val) {
-        this.$store.commit('mainStore/updateLeftDrawerOpen', val)
+      set (val: boolean) {
+        this.$store.commit('mainStore/updateLeftDrawerState', val)
       }
     },
-    rightDrawerOpen: {
+    rightDrawerState: {
       get () {
         return this.$store.state.mainStore.rightDrawerState
       },
-      set (val) {
-        this.$store.commit('mainStore/updateRightDrawerOpen', val)
+      set (val: boolean) {
+        this.$store.commit('mainStore/updateRightDrawerState', val)
       }
-    },
+    }
   },
-
   data () {
     return {
-      rightDrawerOpen: false,
       channels: channelList,
       users: userList
     }

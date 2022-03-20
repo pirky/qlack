@@ -36,8 +36,9 @@ const channel = {
 
 const messages = [{
   id: 1,
-  author: 'Janko Petrzlen',
-  initials: 'JP',
+  author: 'petrzlak',
+  author_id: 1,
+  initials: 'P',
   time: String(1).concat(' minutes ago'),
   text: 'Wasuuup'
 }]
@@ -60,15 +61,17 @@ export default defineComponent({
           messages.splice(0, 0,
             {
               id: 100 + index * 2 + 1,
-              author: 'Janko Petrzlen',
-              initials: 'JP',
+              author: 'petrzlak',
+              author_id: 1,
+              initials: 'P',
               time: String(100 + index * 2 + 1).concat(' minutes ago'),
               text: 'Wasuuup'
             },
             {
               id: 100 + index * 2,
-              author: 'Arnost Kabel',
-              initials: 'AK',
+              author: 'kablis',
+              author_id: 0,
+              initials: 'K',
               time: String(100 + index * 2).concat(' minutes ago'),
               text: 'Zdarec starec'
             }
@@ -83,7 +86,7 @@ export default defineComponent({
 
 <style scoped>
 .background {
-  background-image: url('../statics/background.svg');
+  background-image: url('../statics/bg-chat.svg');
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;

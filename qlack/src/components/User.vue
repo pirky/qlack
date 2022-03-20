@@ -6,19 +6,19 @@
   >
     <q-item-section avatar>
       <q-avatar color="secondary" text-color="dark">
-        {{ first_name[0] }}{{ last_name[0] }}
+        {{ nickname[0].toUpperCase() }}
       </q-avatar>
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>{{ first_name }} {{ last_name }}</q-item-label>
-      <q-item-label caption lines="1">example_email@email.czom</q-item-label>
+      <q-item-label>{{ nickname }}</q-item-label>
+      <q-item-label caption lines="1">{{ email }}</q-item-label>
     </q-item-section>
 
     <q-item-section avatar>
-      <q-icon name="fa fa-solid fa-circle" size="1em" color="positive" />
-      <!-- <q-icon name="fa fa-solid fa-circle" size="1em" color="negative" /> -->
-      <!-- <q-icon name="fa fa-solid fa-circle" size="1em" color="gray" /> -->
+      <q-icon v-if="state === 'online'" name="fa fa-solid fa-circle" size="1em" color="positive" />
+      <q-icon v-if="state === 'dnd'" name="fa fa-solid fa-circle" size="1em" color="negative" />
+      <q-icon v-if="state === 'offline'" name="fa fa-solid fa-circle" size="1em" color="gray" />
     </q-item-section>
   </q-item>
 </template>
@@ -33,11 +33,27 @@ export default defineComponent({
       type: Number,
       required: true
     },
-    first_name: {
+    firstName: {
       type: String,
       required: true
     },
-    last_name: {
+    lastName: {
+      type: String,
+      required: true
+    },
+    nickname: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    },
+    notificationType: {
+      type: String,
+      required: true
+    },
+    state: {
       type: String,
       required: true
     }

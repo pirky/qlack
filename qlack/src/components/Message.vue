@@ -1,8 +1,8 @@
 <template>
   <q-chat-message
-    :sent="author === 'Arnost Kabel'"
-    :text-color="author === 'Arnost Kabel'? 'dark': 'white'"
-    :bg-color="author === 'Arnost Kabel'? 'amber': 'primary'"
+    :sent="author_id === currentUserId"
+    :text-color="author_id === currentUserId? 'dark': 'white'"
+    :bg-color="author_id === currentUserId? 'amber': 'primary'"
   >
     <template v-slot:name>{{ author }}</template>
     <template v-slot:stamp>{{ time }}</template>
@@ -18,9 +18,10 @@
 </template>
 
 <script>
-export default {
-  name: 'Message',
+import { defineComponent } from 'vue'
 
+export default defineComponent({
+  name: 'Message',
   props: {
     id: {
       type: Number,
@@ -28,6 +29,10 @@ export default {
     },
     author: {
       type: String,
+      required: true
+    },
+    author_id: {
+      type: Number,
       required: true
     },
     initials: {
@@ -42,8 +47,24 @@ export default {
       type: String,
       required: true
     }
+  },
+  components: {
+
+  },
+  methods: {
+  },
+  computed: {
+    currentUserId: {
+      get () {
+        return this.$store.state.userStore.id
+      },
+      set (val) {
+        this.$store.commit('userStore/updateId', val)
+      }
+    }
   }
-}
+})
+
 </script>
 
 <style scoped>

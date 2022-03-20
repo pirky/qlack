@@ -1,29 +1,15 @@
-import {store} from 'quasar/wrappers'
-import {InjectionKey} from 'vue'
-import {createStore, Store as VuexStore, useStore as vuexUseStore} from 'vuex'
-import { MainStateInterface } from './mainStore/state';
+import { store } from 'quasar/wrappers'
+import { InjectionKey } from 'vue'
+import { createStore, Store as VuexStore, useStore as vuexUseStore } from 'vuex'
 
-// @ts-ignore
 import mainStore from './mainStore'
-// import channel from './module-channel'
-
-
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Store instance.
- */
+import { MainStateInterface } from './mainStore/state'
+import userStore from './userStore'
+import { UserStateInterface } from './userStore/state'
 
 export interface StateInterface {
-  // Define your own store structure, using submodules if needed
-  // example: ExampleStateInterface;
-  // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  example: unknown
-  mainStore: MainStateInterface
-  // channel: ChannelStateInterface
+  mainStore: MainStateInterface,
+  userStore: UserStateInterface
 }
 
 // provide typings for `this.$store`
@@ -36,11 +22,11 @@ declare module '@vue/runtime-core' {
 // provide typings for `useStore` helper
 export const storeKey: InjectionKey<VuexStore<StateInterface>> = Symbol('vuex-key')
 
-export default store(function (/* { ssrContext } */) {
+export default store(function () {
   return createStore<StateInterface>({
     modules: {
       mainStore,
-      // channel
+      userStore
     },
 
     // enable strict mode (adds overhead!)
