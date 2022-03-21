@@ -21,7 +21,32 @@ function state (): UserStateInterface {
     email: 'arnost@kabel.com',
     notificationType: 'all',
     state: 'online',
-    channels: []
+    channels: [
+      {
+        id: 0,
+        name: 'First module-channel ever',
+        state: 'public',
+        createdBy: 0,
+        userState: 'joined',
+        messages: []
+      },
+      {
+        id: 1,
+        name: 'Lipsum',
+        state: 'private',
+        createdBy: 0,
+        userState: 'joined',
+        messages: []
+      },
+      {
+        id: 2,
+        name: 'Tuna kto',
+        state: 'public',
+        createdBy: 0,
+        userState: 'joined',
+        messages: []
+      }
+    ]
   }
 }
 

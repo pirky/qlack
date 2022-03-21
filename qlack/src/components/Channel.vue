@@ -1,20 +1,20 @@
 <template>
   <q-item clickable
-          tag="a"
           target="_self"
           :to="'/' + id"
+          @click="setChannel"
   >
-    <q-item-section v-if="is_private" avatar>
+    <q-item-section v-if="state == 'private'" avatar>
         <q-icon name="fa fa-solid fa-lock" />
     </q-item-section>
 
-    <q-item-section v-if="!is_private" avatar>
+    <q-item-section v-if="state == 'public'" avatar>
       <q-icon name="fa fa-solid fa-hashtag" />
     </q-item-section>
 
     <q-item-section>
       <q-item-label>
-        {{ title }}
+        {{ name }}
       </q-item-label>
     </q-item-section>
   </q-item>
@@ -31,13 +31,24 @@ export default defineComponent({
       type: Number,
       required: true
     },
-    title: {
+    name: {
       type: String,
       required: true
     },
-    is_private: {
-      type: Boolean,
+    state: {
+      type: String,
       required: true
+    },
+    createdBy: {
+      type: String,
+      required: true
+    }
+  },
+
+  methods: {
+    setChannel () {
+      console.log(this.$store.state.userStore.channels[this.id])
+      this.$store.commit('channelStore/update', this.$store.state.userStore.channels[this.id])
     }
   },
 

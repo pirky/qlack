@@ -10,7 +10,7 @@
       </q-item-section>
 
       <q-toolbar-title class="text-bold">
-        {{ title }}
+        {{ name }}
       </q-toolbar-title>
     </q-toolbar>
   </q-page-sticky>
@@ -26,16 +26,19 @@ export default {
       type: Number,
       required: true
     },
-    title: {
+    name: {
       type: String,
       required: true
     },
-    is_private: {
-      type: Boolean,
+    state: {
+      type: String,
+      required: true
+    },
+    createdBy: {
+      type: String,
       required: true
     }
   }
-
 }
 </script>
 

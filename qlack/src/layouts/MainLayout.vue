@@ -74,24 +74,6 @@ import User from 'components/User.vue'
 import UserProfileDropdown from 'components/UserProfileDropdown.vue'
 import { defineComponent } from 'vue'
 
-const channelList = [
-  {
-    id: 0,
-    title: 'First module-channel ever',
-    is_private: false
-  },
-  {
-    id: 1,
-    title: 'Lipsum',
-    is_private: true
-  },
-  {
-    id: 2,
-    title: 'Tunakto',
-    is_private: false
-  }
-]
-
 const userList = [
   {
     id: 0,
@@ -151,7 +133,7 @@ export default defineComponent({
   },
   data () {
     return {
-      channels: channelList,
+      channels: this.$store.state.userStore.channels,
       users: userList
     }
   }

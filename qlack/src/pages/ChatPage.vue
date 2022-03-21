@@ -2,7 +2,7 @@
   <q-page class="background">
     <q-page class="flex column q-pa-md" padding style="padding: 6em 0 6.2em 0">
 
-      <q-infinite-scroll @load="onLoad" :offset="250" reverse>
+      <q-infinite-scroll @load="onLoad" :offset="250" reverse v-if="$route.params.id">
         <template v-slot:loading>
           <div class="row justify-center q-my-md">
             <q-spinner-dots color="primary" size="40px" />
@@ -10,12 +10,12 @@
         </template>
 
         <div v-for="message in messages" v-bind:key="message" class="q-pa-md">
-          <Message v-bind="message"/>
+          <Message v-bind="message" v-if="$route.params.id"/>
         </div>
       </q-infinite-scroll>
     </q-page>
 
-    <ChannelName v-bind="channel"/>
+    <ChannelName v-bind="channel" v-if="$route.params.id"/>
     <CommandLine v-bind="channel"/>
   </q-page>
 
@@ -27,12 +27,6 @@ import ChannelName from 'components/ChannelName.vue'
 import CommandLine from 'components/CommandLine.vue'
 import Message from 'components/Message.vue'
 import { defineComponent } from 'vue'
-
-const channel = {
-  id: 0,
-  title: 'First module-channel ever',
-  is_private: false
-}
 
 const messages = [{
   id: 1,
@@ -54,7 +48,7 @@ export default defineComponent({
 
   data () {
     return {
-      channel: channel,
+      channel: this.$store.state.channelStore,
       messages: messages,
       onLoad (index: number, done: () => void) {
         setTimeout(() => {

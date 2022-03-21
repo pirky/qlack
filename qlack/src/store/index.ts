@@ -6,10 +6,13 @@ import mainStore from './mainStore'
 import { MainStateInterface } from './mainStore/state'
 import userStore from './userStore'
 import { UserStateInterface } from './userStore/state'
+import channelStore from './channelStore'
+import { ChannelStateInterface } from './channelStore/state'
 
 export interface StateInterface {
   mainStore: MainStateInterface,
-  userStore: UserStateInterface
+  userStore: UserStateInterface,
+  channelStore: ChannelStateInterface
 }
 
 // provide typings for `this.$store`
@@ -26,7 +29,8 @@ export default store(function () {
   return createStore<StateInterface>({
     modules: {
       mainStore,
-      userStore
+      userStore,
+      channelStore
     },
 
     // enable strict mode (adds overhead!)

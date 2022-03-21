@@ -2,6 +2,15 @@ import { MutationTree } from 'vuex'
 import { ChannelStateInterface, MessageInterface } from './state'
 
 const mutation: MutationTree<ChannelStateInterface> = {
+  update (state: ChannelStateInterface, value: ChannelStateInterface) {
+    state.id = value.id
+    state.name = value.name
+    state.state = value.state
+    state.createdBy = value.createdBy
+    state.userState = value.userState
+    state.messages = value.messages
+  },
+
   updateId (state: ChannelStateInterface, value: number) {
     state.id = value
   },
