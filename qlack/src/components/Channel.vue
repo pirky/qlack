@@ -1,7 +1,8 @@
 <template>
   <q-item clickable
           tag="a"
-          target="_blank"
+          target="_self"
+          :to="'/' + id"
   >
     <q-item-section v-if="is_private" avatar>
         <q-icon name="fa fa-solid fa-lock" />
