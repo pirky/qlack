@@ -167,17 +167,17 @@ export default defineComponent({
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #EEEEEE;
+  background: #555;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #eee;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #afafaf;
 }
 
 .drawer {

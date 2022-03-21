@@ -1,6 +1,6 @@
 <template>
   <q-page class="background">
-    <q-page class="flex column q-pa-md" padding style="padding: 61px 0">
+    <q-page class="flex column q-pa-md" padding style="padding: 6em 0 6.2em 0">
 
       <q-infinite-scroll @load="onLoad" :offset="250" reverse>
         <template v-slot:loading>
