@@ -1,7 +1,6 @@
 import { MutationTree } from 'vuex'
 import { ChannelStateInterface, MessageInterface } from './state'
 
-
 const mutation: MutationTree<ChannelStateInterface> = {
   updateId (state: ChannelStateInterface, value: number) {
     state.id = value
@@ -23,10 +22,10 @@ const mutation: MutationTree<ChannelStateInterface> = {
   updateMessages (state: ChannelStateInterface, value: [MessageInterface]) {
     state.messages = value
   },
-  prependMessage(state: ChannelStateInterface, value: MessageInterface) {
+  prependMessage (state: ChannelStateInterface, value: MessageInterface) {
     state.messages.splice(0, 0, value)
   },
-  appendMessage(state: ChannelStateInterface, value: MessageInterface) {
+  appendMessage (state: ChannelStateInterface, value: MessageInterface) {
     state.messages.push(value)
   }
 }

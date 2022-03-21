@@ -22,7 +22,7 @@ const getters: GetterTree<ChannelStateInterface, StateInterface> = {
 
   messages (state: ChannelStateInterface) {
     return state.messages
-  },
+  }
 }
 
 export default getters

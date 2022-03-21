@@ -1,3 +1,5 @@
+import { ChannelStateInterface } from '../channelStore/state'
+
 export interface UserStateInterface {
   id: number
   firstName: string
@@ -6,6 +8,8 @@ export interface UserStateInterface {
   email: string
   notificationType: string
   state: string
+
+  channels: ChannelStateInterface[]
 }
 
 function state (): UserStateInterface {
@@ -16,7 +20,8 @@ function state (): UserStateInterface {
     nickname: 'kablis',
     email: 'arnost@kabel.com',
     notificationType: 'all',
-    state: 'online'
+    state: 'online',
+    channels: []
   }
 }
 
