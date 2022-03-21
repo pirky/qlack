@@ -1,11 +1,11 @@
-export interface messageInterface {
+export interface MessageInterface {
   id: number
   authorId: number
   sendTime: Date
   content: string
 }
 
-export interface channelStateInterface {
+export interface ChannelStateInterface {
   id: number
   name: string
   state: string
@@ -15,10 +15,10 @@ export interface channelStateInterface {
   userState: string
 
   // channel_messages
-  messages: [messageInterface]
+  messages: [MessageInterface]
 }
 
-function state (): channelStateInterface {
+function state (): ChannelStateInterface {
   return {
     id: 0,
     name: "Lipsum",

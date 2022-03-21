@@ -1,26 +1,26 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
-import { channelStateInterface } from './state'
+import { ChannelStateInterface } from './state'
 
-const getters: GetterTree<channelStateInterface, StateInterface> = {
-  id (state: channelStateInterface) {
+const getters: GetterTree<ChannelStateInterface, StateInterface> = {
+  id (state: ChannelStateInterface) {
     return state.id
   },
-  name (state: channelStateInterface) {
+  name (state: ChannelStateInterface) {
     return state.name
   },
-  state (state: channelStateInterface) {
+  state (state: ChannelStateInterface) {
     return state.state
   },
-  createdBy (state: channelStateInterface) {
+  createdBy (state: ChannelStateInterface) {
     return state.createdBy
   },
 
-  userState (state: channelStateInterface) {
+  userState (state: ChannelStateInterface) {
     return state.userState
   },
 
-  messages (state: channelStateInterface) {
+  messages (state: ChannelStateInterface) {
     return state.messages
   },
 }

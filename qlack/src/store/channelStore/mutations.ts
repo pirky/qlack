@@ -1,32 +1,32 @@
 import { MutationTree } from 'vuex'
-import { channelStateInterface, messageInterface } from './state'
+import { ChannelStateInterface, MessageInterface } from './state'
 
 
-const mutation: MutationTree<channelStateInterface> = {
-  updateId (state: channelStateInterface, value: number) {
+const mutation: MutationTree<ChannelStateInterface> = {
+  updateId (state: ChannelStateInterface, value: number) {
     state.id = value
   },
-  updateName (state: channelStateInterface, value: string) {
+  updateName (state: ChannelStateInterface, value: string) {
     state.name = value
   },
-  updateState (state: channelStateInterface, value: string) {
+  updateState (state: ChannelStateInterface, value: string) {
     state.state = value
   },
-  updateCreatedBy (state: channelStateInterface, value: number) {
+  updateCreatedBy (state: ChannelStateInterface, value: number) {
     state.createdBy = value
   },
 
-  updateUserState (state: channelStateInterface, value: string) {
+  updateUserState (state: ChannelStateInterface, value: string) {
     state.userState = value
   },
 
-  updateMessages (state: channelStateInterface, value: [messageInterface]) {
+  updateMessages (state: ChannelStateInterface, value: [MessageInterface]) {
     state.messages = value
   },
-  prependMessage(state: channelStateInterface, value: messageInterface) {
+  prependMessage(state: ChannelStateInterface, value: MessageInterface) {
     state.messages.splice(0, 0, value)
   },
-  appendMessage(state: channelStateInterface, value: messageInterface) {
+  appendMessage(state: ChannelStateInterface, value: MessageInterface) {
     state.messages.push(value)
   }
 }
