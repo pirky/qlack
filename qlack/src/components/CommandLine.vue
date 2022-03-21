@@ -1,20 +1,27 @@
 <template>
-  <q-page-sticky expand position="bottom" class="bg-transparent command_line" >
+  <q-page-sticky expand position="bottom" class="bg-transparent command_line">
     <q-input
       v-model="newMessage"
       bg-color="dark"
       class="full-width input"
       outlined
       autogrow
-      input-style="max-height: 12em; min-height: 2em"
-      label="Message">
+      input-style="max-height: 4.5em; min-height: 4.5em"
+      label="Message"
+      >
 
       <span class="typing">
         <a class="typing_name">Someone</a> is typing...
       </span>
 
       <template v-slot:after>
-        <q-btn round dense flat icon="send" color="white"/>
+        <q-btn
+          round
+          dense
+          flat
+          icon="send"
+          color="white"
+        />
       </template>
     </q-input>
   </q-page-sticky>
@@ -54,6 +61,8 @@ export default {
 
 .input {
   opacity: 0.9;
+  display: flex;
+  align-items: flex-end;
 }
 
 .typing {
