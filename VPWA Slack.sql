@@ -27,11 +27,10 @@ CREATE TABLE "users" (
   "first_name" varchar,
   "last_name" varchar,
   "nickname" varchar UNIQUE,
-  "avatar_path" varchar,
   "email" varchar,
   "password" hash,
   "notification_type" notification_types,
-  "state" user_states,
+  "active_state" user_states,
   "created_at" timestamp,
   "updated_at" timestamp,
   "deleted_at" timestamp
@@ -42,7 +41,6 @@ CREATE TABLE "channels" (
   "name" varchar UNIQUE,
   "state" channel_states,
   "created_by" bigint,
-  "message_count" bigint,
   "created_at" timestamp,
   "updated_at" timestamp,
   "deleted_at" timestamp
@@ -53,8 +51,6 @@ CREATE TABLE "user_channels" (
   "user_id" bigint,
   "channel_id" bigint,
   "user_state" user_channel_states,
-  "last_read_message" bigint,
-  "last_message_count" bigint,
   "created_at" timestamp,
   "updated_at" timestamp,
   "deleted_at" timestamp
@@ -70,7 +66,7 @@ CREATE TABLE "user_channel_kicks" (
   "deleted_at" timestamp
 );
 
-CREATE TABLE "channel_messages" (
+CREATE TABLE "messages" (
   "id" bigint,
   "author_id" bigint,
   "channel_id" bigint,
@@ -87,12 +83,10 @@ ALTER TABLE "user_channels" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id"
 
 ALTER TABLE "user_channels" ADD FOREIGN KEY ("channel_id") REFERENCES "channels" ("id");
 
-ALTER TABLE "user_channels" ADD FOREIGN KEY ("last_read_message") REFERENCES "channel_messages" ("id");
-
 ALTER TABLE "user_channel_kicks" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "user_channel_kicks" ADD FOREIGN KEY ("group_id") REFERENCES "channels" ("id");
 
-ALTER TABLE "channel_messages" ADD FOREIGN KEY ("author_id") REFERENCES "users" ("id");
+ALTER TABLE "messages" ADD FOREIGN KEY ("author_id") REFERENCES "users" ("id");
 
-ALTER TABLE "channel_messages" ADD FOREIGN KEY ("channel_id") REFERENCES "channels" ("id");
+ALTER TABLE "messages" ADD FOREIGN KEY ("channel_id") REFERENCES "channels" ("id");
