@@ -1,4 +1,22 @@
-import { ChannelStateInterface } from '../channelStore/state'
+export interface MessageInterface {
+  id: number
+  authorId: number
+  sendTime: Date
+  content: string
+}
+
+export interface ChannelInterface {
+  id: number
+  name: string
+  state: string
+  createdBy: number
+
+  // user_channels
+  userState: string
+
+  // channel_messages
+  messages: MessageInterface[]
+}
 
 export interface UserStateInterface {
   id: number
@@ -9,7 +27,7 @@ export interface UserStateInterface {
   notificationType: string
   state: string
 
-  channels: ChannelStateInterface[]
+  channels: ChannelInterface[]
 }
 
 function state (): UserStateInterface {

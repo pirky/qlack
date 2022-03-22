@@ -2,7 +2,6 @@
   <q-item clickable
           target="_self"
           :to="'/' + id"
-          @click="setChannel"
   >
     <q-item-section v-if="state == 'private'" avatar>
         <q-icon name="fa fa-solid fa-lock" />
@@ -42,13 +41,6 @@ export default defineComponent({
     createdBy: {
       type: Number,
       required: true
-    }
-  },
-
-  methods: {
-    setChannel () {
-      console.log(this.$store.state.userStore.channels[this.id])
-      this.$store.commit('channelStore/update', this.$store.state.userStore.channels[this.id])
     }
   },
 

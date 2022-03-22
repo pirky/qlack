@@ -2,7 +2,7 @@
   <q-page class="background">
     <q-page class="flex column q-pa-md" padding style="padding: 6em 0 6.2em 0">
 
-      <q-infinite-scroll @load="onLoad" :offset="250" reverse v-if="userHasChannel()">
+      <q-infinite-scroll @load="onLoad" :offset="250" reverse v-if="channel != null">
         <template v-slot:loading>
           <div class="row justify-center q-my-md">
             <q-spinner-dots color="primary" size="40px" />
@@ -15,8 +15,8 @@
       </q-infinite-scroll>
     </q-page>
 
-    <ChannelName v-bind="channel" v-if="userHasChannel()"/>
-    <CommandLine v-bind="channel"/>
+    <ChannelName v-bind="channel" v-if="channel != null"/>
+    <CommandLine/>
   </q-page>
 
 </template>
@@ -27,6 +27,7 @@ import ChannelName from 'components/ChannelName.vue'
 import CommandLine from 'components/CommandLine.vue'
 import Message from 'components/Message.vue'
 import { defineComponent } from 'vue'
+import channelInterface from '../store'
 
 const messages = [{
   id: 1,
@@ -46,28 +47,16 @@ export default defineComponent({
     Message
   },
 
-  methods: {
-    userHasChannel () {
-      if (this.$route.params.id === null) {
-        return false
-      }
-
-      const channels = this.$store.state.userStore.channels
-      let exists = false
-
-      channels.forEach(element => {
-        if (element.id === Number(this.$route.params.id)) {
-          exists = true
-        }
-      })
-
-      return exists
+  computed: {
+    channel () {
+      return (<typeof channelInterface> this.$store.getters['userStore/activeChannel'](
+        Number(this.$route.params.id)
+      ))
     }
   },
 
   data () {
     return {
-      channel: this.$store.state.channelStore,
       messages: messages,
       onLoad (index: number, done: () => void) {
         setTimeout(() => {

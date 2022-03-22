@@ -5,14 +5,13 @@ import { createStore, Store as VuexStore, useStore as vuexUseStore } from 'vuex'
 import mainStore from './mainStore'
 import { MainStateInterface } from './mainStore/state'
 import userStore from './userStore'
-import { UserStateInterface } from './userStore/state'
-import channelStore from './channelStore'
-import { ChannelStateInterface } from './channelStore/state'
+import { MessageInterface, UserStateInterface, ChannelInterface } from './userStore/state'
 
 export interface StateInterface {
   mainStore: MainStateInterface,
   userStore: UserStateInterface,
-  channelStore: ChannelStateInterface
+  messageInterface: MessageInterface,
+  channelInterface: ChannelInterface
 }
 
 // provide typings for `this.$store`
@@ -29,8 +28,7 @@ export default store(function () {
   return createStore<StateInterface>({
     modules: {
       mainStore,
-      userStore,
-      channelStore
+      userStore
     },
 
     // enable strict mode (adds overhead!)

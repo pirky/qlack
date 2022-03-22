@@ -4,7 +4,7 @@
 
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn dense flat round icon="fa fa-solid fa-bars" @click="leftDrawerState =! leftDrawerState" />
+        <q-btn dense flat round icon="fa fa-solid fa-bars" @click="leftDrawerState = !leftDrawerState" />
 
         <q-toolbar-title>
           <q-avatar>
@@ -13,7 +13,7 @@
           Qlack
         </q-toolbar-title>
 
-        <q-btn dense flat round icon="fa fa-solid fa-user-group" @click="rightDrawerState =! rightDrawerState" />
+        <q-btn dense flat round icon="fa fa-solid fa-user-group" @click="rightDrawerState = !rightDrawerState" />
       </q-toolbar>
       <UserProfileDropdown/>
     </q-header>
@@ -111,8 +111,7 @@ export default defineComponent({
     User,
     UserProfileDropdown
   },
-  methods: {
-  },
+
   computed: {
     leftDrawerState: {
       get () {
