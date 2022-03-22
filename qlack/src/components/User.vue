@@ -12,7 +12,7 @@
 
     <q-item-section>
       <q-item-label>{{ nickname }}</q-item-label>
-      <q-item-label caption lines="1">{{ email }}</q-item-label>
+      <!-- <q-item-label caption lines="1">{{ email }}</q-item-label> -->
     </q-item-section>
 
     <q-item-section avatar>
