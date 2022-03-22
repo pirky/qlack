@@ -40,7 +40,7 @@ export default defineComponent({
       required: true
     },
     createdBy: {
-      type: String,
+      type: Number,
       required: true
     }
   },

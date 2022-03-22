@@ -48,6 +48,7 @@
         type="submit"
         color="primary"
         :label="tab"
+        :to="'/'"
       />
     </div>
   </q-form>

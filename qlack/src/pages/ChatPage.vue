@@ -2,20 +2,20 @@
   <q-page class="background">
     <q-page class="flex column q-pa-md" padding style="padding: 6em 0 6.2em 0">
 
-      <q-infinite-scroll @load="onLoad" :offset="250" reverse v-if="$route.params.id">
+      <q-infinite-scroll @load="onLoad" :offset="250" reverse v-if="userHasChannel()">
         <template v-slot:loading>
           <div class="row justify-center q-my-md">
             <q-spinner-dots color="primary" size="40px" />
           </div>
         </template>
 
-        <div v-for="message in messages" v-bind:key="message" class="q-pa-md">
+        <div v-for="message in messages" v-bind:key="message.id" class="q-pa-md">
           <Message v-bind="message" v-if="$route.params.id"/>
         </div>
       </q-infinite-scroll>
     </q-page>
 
-    <ChannelName v-bind="channel" v-if="$route.params.id"/>
+    <ChannelName v-bind="channel" v-if="userHasChannel()"/>
     <CommandLine v-bind="channel"/>
   </q-page>
 
@@ -44,6 +44,25 @@ export default defineComponent({
     ChannelName,
     CommandLine,
     Message
+  },
+
+  methods: {
+    userHasChannel () {
+      if (this.$route.params.id === null) {
+        return false
+      }
+
+      const channels = this.$store.state.userStore.channels
+      let exists = false
+
+      channels.forEach(element => {
+        if (element.id === Number(this.$route.params.id)) {
+          exists = true
+        }
+      })
+
+      return exists
+    }
   },
 
   data () {

@@ -31,21 +31,6 @@
 export default {
   name: 'CommandLine',
 
-  props: {
-    id: {
-      type: Number,
-      required: true
-    },
-    title: {
-      type: String,
-      required: true
-    },
-    is_private: {
-      type: Boolean,
-      required: true
-    }
-  },
-
   data () {
     return {
       newMessage: ''
