@@ -2,8 +2,8 @@
   <q-btn-dropdown
     class="shadow-1 dropdownProfile"
     color="dark"
-    label="Profile"
-    icon="account_circle"
+    :label="nickname"
+    icon="fa fa-solid fa-address-card"
   >
     <div class="row no-wrap q-pa-md">
       <div class="column items-md-start">

@@ -5,7 +5,7 @@
     target="_blank"
   >
     <q-item-section avatar>
-      <q-avatar color="secondary" text-color="dark">
+      <q-avatar color="secondary" text-color="black">
         {{ nickname[0].toUpperCase() }}
       </q-avatar>
     </q-item-section>

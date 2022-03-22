@@ -4,7 +4,7 @@
 
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="leftDrawerState =! leftDrawerState" />
+        <q-btn dense flat round icon="fa fa-solid fa-bars" @click="leftDrawerState =! leftDrawerState" />
 
         <q-toolbar-title>
           <q-avatar>
