@@ -10,7 +10,7 @@
         </template>
 
         <div v-for="message in messages" v-bind:key="message.id" class="q-pa-md">
-          <Message v-bind="message" v-if="$route.params.id"/>
+          <Message v-bind="message" v-if="channel != null"/>
         </div>
       </q-infinite-scroll>
     </q-page>
@@ -28,15 +28,7 @@ import CommandLine from 'components/CommandLine.vue'
 import Message from 'components/Message.vue'
 import { defineComponent } from 'vue'
 import channelInterface from '../store'
-
-const messages = [{
-  id: 1,
-  author: 'petrzlak',
-  author_id: 1,
-  initials: 'P',
-  time: String(1).concat(' minutes ago'),
-  text: 'Wasuuup'
-}]
+import messageInterface from 'src/store'
 
 export default defineComponent({
   name: 'ChatPage',
@@ -52,33 +44,39 @@ export default defineComponent({
       return (<typeof channelInterface> this.$store.getters['userStore/activeChannel'](
         Number(this.$route.params.id)
       ))
+    },
+    messages () {
+      return (<typeof messageInterface> this.$store.getters['userStore/activeChannel'](
+        Number(this.$route.params.id)
+      ).messages)
     }
   },
 
   data () {
     return {
-      messages: messages,
-      onLoad (index: number, done: () => void) {
+      onLoad (index: number, done: (arg: boolean) => void) {
         setTimeout(() => {
-          messages.splice(0, 0,
-            {
-              id: 100 + index * 2 + 1,
-              author: 'petrzlak',
-              author_id: 1,
-              initials: 'P',
-              time: String(100 + index * 2 + 1).concat(' minutes ago'),
-              text: 'Wasuuup'
-            },
-            {
-              id: 100 + index * 2,
-              author: 'kablis',
-              author_id: 0,
-              initials: 'K',
-              time: String(100 + index * 2).concat(' minutes ago'),
-              text: 'Zdarec starec'
-            }
-          )
-          done()
+          // this.channel.messages.splice(0, 0,
+          //   {
+          //     id: 100 + index * 2 + 1,
+          //     author: 'petrzlak',
+          //     author_id: 1,
+          //     initials: 'P',
+          //     time: String(100 + index * 2 + 1).concat(' minutes ago'),
+          //     text: 'Wasuuup'
+          //   },
+          //   {
+          //     id: 100 + index * 2,
+          //     author: 'kablis',
+          //     author_id: 0,
+          //     initials: 'K',
+          //     time: String(100 + index * 2).concat(' minutes ago'),
+          //     text: 'Zdarec starec'
+          //   }
+          // )
+          done(true)
+          // NOT DONE YET
+          // done(false)
         }, 1000)
       }
     }

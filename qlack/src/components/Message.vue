@@ -1,18 +1,18 @@
 <template>
   <q-chat-message
-    :sent="author_id === currentUserId"
-    :text-color="author_id === currentUserId? 'dark': 'white'"
-    :bg-color="author_id === currentUserId? 'amber': 'primary'"
+    :sent="authorId === currentUserId"
+    :text-color="authorId === currentUserId? 'dark': 'white'"
+    :bg-color="authorId === currentUserId? 'amber': 'primary'"
   >
-    <template v-slot:name>{{ author }}</template>
-    <template v-slot:stamp>{{ time }}</template>
+    <template v-slot:name>{{ authorNickname }}</template>
+    <template v-slot:stamp>{{ sendTime }}</template>
     <template v-slot:avatar>
       <q-avatar color="secondary" text-color="black" style="margin: 0 10px;">
-        {{ initials }}
+        {{ authorNickname[0].toUpperCase() }}
       </q-avatar>
     </template>
     <div>
-      {{ text }}
+      {{ content }}
     </div>
   </q-chat-message>
 </template>
@@ -22,37 +22,25 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Message',
+
   props: {
     id: {
-      type: Number,
-      required: true
+      type: Number
     },
-    author: {
-      type: String,
-      required: true
+    authorId: {
+      type: Number
     },
-    author_id: {
-      type: Number,
-      required: true
+    authorNickname: {
+      type: String
     },
-    initials: {
-      type: String,
-      required: true
+    sendTime: {
+      type: Date
     },
-    time: {
-      type: String,
-      required: true
-    },
-    text: {
-      type: String,
-      required: true
+    content: {
+      type: String
     }
   },
-  components: {
 
-  },
-  methods: {
-  },
   computed: {
     currentUserId: {
       get () {

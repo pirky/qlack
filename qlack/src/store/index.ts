@@ -5,7 +5,7 @@ import { createStore, Store as VuexStore, useStore as vuexUseStore } from 'vuex'
 import mainStore from './mainStore'
 import { MainStateInterface } from './mainStore/state'
 import userStore from './userStore'
-import { MessageInterface, UserStateInterface, ChannelInterface } from './userStore/state'
+import { UserStateInterface, MessageInterface, ChannelInterface } from './userStore/state'
 
 export interface StateInterface {
   mainStore: MainStateInterface,
