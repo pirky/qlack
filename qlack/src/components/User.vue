@@ -12,7 +12,6 @@
 
     <q-item-section>
       <q-item-label>{{ nickname }}</q-item-label>
-      <!-- <q-item-label caption lines="1">{{ email }}</q-item-label> -->
     </q-item-section>
 
     <q-item-section avatar>
@@ -20,6 +19,7 @@
       <q-icon v-if="state === 'dnd'" name="fa fa-solid fa-circle" size="1em" color="negative" />
       <q-icon v-if="state === 'offline'" name="fa fa-solid fa-circle" size="1em" color="gray" />
     </q-item-section>
+
   </q-item>
 </template>
 

@@ -9,31 +9,6 @@
       <div class="column items-md-start">
         <div class="text-h6 q-mb-md">Profile</div>
 
-        <q-select
-          class="statusSelect"
-          v-model="status"
-          :options="options"
-          model-value="{{status}}"
-          filled
-        >
-          <template v-slot:append>
-            <q-icon v-if="status === 'online'" name="fa fa-solid fa-circle" size="0.5em" color="positive" />
-            <q-icon v-if="status === 'dnd'" name="fa fa-solid fa-circle" size="0.5em" color="negative" />
-            <q-icon v-if="status === 'offline'" name="fa fa-solid fa-circle" size="0.5em" color="gray" />
-          </template>
-        </q-select>
-
-        <q-toggle
-          :label="notificationType"
-          v-model="notificationType"
-          color="primary"
-          checked-icon="check"
-          true-value="all"
-          unchecked-icon="tag"
-          false-value="tagged"
-          keep-color
-        />
-
         <div class="text-subtitle2 q-mt-md q-mb-xs">{{ firstName }} {{ lastName }}</div>
 
         <div class="text-subtitle q-mt-md q-mb-xs">{{ email }}</div>
@@ -48,16 +23,6 @@
 
         <div class="text-subtitle1 q-mt-md q-mb-xs">{{ nickname }}</div>
 
-        <q-btn
-          class="q-mt-lg content-center"
-          color="primary"
-          label="Logout"
-          push
-          size="md"
-          v-close-popup
-          @click="logout"
-          icon-right="logout"
-        />
       </div>
     </div>
   </q-btn-dropdown>
@@ -67,7 +32,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'UserProfileDropdown',
+  name: 'UserInfoDropdown',
   methods: {
     logout () {
       console.log('Logging out')

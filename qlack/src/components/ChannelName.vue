@@ -1,11 +1,11 @@
 <template>
   <q-page-sticky expand position="top" class="background_channel_name text-dark bg-accent">
     <q-toolbar>
-      <q-item-section v-if="state == 'private'" avatar>
+      <q-item-section v-if="state === 'private'" avatar>
         <q-icon name="fa fa-solid fa-lock"/>
       </q-item-section>
 
-      <q-item-section v-if="state == 'public'" avatar>
+      <q-item-section v-if="state === 'public'" avatar>
         <q-icon name="fa fa-solid fa-hashtag"/>
       </q-item-section>
 

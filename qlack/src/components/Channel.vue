@@ -3,11 +3,11 @@
           target="_self"
           :to="'/' + id"
   >
-    <q-item-section v-if="state == 'private'" avatar>
+    <q-item-section v-if="state === 'private'" avatar>
         <q-icon name="fa fa-solid fa-lock" />
     </q-item-section>
 
-    <q-item-section v-if="state == 'public'" avatar>
+    <q-item-section v-if="state === 'public'" avatar>
       <q-icon name="fa fa-solid fa-hashtag" />
     </q-item-section>
 
@@ -45,11 +45,6 @@ export default defineComponent({
   },
 
   computed: {
-    computedClass () {
-      // console.log(this.$store.state)
-      return 'text-dark'
-      // return store.state.module-channel.channelName === this.title ? 'activeChanel' : 'text-dark'
-    }
   }
 
 })
