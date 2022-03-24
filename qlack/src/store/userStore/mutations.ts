@@ -22,6 +22,9 @@ const mutation: MutationTree<UserStateInterface> = {
   },
   updateState (state: UserStateInterface, value: string) {
     state.state = value
+  },
+  updateUserChannelState (state: UserStateInterface, { value, id }: { value: string, id: number }) {
+    state.channels.filter(e => e.id === id)[0].userState = value
   }
 }
 

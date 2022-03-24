@@ -34,9 +34,27 @@
           v-for="channel in channels"
           :key="channel.id"
           v-bind="channel"
+          current="joined"
         />
 
       </q-list>
+
+      <q-separator/>
+
+      <q-list>
+        <q-item-label header>
+          Invitations
+        </q-item-label>
+
+        <Channel
+          v-for="channel in channels"
+          :key="channel.id"
+          v-bind="channel"
+          current="invited"
+        />
+
+      </q-list>
+
     </q-drawer>
 
     <q-drawer
