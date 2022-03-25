@@ -27,14 +27,13 @@
     >
       <q-list>
         <q-item-label header>
-          Channels
+          Invitations
         </q-item-label>
 
         <Channel
-          v-for="channel in channels"
+          v-for="channel in invitedChannels"
           :key="channel.id"
           v-bind="channel"
-          current="joined"
         />
 
       </q-list>
@@ -42,15 +41,23 @@
       <q-separator/>
 
       <q-list>
-        <q-item-label header>
-          Invitations
-        </q-item-label>
+        <div class="row vertical-middle justify-between">
+          <q-item-label header>
+            Channels
+          </q-item-label>
+          <q-btn
+            class="q-ma-sm q-pt-none q-pb-none add_btn"
+            icon="fa fa-solid fa-plus"
+            size="0.5em"
+            style="min-height: 0;"
+            @click="showDialog()"
+          />
+        </div>
 
         <Channel
-          v-for="channel in channels"
+          v-for="channel in joinedChannels"
           :key="channel.id"
           v-bind="channel"
-          current="invited"
         />
 
       </q-list>
@@ -91,6 +98,8 @@ import Channel from 'components/Channel.vue'
 import User from 'components/User.vue'
 import UserProfileDropdown from 'components/UserProfileDropdown.vue'
 import { defineComponent } from 'vue'
+import { useQuasar } from 'quasar'
+import CreateChannel from 'components/CreateChannel.vue'
 
 const userList = [
   {
@@ -129,7 +138,6 @@ export default defineComponent({
     User,
     UserProfileDropdown
   },
-
   computed: {
     leftDrawerState: {
       get () {
@@ -146,12 +154,31 @@ export default defineComponent({
       set (val: boolean) {
         this.$store.commit('mainStore/updateRightDrawerState', val)
       }
+    },
+    invitedChannels () {
+      return this.$store.state.userStore.channels.filter(channel => channel.userState === 'invited')
+    },
+    joinedChannels () {
+      return this.$store.state.userStore.channels.filter(channel => channel.userState === 'joined')
     }
   },
   data () {
+    const $q = useQuasar()
     return {
       channels: this.$store.state.userStore.channels,
-      users: userList
+      users: userList,
+      showDialog () {
+        $q.dialog({
+          component: CreateChannel,
+          componentProps: {
+            text: 'something'
+          }
+        }).onOk(() => {
+          console.log('OK, ulozim channel')
+        }).onCancel(() => {
+          console.log('Cancel, nic neurobim')
+        })
+      }
     }
   }
 })
@@ -159,6 +186,14 @@ export default defineComponent({
 </script>
 
 <style>
+.add_btn:before {
+  box-shadow: none;
+}
+
+.add_btn {
+  min-height: 0;
+  min-width: 0;
+}
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

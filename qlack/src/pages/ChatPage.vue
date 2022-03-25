@@ -98,6 +98,7 @@ export default defineComponent({
           textColor: 'black',
           icon: 'fa fa-solid fa-message',
           group: '#Tuna kto',
+          position: 'top',
           actions: [
             { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
           ]
@@ -113,6 +114,7 @@ export default defineComponent({
           textColor: 'black',
           icon: 'fa fa-solid fa-message',
           group: '#Tuna kto',
+          position: 'top',
           actions: [
             { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
           ]
@@ -128,6 +130,7 @@ export default defineComponent({
           textColor: 'black',
           icon: 'fa fa-solid fa-message',
           group: '#Else',
+          position: 'top',
           actions: [
             { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
           ]

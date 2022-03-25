@@ -13,14 +13,37 @@
         {{ name }}
       </q-toolbar-title>
     </q-toolbar>
+
+    <q-btn
+      class="add_btn q-pa-sm q-mr-sm"
+      icon="logout"
+      size="1em"
+      style="min-height: 0; position: absolute; right: 0.2em"
+      @click="confirm"
+    />
   </q-page-sticky>
 </template>
 
-<script>
+<script lang="ts">
+import { useQuasar } from 'quasar'
 
 export default {
   name: 'ChannelName',
-
+  data () {
+    const $q = useQuasar()
+    return {
+      confirm () {
+        $q.dialog({
+          title: 'Leaving?',
+          message: 'Are you sure you want to leave this channel?',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          console.log('Yeeea, im out')
+        })
+      }
+    }
+  },
   props: {
     id: {
       type: Number,

@@ -3,7 +3,6 @@
           target="_self"
           :to="'/' + id"
           @click="changeUserState(id)"
-          v-if="userState === current"
   >
     <q-item-section v-if="state === 'private'" avatar>
         <q-icon :class="{invitationChannel: userState === 'invited'}" name="fa fa-solid fa-lock" />
@@ -46,10 +45,6 @@ export default defineComponent({
     createdBy: {
       type: Number,
       required: true
-    },
-    current: {
-      type: String,
-      required: true
     }
   },
   methods: {
@@ -66,6 +61,6 @@ export default defineComponent({
 
 <style>
 .invitationChannel {
-  color: #888b94;
+  color: #F2C037;
 }
 </style>
