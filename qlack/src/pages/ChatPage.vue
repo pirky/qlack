@@ -15,8 +15,9 @@
       </q-infinite-scroll>
 
       <div>
-        <q-btn color="purple" @click="showNotifFero" label="Petrzlak Notification" />
-        <q-btn color="purple" @click="showNotifJozo" label="Pele Notification" />
+        <q-btn color="purple" @click="showNotifFero" label="Petrzlak Tuna Kto Notification" />
+        <q-btn color="purple" @click="showNotifFero2" label="Pele Tuna Kto Notification" />
+        <q-btn color="purple" @click="showNotifJozo" label="Pele Else Notification" />
       </div>
 
     </q-page>
@@ -96,6 +97,22 @@ export default defineComponent({
           color: 'accent',
           textColor: 'black',
           icon: 'fa fa-solid fa-message',
+          group: '#Tuna kto',
+          actions: [
+            { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
+          ]
+        })
+      },
+
+      showNotifFero2 () {
+        $q.notify({
+          // If longer, replace rest with ...
+          message: 'aaaaaaMM...',
+          caption: 'pele #Tuna kto',
+          color: 'accent',
+          textColor: 'black',
+          icon: 'fa fa-solid fa-message',
+          group: '#Tuna kto',
           actions: [
             { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
           ]
@@ -106,10 +123,11 @@ export default defineComponent({
         $q.notify({
           // If longer, replace rest with ...
           message: 'Totalne je toto druhá správa, ...',
-          caption: 'pele #Tuna kto',
+          caption: 'pele #Else',
           color: 'accent',
           textColor: 'black',
           icon: 'fa fa-solid fa-message',
+          group: '#Else',
           actions: [
             { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
           ]
