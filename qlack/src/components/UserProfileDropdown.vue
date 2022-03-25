@@ -2,7 +2,6 @@
   <q-btn-dropdown
     class="shadow-1 dropdownProfile"
     color="dark"
-    label="Profile"
     icon="fa fa-solid fa-address-card"
   >
     <div class="row no-wrap q-pa-md">
