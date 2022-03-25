@@ -13,6 +13,12 @@
           <Message v-bind="message" v-if="channel != null"/>
         </div>
       </q-infinite-scroll>
+
+      <div>
+        <q-btn color="purple" @click="showNotifFero" label="Petrzlak Notification" />
+        <q-btn color="purple" @click="showNotifJozo" label="Pele Notification" />
+      </div>
+
     </q-page>
 
     <ChannelName v-bind="channel" v-if="channel != null"/>
@@ -29,6 +35,7 @@ import Message from 'components/Message.vue'
 import { defineComponent } from 'vue'
 import channelInterface from '../store'
 import messageInterface from 'src/store'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'ChatPage',
@@ -53,6 +60,7 @@ export default defineComponent({
   },
 
   data () {
+    const $q = useQuasar()
     return {
       onLoad (index: number, done: (arg: boolean) => void) {
         setTimeout(() => {
@@ -78,6 +86,34 @@ export default defineComponent({
           // NOT DONE YET
           // done(false)
         }, 1000)
+      },
+
+      showNotifFero () {
+        $q.notify({
+          // If longer, replace rest with ...
+          message: 'MMMMMMMMM MMMMMMMMM MMMMMMMMMM...',
+          caption: 'petrzlak #Tuna kto',
+          color: 'accent',
+          textColor: 'black',
+          icon: 'fa fa-solid fa-message',
+          actions: [
+            { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
+          ]
+        })
+      },
+
+      showNotifJozo () {
+        $q.notify({
+          // If longer, replace rest with ...
+          message: 'Totalne je toto druhá správa, ...',
+          caption: 'pele #Tuna kto',
+          color: 'accent',
+          textColor: 'black',
+          icon: 'fa fa-solid fa-message',
+          actions: [
+            { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
+          ]
+        })
       }
     }
   }
