@@ -65,7 +65,7 @@ export default defineComponent({
       }
 
       const hourDiff = Math.floor(minDiff / 60)
-      if (hourDiff < 23) {
+      if (hourDiff < 24) {
         return `${hourDiff} hour${hourDiff === 1 ? '' : 's'} ago.`
       }
 
