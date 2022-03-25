@@ -2,12 +2,12 @@
   <q-btn-dropdown
     class="shadow-1 dropdownProfile"
     color="dark"
-    :label="nickname"
+    label="Profile"
     icon="fa fa-solid fa-address-card"
   >
     <div class="row no-wrap q-pa-md">
       <div class="column items-md-start">
-        <div class="text-h6 q-mb-md">Profile</div>
+        <div class="text-h6 q-mb-md">{{ firstName }} {{ lastName }}</div>
 
         <q-select
           class="statusSelect"
@@ -23,6 +23,10 @@
           </template>
         </q-select>
 
+        <!-- <div class="q-mt-md" style="width: 200px">
+          Notifications:
+
+        </div> -->
         <q-toggle
           :label="notificationType"
           v-model="notificationType"
@@ -34,9 +38,7 @@
           keep-color
         />
 
-        <div class="text-subtitle2 q-mt-md q-mb-xs">{{ firstName }} {{ lastName }}</div>
-
-        <div class="text-subtitle q-mt-md q-mb-xs">{{ email }}</div>
+        <!-- <div class="text-subtitle2 q-mt-md q-mb-xs">{{ firstName }} {{ lastName }}</div> -->
       </div>
 
       <q-separator vertical inset class="q-mx-lg" />
@@ -47,6 +49,7 @@
         </q-avatar>
 
         <div class="text-subtitle1 q-mt-md q-mb-xs">{{ nickname }}</div>
+        <div class="text-subtitle q-mb-xs">{{ email }}</div>
 
         <q-btn
           class="q-mt-lg content-center"
