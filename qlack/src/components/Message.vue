@@ -1,20 +1,22 @@
 <template>
-  <q-chat-message
-    :sent="authorId === currentUserId"
-    :text-color="authorId === currentUserId? 'dark': 'white'"
-    :bg-color="authorId === currentUserId? 'amber': 'primary'"
-  >
-    <template v-slot:name>{{ authorNickname }}</template>
-    <template v-slot:stamp>{{ parseTime(sendTime) }}</template>
-    <template v-slot:avatar>
-      <q-avatar color="secondary" text-color="black" style="margin: 0 10px;">
-        {{ authorNickname[0].toUpperCase() }}
-      </q-avatar>
-    </template>
-    <div>
-      {{ content }}
-    </div>
-  </q-chat-message>
+  <div :class="{ tagMessage: isTagged }">
+    <q-chat-message
+      :sent="authorId === currentUserId"
+      :text-color="authorId === currentUserId? 'dark': 'white'"
+      :bg-color="authorId === currentUserId? 'amber': 'primary'"
+    >
+      <template v-slot:name>{{ authorNickname }}</template>
+      <template v-slot:stamp>{{ parseTime(sendTime) }}</template>
+      <template v-slot:avatar>
+        <q-avatar color="secondary" text-color="black" style="margin: 0 10px;">
+          {{ authorNickname[0].toUpperCase() }}
+        </q-avatar>
+      </template>
+      <div>
+        {{ content }}
+      </div>
+    </q-chat-message>
+  </div>
 </template>
 
 <script lang="ts">
@@ -54,6 +56,17 @@ export default defineComponent({
       set (val: number) {
         this.$store.commit('userStore/updateId', val)
       }
+    },
+    currentUserNickname: {
+      get () {
+        return this.$store.state.userStore.nickname
+      },
+      set (val: number) {
+        this.$store.commit('userStore/updateNickname', val)
+      }
+    },
+    isTagged () {
+      return this.content.includes('@' + this.currentUserNickname)
     }
   },
 
@@ -80,5 +93,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+.tagMessage {
+  background-color: rgba(136,139,148,0.3);
+  border-radius: 0.5em;
+  padding: 0.3em 0;
+}
 </style>

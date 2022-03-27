@@ -37,14 +37,14 @@
     />
 
     <div class="row">
-      <label
-        class="q-ma-md"
+      <a
+        class="q-ma-md forgot_link"
         v-if="tab === 'login'"
-      >Forgot password.</label>
+        href="#/Auth"
+      >Forgot password?</a>
       <q-space />
       <q-btn
-        class="q-ma-md"
-        style="self-right"
+        class="q-ma-md self-right"
         type="submit"
         color="primary"
         :label="tab"
@@ -80,3 +80,13 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+.forgot_link {
+  color: #EEEEEE;
+}
+
+.forgot_link:active {
+  color: #00adb5;
+}
+</style>

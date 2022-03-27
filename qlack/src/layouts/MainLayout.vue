@@ -62,6 +62,12 @@
 
       </q-list>
 
+      <div>
+        <q-btn color="purple" @click="showNotifFero" label="Petrzlak Tuna Kto Notification" />
+        <q-btn color="purple" @click="showNotifFero2" label="Pele Tuna Kto Notification" />
+        <q-btn color="purple" @click="showNotifJozo" label="Pele Else Notification" />
+      </div>
+
     </q-drawer>
 
     <q-drawer
@@ -178,6 +184,69 @@ export default defineComponent({
         }).onCancel(() => {
           console.log('Cancel, nic neurobim')
         })
+      },
+      showNotifFero () {
+        // if (!$q.appVisible) {
+        $q.notify({
+          // If longer, replace rest with ...
+          message: 'MMMMMMMMM MMMMMMMMM MMMMMMMMMM...',
+          caption: 'petrzlak #Tuna kto',
+          color: 'accent',
+          textColor: 'black',
+          icon: 'fa fa-solid fa-message',
+          group: '#Tuna kto',
+          position: 'top',
+          actions: [
+            { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
+          ]
+        })
+        // }
+      },
+
+      showNotifFero2 () {
+        // if (!$q.appVisible) {
+        $q.notify({
+          // If longer, replace rest with ...
+          message: 'aaaaaaMM...',
+          caption: 'pele #Tuna kto',
+          color: 'accent',
+          textColor: 'black',
+          icon: 'fa fa-solid fa-message',
+          group: '#Tuna kto',
+          position: 'top',
+          actions: [
+            {
+              label: 'Dismiss',
+              color: 'primary',
+              handler: () => { /* ... */
+              }
+            }
+          ]
+        })
+        // }
+      },
+
+      showNotifJozo () {
+        // if (!$q.appVisible) {
+        $q.notify({
+          // If longer, replace rest with ...
+          message: 'Totalne je toto druhá správa, ...',
+          caption: 'pele #Else',
+          color: 'accent',
+          textColor: 'black',
+          icon: 'fa fa-solid fa-message',
+          group: '#Else',
+          position: 'top',
+          actions: [
+            {
+              label: 'Dismiss',
+              color: 'primary',
+              handler: () => { /* ... */
+              }
+            }
+          ]
+        })
+        // }
       }
     }
   }

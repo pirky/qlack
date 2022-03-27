@@ -53,7 +53,7 @@ function state (): UserStateInterface {
             authorId: 1,
             authorNickname: 'petrzlak',
             sendTime: new Date('2022-03-22 14:23:56'),
-            content: 'First message'
+            content: 'First message @kablis'
           },
           {
             id: 2,

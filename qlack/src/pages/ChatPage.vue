@@ -1,7 +1,6 @@
 <template>
   <q-page class="background">
-    <q-page class="flex column q-pa-md" padding style="padding: 6em 0 6.2em 0">
-
+    <q-page class="flex column q-pa-md justify-end" padding style="padding: 6em 0 6.2em 0">
       <q-infinite-scroll @load="onLoad" :offset="250" reverse v-if="channel != null">
         <template v-slot:loading>
           <div class="row justify-center q-my-md">
@@ -13,13 +12,6 @@
           <Message v-bind="message" v-if="channel != null"/>
         </div>
       </q-infinite-scroll>
-
-      <div>
-        <q-btn color="purple" @click="showNotifFero" label="Petrzlak Tuna Kto Notification" />
-        <q-btn color="purple" @click="showNotifFero2" label="Pele Tuna Kto Notification" />
-        <q-btn color="purple" @click="showNotifJozo" label="Pele Else Notification" />
-      </div>
-
     </q-page>
 
     <ChannelName v-bind="channel" v-if="channel != null"/>
@@ -36,7 +28,6 @@ import Message from 'components/Message.vue'
 import { defineComponent } from 'vue'
 import channelInterface from '../store'
 import messageInterface from 'src/store'
-import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'ChatPage',
@@ -61,7 +52,6 @@ export default defineComponent({
   },
 
   data () {
-    const $q = useQuasar()
     return {
       onLoad (index: number, done: (arg: boolean) => void) {
         setTimeout(() => {
@@ -87,54 +77,6 @@ export default defineComponent({
           // NOT DONE YET
           // done(false)
         }, 1000)
-      },
-
-      showNotifFero () {
-        $q.notify({
-          // If longer, replace rest with ...
-          message: 'MMMMMMMMM MMMMMMMMM MMMMMMMMMM...',
-          caption: 'petrzlak #Tuna kto',
-          color: 'accent',
-          textColor: 'black',
-          icon: 'fa fa-solid fa-message',
-          group: '#Tuna kto',
-          position: 'top',
-          actions: [
-            { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
-          ]
-        })
-      },
-
-      showNotifFero2 () {
-        $q.notify({
-          // If longer, replace rest with ...
-          message: 'aaaaaaMM...',
-          caption: 'pele #Tuna kto',
-          color: 'accent',
-          textColor: 'black',
-          icon: 'fa fa-solid fa-message',
-          group: '#Tuna kto',
-          position: 'top',
-          actions: [
-            { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
-          ]
-        })
-      },
-
-      showNotifJozo () {
-        $q.notify({
-          // If longer, replace rest with ...
-          message: 'Totalne je toto druhá správa, ...',
-          caption: 'pele #Else',
-          color: 'accent',
-          textColor: 'black',
-          icon: 'fa fa-solid fa-message',
-          group: '#Else',
-          position: 'top',
-          actions: [
-            { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
-          ]
-        })
       }
     }
   }
