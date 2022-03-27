@@ -70,7 +70,6 @@ CREATE TABLE "messages" (
   "id" bigint,
   "author_id" bigint,
   "channel_id" bigint,
-  "send_time" timestamp,
   "content" varchar,
   "created_at" timestamp,
   "updated_at" timestamp,
