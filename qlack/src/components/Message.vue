@@ -12,15 +12,16 @@
           {{ authorNickname[0].toUpperCase() }}
         </q-avatar>
       </template>
-      <div>
-        {{ content }}
-      </div>
+      <q-markdown>
+{{ content }}
+      </q-markdown>
     </q-chat-message>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import '@quasar/quasar-ui-qmarkdown/dist/index.css'
 
 export default defineComponent({
   name: 'Message',
@@ -92,10 +93,14 @@ export default defineComponent({
 
 </script>
 
-<style scoped>
+<style>
 .tagMessage {
   background-color: rgba(136,139,148,0.3);
   border-radius: 0.5em;
   padding: 0.3em 0;
+}
+
+.q-markdown p {
+  margin: 0;
 }
 </style>
