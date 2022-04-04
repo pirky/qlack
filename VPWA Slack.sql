@@ -15,13 +15,6 @@ CREATE TYPE "channel_states" AS ENUM (
   'direct'
 );
 
-CREATE TYPE "user_channel_states" AS ENUM (
-  'invited',
-  'joined',
-  'kicked',
-  'banned'
-);
-
 CREATE TABLE "users" (
   "id" bigint,
   "first_name" varchar,
@@ -50,7 +43,10 @@ CREATE TABLE "user_channels" (
   "id" bigint,
   "user_id" bigint,
   "channel_id" bigint,
-  "user_state" user_channel_states,
+  "invited_at" timestamp,
+  "joined_at" timestamp,
+  "kicked_at" timestamp,
+  "banned_at" timestamp,
   "created_at" timestamp,
   "updated_at" timestamp,
   "deleted_at" timestamp
@@ -60,7 +56,7 @@ CREATE TABLE "user_channel_kicks" (
   "id" bigint,
   "user_id" bigint,
   "kicker_id" bigint,
-  "group_id" bigint,
+  "channel_id" bigint,
   "created_at" timestamp,
   "updated_at" timestamp,
   "deleted_at" timestamp
@@ -84,7 +80,7 @@ ALTER TABLE "user_channels" ADD FOREIGN KEY ("channel_id") REFERENCES "channels"
 
 ALTER TABLE "user_channel_kicks" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
-ALTER TABLE "user_channel_kicks" ADD FOREIGN KEY ("group_id") REFERENCES "channels" ("id");
+ALTER TABLE "user_channel_kicks" ADD FOREIGN KEY ("channel_id") REFERENCES "channels" ("id");
 
 ALTER TABLE "messages" ADD FOREIGN KEY ("author_id") REFERENCES "users" ("id");
 
