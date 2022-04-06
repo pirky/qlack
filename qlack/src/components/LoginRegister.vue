@@ -2,34 +2,34 @@
   <q-form @submit="submitForm">
     <q-input
       v-if="tab === 'register'"
-      v-model="formData.firstName"
+      v-model="form.firstName"
       class="q-ma-md"
       outlined
       label="First name"
     />
     <q-input
       v-if="tab === 'register'"
-      v-model="formData.lastName"
+      v-model="form.lastName"
       class="q-ma-md"
       outlined
       label="Last name"
     />
     <q-input
       v-if="tab === 'register'"
-      v-model="formData.nickname"
+      v-model="form.nickname"
       class="q-ma-md"
       outlined
       label="Nickname"
     />
     <q-input
-      v-model="formData.email"
+      v-model="form.email"
       class="q-ma-md"
       outlined
       type="email"
       label="Email"
     />
     <q-input
-      v-model="formData.password"
+      v-model="form.password"
       class="q-ma-md"
       outlined
       type="password"
@@ -47,8 +47,8 @@
         class="q-ma-md self-right"
         type="submit"
         color="primary"
+        :loading="loading"
         :label="tab"
-        :to="'/'"
       />
     </div>
   </q-form>
@@ -59,12 +59,23 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'LoginRegister',
-  props: [
-    'tab'
-  ],
+
+  computed: {
+    loading (): boolean {
+      return this.$store.state.auth.status === 'pending'
+    }
+  },
+
+  props: {
+    tab: {
+      type: String,
+      required: true
+    }
+  },
+
   data () {
     return {
-      formData: {
+      form: {
         firstName: '',
         lastName: '',
         nickname: '',
@@ -73,9 +84,13 @@ export default defineComponent({
       }
     }
   },
+
   methods: {
     submitForm () {
-      console.log(this.tab)
+      this.$store.dispatch(`auth/${this.tab}`, this.form).then(
+        () => this.$router.push('/')
+      ).catch(() => { console.log('FU') }
+      )
     }
   }
 })
