@@ -1,12 +1,16 @@
-import type { AxiosError, AxiosRequestConfig } from 'axios'
+import type { AxiosError } from 'axios'
 import type { ApiToken, LoginCredentials, RegisterData, User } from 'src/contracts'
 import { api } from 'src/boot/axios'
 
+interface RegisterReturnInterface {
+  user: User,
+  apiToken: ApiToken
+}
+
 class AuthService {
-  async me (dontTriggerLogout = false): Promise<User | null> {
+  async me (): Promise<User | null> {
     return api.get(
-      'auth/me',
-      { dontTriggerLogout } as AxiosRequestConfig
+      'auth/me'
     )
       .then((response) => response.data)
       .catch((error: AxiosError) => {
@@ -18,8 +22,8 @@ class AuthService {
       })
   }
 
-  async register (data: RegisterData): Promise<User> {
-    const response = await api.post<User>('auth/register', data)
+  async register (data: RegisterData): Promise<RegisterReturnInterface> {
+    const response = await api.post<RegisterReturnInterface>('auth/register', data)
     return response.data
   }
 

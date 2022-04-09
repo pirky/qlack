@@ -40,7 +40,7 @@
       <a
         class="q-ma-md forgot_link"
         v-if="tab === 'login'"
-        href="#/Auth"
+        href="/auth"
       >Forgot password?</a>
       <q-space />
       <q-btn
@@ -89,7 +89,7 @@ export default defineComponent({
     submitForm () {
       this.$store.dispatch(`auth/${this.tab}`, this.form).then(
         () => this.$router.push('/')
-      ).catch(() => { console.log('FU') }
+      ).catch((e) => { console.log('FU: ', e) }
       )
     }
   }

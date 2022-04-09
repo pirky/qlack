@@ -16,9 +16,42 @@ export interface LoginCredentials {
   password: string
 }
 
+// export interface User {
+//   id: number
+//   email: string
+//   createdAt: string,
+//   updatedAt: string
+// }
+
+export interface Message {
+  id: number
+  authorId: number
+  authorNickname: string
+  sendTime: Date
+  content: string
+}
+
+export interface Channel {
+  id: number
+  name: string
+  state: string
+  createdBy: number
+
+  // user_channels
+  userState: string
+
+  // channel_messages
+  messages: Message[]
+}
+
 export interface User {
   id: number
+  firstName: string
+  lastName: string
+  nickname: string
   email: string
-  createdAt: string,
-  updatedAt: string
+  notificationType: string
+  activeState: string
+
+  channels: Channel[]
 }

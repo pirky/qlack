@@ -22,10 +22,6 @@
           </template>
         </q-select>
 
-        <!-- <div class="q-mt-md" style="width: 200px">
-          Notifications:
-
-        </div> -->
         <q-toggle
           :label="notificationType"
           v-model="notificationType"
@@ -37,7 +33,6 @@
           keep-color
         />
 
-        <!-- <div class="text-subtitle2 q-mt-md q-mb-xs">{{ firstName }} {{ lastName }}</div> -->
       </div>
 
       <q-separator vertical inset class="q-mx-lg" />
@@ -72,56 +67,59 @@ export default defineComponent({
   name: 'UserProfileDropdown',
   methods: {
     logout () {
-      console.log('Logging out')
+      this.$store.dispatch('auth/logout').then(
+        () => this.$router.push('/auth')
+      ).catch((e) => { console.log('logout error: ', e) }
+      )
     }
   },
   computed: {
     firstName: {
       get () {
-        return this.$store.state.userStore.firstName
+        return this.$store.state.auth.user.firstName
       },
       set (val) {
-        this.$store.commit('userStore/updateFirstName', val)
+        this.$store.commit('auth/updateFirstName', val)
       }
     },
     lastName: {
       get () {
-        return this.$store.state.userStore.lastName
+        return this.$store.state.auth.user.lastName
       },
       set (val) {
-        this.$store.commit('userStore/updateLastName', val)
+        this.$store.commit('auth/updateLastName', val)
       }
     },
     nickname: {
       get () {
-        return this.$store.state.userStore.nickname
+        return this.$store.state.auth.user.nickname
       },
       set (val) {
-        this.$store.commit('userStore/updateNickname', val)
+        this.$store.commit('auth/updateNickname', val)
       }
     },
     email: {
       get () {
-        return this.$store.state.userStore.email
+        return this.$store.state.auth.user.email
       },
       set (val) {
-        this.$store.commit('userStore/updateEmail', val)
+        this.$store.commit('auth/updateEmail', val)
       }
     },
     status: {
       get () {
-        return this.$store.state.userStore.state
+        return this.$store.state.auth.user.activeState
       },
       set (val) {
-        this.$store.commit('userStore/updateState', val)
+        this.$store.commit('auth/updateActiveState', val)
       }
     },
     notificationType: {
       get () {
-        return this.$store.state.userStore.notificationType
+        return this.$store.state.auth.user.notificationType
       },
       set (val) {
-        this.$store.commit('userStore/updateNotificationType', val)
+        this.$store.commit('auth/updateNotificationType', val)
       }
     }
   },

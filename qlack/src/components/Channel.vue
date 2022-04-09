@@ -49,7 +49,7 @@ export default defineComponent({
   },
   methods: {
     changeUserState (id: number) {
-      this.$store.commit('userStore/updateUserChannelState', { value: 'joined', id: id })
+      this.$store.commit('auth/updateUserChannelState', { value: 'joined', id: id })
     }
   },
   computed: {

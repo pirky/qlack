@@ -17,18 +17,22 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       throw err
     }
   },
+
   async register ({ commit }, form: RegisterData) {
     try {
       console.log('REG CLIENT')
       commit('AUTH_START')
-      const user = await authService.register(form)
-      commit('AUTH_SUCCESS', null)
-      return user
+      const data = await authService.register(form)
+      commit('AUTH_SUCCESS', data.user)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      authManager.setToken(data.apiToken.token)
+      return data.user
     } catch (err) {
       commit('AUTH_ERROR', err)
       throw err
     }
   },
+
   async login ({ commit }, credentials: LoginCredentials) {
     try {
       console.log('LOGIN CLIENT')
@@ -43,6 +47,7 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       throw err
     }
   },
+
   async logout ({ commit }) {
     try {
       console.log('LOGOUT CLIENT')
@@ -50,6 +55,7 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       await authService.logout()
       commit('AUTH_SUCCESS', null)
       // remove api token and notify listeners
+      console.log('ZDAREC STAREC')
       authManager.removeToken()
     } catch (err) {
       commit('AUTH_ERROR', err)

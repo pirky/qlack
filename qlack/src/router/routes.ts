@@ -3,6 +3,7 @@ import { RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
+    name: 'home',
     meta: { requiresAuth: true },
     component: () => import('layouts/MainLayout.vue'),
     children: [
@@ -19,6 +20,7 @@ const routes: RouteRecordRaw[] = [
 
   {
     path: '/auth',
+    name: 'auth',
     meta: { guestOnly: true },
     component: () => import('layouts/AuthLayout.vue'),
     children: [

@@ -52,21 +52,22 @@ export default defineComponent({
   computed: {
     currentUserId: {
       get () {
-        return this.$store.state.userStore.id
+        return this.$store.state.auth.user ? this.$store.state.auth.user.id : null
       },
       set (val: number) {
-        this.$store.commit('userStore/updateId', val)
+        this.$store.commit('auth/updateId', val)
       }
     },
     currentUserNickname: {
       get () {
-        return this.$store.state.userStore.nickname
+        return this.$store.state.auth.user ? this.$store.state.auth.user.nickname : null
       },
       set (val: number) {
-        this.$store.commit('userStore/updateNickname', val)
+        this.$store.commit('auth/updateNickname', val)
       }
     },
     isTagged () {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       return this.content.includes('@' + this.currentUserNickname)
     }
   },

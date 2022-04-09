@@ -62,11 +62,11 @@
 
       </q-list>
 
-      <div>
-        <q-btn color="purple" @click="showNotifFero" label="Petrzlak Tuna Kto Notification" />
-        <q-btn color="purple" @click="showNotifFero2" label="Pele Tuna Kto Notification" />
-        <q-btn color="purple" @click="showNotifJozo" label="Pele Else Notification" />
-      </div>
+<!--      <div>-->
+<!--        <q-btn color="purple" @click="showNotifFero" label="Petrzlak Tuna Kto Notification" />-->
+<!--        <q-btn color="purple" @click="showNotifFero2" label="Pele Tuna Kto Notification" />-->
+<!--        <q-btn color="purple" @click="showNotifJozo" label="Pele Else Notification" />-->
+<!--      </div>-->
 
     </q-drawer>
 
@@ -162,16 +162,16 @@ export default defineComponent({
       }
     },
     invitedChannels () {
-      return this.$store.state.userStore.channels.filter(channel => channel.userState === 'invited')
+      return this.$store.state.auth.user && this.$store.state.auth.user.channels ? this.$store.state.auth.user.channels.filter(channel => channel.userState === 'invited') : []
     },
     joinedChannels () {
-      return this.$store.state.userStore.channels.filter(channel => channel.userState === 'joined')
+      return this.$store.state.auth.user && this.$store.state.auth.user.channels ? this.$store.state.auth.user.channels.filter(channel => channel.userState === 'joined') : []
     }
   },
   data () {
     const $q = useQuasar()
     return {
-      channels: this.$store.state.userStore.channels,
+      channels: this.$store.state.auth.user ? this.$store.state.auth.user.channels : null,
       users: userList,
       showDialog () {
         $q.dialog({

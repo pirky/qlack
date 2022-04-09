@@ -40,12 +40,12 @@ export default defineComponent({
 
   computed: {
     channel () {
-      return (<typeof channelInterface> this.$store.getters['userStore/activeChannel'](
+      return (<typeof channelInterface> this.$store.getters['auth/activeChannel'](
         Number(this.$route.params.id)
       ))
     },
     messages () {
-      return (<typeof messageInterface> this.$store.getters['userStore/activeChannel'](
+      return (<typeof messageInterface> this.$store.getters['auth/activeChannel'](
         Number(this.$route.params.id)
       ).messages)
     }
