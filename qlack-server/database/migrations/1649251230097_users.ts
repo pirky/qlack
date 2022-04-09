@@ -11,10 +11,8 @@ export default class UsersSchema extends BaseSchema {
       table.string('nickname', 255).notNullable()
       table.string('email', 255).notNullable()
       table.string('password', 180).notNullable()
-      table.enum('notification_type', ['all', 'tagged'])
-        .defaultTo('all')
-      table.enum('active_state', ['online', 'dnd', 'offline'])
-        .defaultTo('online')
+      table.enum('notification_type', ['all', 'tagged']).defaultTo('all')
+      table.enum('active_state', ['online', 'dnd', 'offline']).defaultTo('online')
       // table.string('remember_me_token').nullable()
 
       /**
@@ -22,7 +20,7 @@ export default class UsersSchema extends BaseSchema {
        */
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()
-      table.timestamp('deleted_at', { useTz: true }).notNullable()
+      table.timestamp('deleted_at', { useTz: true }).defaultTo(null)
     })
   }
 

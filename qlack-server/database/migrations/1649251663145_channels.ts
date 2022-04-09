@@ -3,15 +3,12 @@ import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 export default class Channels extends BaseSchema {
   protected tableName = 'channels'
 
-  public async up () {
+  public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('name', 255).notNullable()
       table.enum('state', ['private', 'public', 'direct']).notNullable()
-      table.integer('crated_by').notNullable()
-        .unsigned()
-        .references('id')
-        .inTable('users')
+      table.integer('crated_by').notNullable().unsigned().references('id').inTable('users')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
@@ -22,7 +19,7 @@ export default class Channels extends BaseSchema {
     })
   }
 
-  public async down () {
+  public async down() {
     this.schema.dropTable(this.tableName)
   }
 }

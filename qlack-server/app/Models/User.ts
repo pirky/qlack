@@ -2,12 +2,12 @@ import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
 import { column, beforeSave, BaseModel } from '@ioc:Adonis/Lucid/Orm'
 
-enum NotificationTypes {
+export enum NotificationTypes {
   ALL = 'all',
   TAGGED = 'tagged',
 }
 
-enum ActiveStates {
+export enum ActiveStates {
   ONLINE = 'online',
   DND = 'dnd',
   OFFLINE = 'offline',
@@ -25,7 +25,7 @@ export default class User extends BaseModel {
 
   @column()
   public nickname: string
-  
+
   @column()
   public email: string
 
@@ -47,11 +47,11 @@ export default class User extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ serializeAs: null })
   public deletedAt: DateTime
 
   @beforeSave()
-  public static async hashPassword (user: User) {
+  public static async hashPassword(user: User) {
     if (user.$dirty.password) {
       user.password = await Hash.make(user.password)
     }

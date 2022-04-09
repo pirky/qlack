@@ -4,35 +4,36 @@ import User from 'App/Models/User'
 import RegisterUserValidator from 'App/Validators/RegisterUserValidator'
 
 export default class AuthController {
-  async register({ request }: HttpContextContract) {
-    console.log('SERUS REG')
-
-    // if invalid, exception
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
+  async register({ auth, request }: HttpContextContract) {
+    console.log('SERUS REGISTER')
     const data = await request.validate(RegisterUserValidator)
     const user = await User.create(data)
-    // join user to general channel
-    // const general = await Channel.findByOrFail('name', 'general')
-    // await user.related('channels').attach([general.id])
+    console.log('user.password: ', user.password)
+    const token = await auth.use('api').generate(user)
 
-    return user
+    return { user, apiToken: token }
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async login({ auth, request }: HttpContextContract) {
     console.log('SERUS LOGIN')
-    console.log(auth)
     const email = request.input('email')
     const password = request.input('password')
 
     return auth.use('api').attempt(email, password)
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async logout({ auth }: HttpContextContract) {
     console.log('SERUS LOGOUT')
-    return auth.use('api').logout()
+    await auth.use('api').logout()
+    return true
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async me({ auth }: HttpContextContract) {
-    // await auth.user!.load('channels')
+    console.log('SERUS ME')
     return auth.user
   }
 }
