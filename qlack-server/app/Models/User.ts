@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import { column, beforeSave, BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { column, beforeSave, BaseModel, manyToMany, ManyToMany } from '@ioc:Adonis/Lucid/Orm'
+import { Channel } from 'App/Models/Channel'
 
 export enum NotificationTypes {
   ALL = 'all',
@@ -49,6 +50,14 @@ export default class User extends BaseModel {
 
   @column.dateTime({ serializeAs: null })
   public deletedAt: DateTime
+
+  @manyToMany(() => Channel, {
+    pivotTable: 'user_channels',
+    pivotForeignKey: 'userId',
+    pivotRelatedForeignKey: 'channelId',
+    pivotTimestamps: true,
+  })
+  public channels: ManyToMany<typeof Channel>
 
   @beforeSave()
   public static async hashPassword(user: User) {

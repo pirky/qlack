@@ -8,7 +8,7 @@ interface RegisterReturnInterface {
 }
 
 class AuthService {
-  async me (): Promise<User | null> {
+  async me (): Promise<{ user: User } | null> {
     return api.get(
       'auth/me'
     )

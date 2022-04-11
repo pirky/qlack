@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, BelongsTo, belongsTo } from '@ioc:Adonis/Lucid/Orm'
 import User from 'App/Models/User'
-import Channel from 'App/Models/Channel'
+import { Channel } from 'App/Models/Channel'
 
 export default class UserChannel extends BaseModel {
   @column({ isPrimary: true })
@@ -13,16 +13,16 @@ export default class UserChannel extends BaseModel {
   @column()
   public channelId: number
 
-  @column.dateTime()
+  @column.dateTime({ serializeAs: null })
   public invitedAt: DateTime
 
-  @column.dateTime()
+  @column.dateTime({ serializeAs: null })
   public joinedAt: DateTime
 
-  @column.dateTime()
+  @column.dateTime({ serializeAs: null })
   public kickedAt: DateTime
 
-  @column.dateTime()
+  @column.dateTime({ serializeAs: null })
   public bannedAt: DateTime
 
   @column.dateTime({ autoCreate: true })
@@ -31,7 +31,7 @@ export default class UserChannel extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ serializeAs: null })
   public deletedAt: DateTime
 
   @belongsTo(() => User, {

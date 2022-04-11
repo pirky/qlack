@@ -21,7 +21,7 @@ export default class UserChannelKick extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ serializeAs: null })
   public deletedAt: DateTime
 
   @belongsTo(() => User, {

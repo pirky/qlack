@@ -16,13 +16,6 @@ export interface LoginCredentials {
   password: string
 }
 
-// export interface User {
-//   id: number
-//   email: string
-//   createdAt: string,
-//   updatedAt: string
-// }
-
 export interface Message {
   id: number
   authorId: number

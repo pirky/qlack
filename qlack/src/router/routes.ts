@@ -3,12 +3,12 @@ import { RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'home',
     meta: { requiresAuth: true },
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: ':',
+        path: '',
+        name: 'home',
         component: () => import('src/pages/ChatPage.vue')
       },
       {

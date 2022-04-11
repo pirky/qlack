@@ -7,7 +7,6 @@ import Message from 'App/Models/Message'
 export const enum States {
   PRIVATE = 'private',
   PUBLIC = 'public',
-  DIRECT = 'direct',
 }
 
 export class Channel extends BaseModel {
@@ -29,7 +28,7 @@ export class Channel extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ serializeAs: null })
   public deletedAt: DateTime
 
   @belongsTo(() => User, {

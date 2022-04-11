@@ -34,6 +34,8 @@ export default class AuthController {
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async me({ auth }: HttpContextContract) {
     console.log('SERUS ME')
-    return auth.user
+    // const channels = User.query().channels
+    // console.log(channels)
+    return { user: auth.user }
   }
 }

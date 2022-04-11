@@ -6,7 +6,7 @@ export default class Channels extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.string('name', 255).notNullable()
+      table.string('name', 255).notNullable().unique()
       table.enum('state', ['private', 'public', 'direct']).notNullable()
       table.integer('crated_by').notNullable().unsigned().references('id').inTable('users')
 
@@ -15,7 +15,7 @@ export default class Channels extends BaseSchema {
        */
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
-      table.timestamp('deleted_at', { useTz: true })
+      table.timestamp('deleted_at', { useTz: true }).defaultTo(null)
     })
   }
 

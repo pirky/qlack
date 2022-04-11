@@ -9,7 +9,8 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     try {
       console.log('CHECK CLIENT')
       commit('AUTH_START')
-      const user = await authService.me()
+      const data = await authService.me()
+      const user = data ? data.user : null
       commit('AUTH_SUCCESS', user)
       return user !== null
     } catch (err) {
