@@ -3,7 +3,7 @@ import User, { ActiveStates, NotificationTypes } from 'App/Models/User'
 import { DateTime } from 'luxon'
 
 export default class UserSeeder extends BaseSeeder {
-  public async run () {
+  public async run() {
     await User.createMany([
       {
         firstName: 'Frantisek',
