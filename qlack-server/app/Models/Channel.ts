@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, BelongsTo, belongsTo, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
-import User from 'App/Models/User'
-import UserChannel from 'App/Models/UserChannel'
-import Message from 'App/Models/Message'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+// import { BaseModel, column, BelongsTo, belongsTo, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+// import User from 'App/Models/User'
+// import UserChannel from 'App/Models/UserChannel'
+// import Message from 'App/Models/Message'
 
 export const enum States {
   PRIVATE = 'private',
@@ -20,7 +21,7 @@ export class Channel extends BaseModel {
   public state: States
 
   @column()
-  public cratedBy: number
+  public createdBy: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -31,18 +32,18 @@ export class Channel extends BaseModel {
   @column.dateTime({ serializeAs: null })
   public deletedAt: DateTime
 
-  @belongsTo(() => User, {
-    foreignKey: 'createdBy',
-  })
-  public creator: BelongsTo<typeof User>
+  // @belongsTo(() => User, {
+  //   foreignKey: 'createdBy',
+  // })
+  // public creator: BelongsTo<typeof User>
 
-  @hasMany(() => Message, {
-    foreignKey: 'channelId',
-  })
-  public messages: HasMany<typeof Message>
+  // @hasMany(() => Message, {
+  //   foreignKey: 'channelId',
+  // })
+  // public messages: HasMany<typeof Message>
 
-  @hasMany(() => UserChannel, {
-    foreignKey: 'channelId',
-  })
-  public userChannels: HasMany<typeof UserChannel>
+  // @hasMany(() => UserChannel, {
+  //   foreignKey: 'channelId',
+  // })
+  // public userChannels: HasMany<typeof UserChannel>
 }

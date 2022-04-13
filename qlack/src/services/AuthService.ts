@@ -7,8 +7,20 @@ interface RegisterReturnInterface {
   apiToken: ApiToken
 }
 
+interface Channel {
+  id: number
+  name: string
+  state: string
+  createdBy: number
+
+  invitedAt: Date
+  joinedAt: Date
+  kickedAt: Date
+  bannedAt: Date
+}
+
 class AuthService {
-  async me (): Promise<{ user: User } | null> {
+  async me (): Promise<{ user: User, channels: Channel[] } | null> {
     return api.get(
       'auth/me'
     )

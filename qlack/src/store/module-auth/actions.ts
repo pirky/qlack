@@ -2,15 +2,41 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { AuthStateInterface } from './state'
 import { authService, authManager } from 'src/services'
-import { LoginCredentials, RegisterData } from 'src/contracts'
+import { Channel, LoginCredentials, RegisterData } from 'src/contracts'
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
   async check ({ commit }) {
     try {
       console.log('CHECK CLIENT')
       commit('AUTH_START')
+
       const data = await authService.me()
       const user = data ? data.user : null
+      const channels = data ? data.channels : null
+
+      if (user && channels) {
+        const newChannels: Channel[] = []
+
+        channels.forEach(function (channel) {
+          const tempChannel: Channel = {
+            createdBy: channel.createdBy,
+            id: channel.id,
+            messages: [],
+            name: channel.name,
+            state: channel.state,
+            userState: 'aaa'
+          }
+
+          if (channel.invitedAt) tempChannel.userState = 'invited'
+          if (channel.joinedAt) tempChannel.userState = 'joined'
+          if (channel.kickedAt) tempChannel.userState = 'kicked'
+          if (channel.bannedAt) tempChannel.userState = 'banned'
+
+          newChannels.push(tempChannel)
+        })
+        user.channels = newChannels
+      }
+
       commit('AUTH_SUCCESS', user)
       return user !== null
     } catch (err) {

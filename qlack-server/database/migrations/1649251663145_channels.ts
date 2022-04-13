@@ -8,7 +8,7 @@ export default class Channels extends BaseSchema {
       table.increments('id')
       table.string('name', 255).notNullable().unique()
       table.enum('state', ['private', 'public', 'direct']).notNullable()
-      table.integer('crated_by').notNullable().unsigned().references('id').inTable('users')
+      table.integer('created_by').notNullable().unsigned().references('id').inTable('users')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

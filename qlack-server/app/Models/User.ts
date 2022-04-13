@@ -51,13 +51,21 @@ export default class User extends BaseModel {
   @column.dateTime({ serializeAs: null })
   public deletedAt: DateTime
 
-  @manyToMany(() => Channel, {
-    pivotTable: 'user_channels',
-    pivotForeignKey: 'userId',
-    pivotRelatedForeignKey: 'channelId',
-    pivotTimestamps: true,
-  })
-  public channels: ManyToMany<typeof Channel>
+  // @manyToMany(() => Channel, {
+  //   localKey: 'id',
+  //   relatedKey: 'id',
+  //   pivotForeignKey: 'user_id',
+  //   pivotRelatedForeignKey: 'channel_id',
+  //   pivotTable: 'user_channels',
+  //   pivotTimestamps: true,
+  //   pivotColumns: [
+  //     'invited_at',
+  //     'joined_at',
+  //     'kicked_at',
+  //     'banned_at'
+  //   ],
+  // })
+  // public channels: ManyToMany<typeof Channel>
 
   @beforeSave()
   public static async hashPassword(user: User) {
