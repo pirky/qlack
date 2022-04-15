@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { AuthStateInterface } from './state'
-import { authService, authManager } from 'src/services'
+import { authService, authManager, channelService } from 'src/services'
 import { Channel, LoginCredentials, RegisterData } from 'src/contracts'
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
@@ -82,12 +82,17 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       await authService.logout()
       commit('AUTH_SUCCESS', null)
       // remove api token and notify listeners
-      console.log('ZDAREC STAREC')
       authManager.removeToken()
     } catch (err) {
       commit('AUTH_ERROR', err)
       throw err
     }
+  },
+
+  async acceptInvite ({ commit }, id: number) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    await channelService.acceptInvite(id, this.getters['auth/id'])
+    commit('updateUserChannelState', { value: 'joined', id: id })
   }
 }
 
