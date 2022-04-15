@@ -44,11 +44,11 @@ export default class AuthController {
   async me({ auth }: HttpContextContract) {
     let channels: Channel[] = []
 
-    if (auth.user != undefined) {
+    if (auth.user !== undefined) {
       channels = await Channel.query()
-      .select('*')
-      .fullOuterJoin('user_channels', 'channels.id', 'channel_id')
-      .where('user_id', auth.user.id)
+        .select('*')
+        .fullOuterJoin('user_channels', 'channels.id', 'channel_id')
+        .where('user_id', auth.user.id)
     }
 
     const extraChannels: ExtraChannel[] = []
@@ -71,7 +71,7 @@ export default class AuthController {
 
     return {
       user: auth.user,
-      channels: extraChannels
+      channels: extraChannels,
     }
   }
 }
