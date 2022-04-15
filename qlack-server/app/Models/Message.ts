@@ -23,7 +23,7 @@ export default class Message extends BaseModel {
   public updatedAt: DateTime
 
   @column.dateTime({ serializeAs: null })
-  public deletedAt: DateTime
+  public deletedAt: DateTime | null
 
   @belongsTo(() => User, {
     foreignKey: 'authorId',

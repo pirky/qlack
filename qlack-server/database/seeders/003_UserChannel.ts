@@ -31,7 +31,7 @@ export default class UserChannelSeeder extends BaseSeeder {
         invitedAt: DateTime.now(),
       },
       {
-        userId: 1,
+        userId: 3,
         channelId: 2,
         invitedAt: DateTime.now(),
       },

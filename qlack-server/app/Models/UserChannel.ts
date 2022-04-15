@@ -14,16 +14,16 @@ export default class UserChannel extends BaseModel {
   public channelId: number
 
   @column.dateTime({ serializeAs: null })
-  public invitedAt: DateTime
+  public invitedAt: DateTime | null
 
   @column.dateTime({ serializeAs: null })
-  public joinedAt: DateTime
+  public joinedAt: DateTime | null
 
   @column.dateTime({ serializeAs: null })
-  public kickedAt: DateTime
+  public kickedAt: DateTime | null
 
   @column.dateTime({ serializeAs: null })
-  public bannedAt: DateTime
+  public bannedAt: DateTime | null
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -32,7 +32,7 @@ export default class UserChannel extends BaseModel {
   public updatedAt: DateTime
 
   @column.dateTime({ serializeAs: null })
-  public deletedAt: DateTime
+  public deletedAt: DateTime | null
 
   @belongsTo(() => User, {
     foreignKey: 'userId',

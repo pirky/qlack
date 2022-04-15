@@ -20,7 +20,6 @@ export default class AuthController {
   async register({ auth, request }: HttpContextContract) {
     const data = await request.validate(RegisterUserValidator)
     const user = await User.create(data)
-    console.log('user.password: ', user.password)
     const token = await auth.use('api').generate(user)
 
     return { user, apiToken: token }
@@ -55,7 +54,7 @@ export default class AuthController {
 
     channels.forEach(function (channel) {
       const extraChannel = {
-        id: channel.id,
+        id: channel.$extras.channel_id,
         name: channel.name,
         state: channel.state,
         createdBy: channel.createdBy,
