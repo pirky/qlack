@@ -22,7 +22,7 @@
     <q-card>
       <q-card-section class="row items-center">
         <span>
-          Do you want to accept invitation to channel <strong>{{ name }}</strong>?
+          Accept invitation to: <strong>{{ name }}</strong>?
         </span>
       </q-card-section>
 
