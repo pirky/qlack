@@ -14,9 +14,9 @@
     </q-item-section>
 
     <q-item-section avatar>
-      <q-icon v-if="state === 'online'" name="fa fa-solid fa-circle" size="1em" color="positive" />
-      <q-icon v-if="state === 'dnd'" name="fa fa-solid fa-circle" size="1em" color="negative" />
-      <q-icon v-if="state === 'offline'" name="fa fa-solid fa-circle" size="1em" color="gray" />
+      <q-icon v-if="activeState === 'online'" name="fa fa-solid fa-circle" size="1em" color="positive" />
+      <q-icon v-if="activeState === 'dnd'" name="fa fa-solid fa-circle" size="1em" color="negative" />
+      <q-icon v-if="activeState === 'offline'" name="fa fa-solid fa-circle" size="1em" color="gray" />
     </q-item-section>
 
   </q-item>
@@ -52,7 +52,7 @@ export default defineComponent({
       type: String,
       required: true
     },
-    state: {
+    activeState: {
       type: String,
       required: true
     }

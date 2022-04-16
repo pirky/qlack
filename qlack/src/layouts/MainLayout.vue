@@ -85,7 +85,7 @@
         </q-item-label>
 
         <User
-          v-for="user in users"
+          v-for="user in orderedUserList"
           :key="user.id"
           v-bind="user"
         />
@@ -106,6 +106,7 @@ import UserProfileDropdown from 'components/UserProfileDropdown.vue'
 import { defineComponent } from 'vue'
 import { useQuasar } from 'quasar'
 import CreateChannel from 'components/CreateChannel.vue'
+import { User as UserContract } from 'src/contracts'
 
 const userList = [
   {
@@ -115,7 +116,8 @@ const userList = [
     nickname: 'kablis',
     email: 'arnost@kabel.com',
     notificationType: 'all',
-    state: 'online'
+    activeState: 'online',
+    channels: []
   },
   {
     id: 1,
@@ -124,7 +126,8 @@ const userList = [
     nickname: 'petrzlak',
     email: 'janko@petrzlen.com',
     notificationType: 'all',
-    state: 'dnd'
+    activeState: 'dnd',
+    channels: []
   },
   {
     id: 2,
@@ -133,9 +136,30 @@ const userList = [
     nickname: 'pele',
     email: 'pelel@petrovsky.com',
     notificationType: 'all',
-    state: 'offline'
+    activeState: 'offline',
+    channels: []
+  },
+  {
+    id: 3,
+    firstName: 'Pelel',
+    lastName: 'Petrovsky',
+    nickname: 'pele',
+    email: 'pelel@petrovsky.com',
+    notificationType: 'all',
+    activeState: 'online',
+    channels: []
   }
 ]
+
+function compare (a: UserContract, b: UserContract) {
+  if (a.nickname < b.nickname) {
+    return -1
+  }
+  if (a.nickname > b.nickname) {
+    return 1
+  }
+  return 0
+}
 
 export default defineComponent({
   name: 'MainLayout',
@@ -144,6 +168,7 @@ export default defineComponent({
     User,
     UserProfileDropdown
   },
+
   computed: {
     leftDrawerState: {
       get () {
@@ -166,13 +191,31 @@ export default defineComponent({
     },
     joinedChannels () {
       return this.$store.state.auth.user && this.$store.state.auth.user.channels ? this.$store.state.auth.user.channels.filter(channel => channel.userState === 'joined') : []
+    },
+
+    orderedUserList () {
+      const onlineUserList: Array<UserContract> = []
+      const dndUserList: Array<UserContract> = []
+      const offlineUserList: Array<UserContract> = []
+
+      userList.forEach(function (user) {
+        if (user.activeState === 'online') onlineUserList.push(user)
+        if (user.activeState === 'dnd') dndUserList.push(user)
+        if (user.activeState === 'offline') offlineUserList.push(user)
+      })
+
+      onlineUserList.sort(compare)
+      dndUserList.sort(compare)
+      offlineUserList.sort(compare)
+
+      return [...onlineUserList, ...dndUserList, ...offlineUserList]
     }
   },
+
   data () {
     const $q = useQuasar()
     return {
       channels: this.$store.state.auth.user ? this.$store.state.auth.user.channels : null,
-      users: userList,
       showDialog () {
         $q.dialog({
           component: CreateChannel,
@@ -185,6 +228,7 @@ export default defineComponent({
           console.log('Cancel, nic neurobim')
         })
       },
+
       showNotifFero () {
         // if (!$q.appVisible) {
         $q.notify({
