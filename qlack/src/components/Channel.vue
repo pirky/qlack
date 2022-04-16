@@ -18,17 +18,17 @@
     </q-item-section>
   </q-item>
 
-  <q-dialog v-model="confirm" persistent>
+  <q-dialog v-model="confirm">
     <q-card>
       <q-card-section class="row items-center">
         <span>
-          Accept invitation to: <strong>{{ name }}</strong>?
+          You've been invited to join: <strong>{{ name }}</strong>
         </span>
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="No" color="primary" v-close-popup />
-        <q-btn @click="changeUserState(id)" flat label="Yes" color="primary" v-close-popup />
+        <q-btn @click="declineInvite(id)" flat label="Decline" color="primary" v-close-popup />
+        <q-btn @click="acceptInvite(id)" flat label="Accept" color="primary" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -67,7 +67,10 @@ export default defineComponent({
     }
   },
   methods: {
-    changeUserState () {
+    declineInvite () {
+      void this.$store.dispatch('auth/declineInvite', this.id)
+    },
+    acceptInvite () {
       void this.$store.dispatch('auth/acceptInvite', this.id)
       void this.$router.push('/' + String(this.id))
     },

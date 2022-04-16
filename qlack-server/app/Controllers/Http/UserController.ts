@@ -14,4 +14,15 @@ export default class UserController {
     userChannel.joinedAt = DateTime.now()
     userChannel?.save()
   }
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
+  async declineInvite({ request }: HttpContextContract) {
+    const userChannel = await UserChannel.query()
+      .select('*')
+      .where('user_id', request.input('userId'))
+      .where('channel_id', request.input('channelId'))
+      .firstOrFail()
+    userChannel.invitedAt = null
+    // userChannel.joinedAt = DateTime.now()
+    userChannel?.save()
+  }
 }

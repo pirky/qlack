@@ -93,6 +93,12 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await channelService.acceptInvite(id, this.getters['auth/id'])
     commit('updateUserChannelState', { value: 'joined', id: id })
+  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async declineInvite ({ commit }, id: number) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    await channelService.declineInvite(id, this.getters['auth/id'])
+    commit('removeUserChannel', { id: id })
   }
 }
 
