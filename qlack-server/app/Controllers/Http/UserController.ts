@@ -10,7 +10,7 @@ export default class UserController {
       .where('user_id', request.input('userId'))
       .where('channel_id', request.input('channelId'))
       .firstOrFail()
-    userChannel.invitedAt = null
+    // userChannel.invitedAt = null
     userChannel.joinedAt = DateTime.now()
     userChannel?.save()
   }
