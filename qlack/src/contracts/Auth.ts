@@ -1,3 +1,5 @@
+import { Channel } from 'src/contracts/Channel'
+
 export interface ApiToken {
   type: 'bearer'
   token: string
@@ -14,27 +16,6 @@ export interface RegisterData {
 export interface LoginCredentials {
   email: string
   password: string
-}
-
-export interface Message {
-  id: number
-  authorId: number
-  authorNickname: string
-  sendTime: Date
-  content: string
-}
-
-export interface Channel {
-  id: number
-  name: string
-  state: string
-  createdBy: number
-
-  // user_channels
-  userState: string
-
-  // channel_messages
-  messages: Message[]
 }
 
 export interface User {

@@ -8,9 +8,13 @@ import { MainStateInterface } from './mainStore/state'
 import auth from './module-auth'
 import type { AuthStateInterface } from './module-auth/state'
 
+import channels from './channels'
+import type { ChannelsStateInterface } from './channels/state'
+
 export interface StateInterface {
   mainStore: MainStateInterface,
   auth: AuthStateInterface,
+  channels: ChannelsStateInterface
 }
 
 // provide typings for `this.$store`
@@ -27,7 +31,8 @@ export default store(function () {
   return createStore<StateInterface>({
     modules: {
       mainStore,
-      auth
+      auth,
+      channels
     },
 
     // enable strict mode (adds overhead!)

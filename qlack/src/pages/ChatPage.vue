@@ -15,7 +15,7 @@
     </q-page>
 
     <ChannelName v-bind="channel" v-if="channel != null"/>
-    <CommandLine/>
+    <CommandLine v-bind="channel ? channel : null"/>
   </q-page>
 
 </template>
@@ -26,8 +26,7 @@ import ChannelName from 'components/ChannelName.vue'
 import CommandLine from 'components/CommandLine.vue'
 import Message from 'components/Message.vue'
 import { defineComponent } from 'vue'
-import channelInterface from '../store'
-import messageInterface from 'src/store'
+import { Channel as ChannelInterface, Message as MessageInterface } from 'src/contracts'
 
 export default defineComponent({
   name: 'ChatPage',
@@ -39,15 +38,15 @@ export default defineComponent({
   },
 
   computed: {
-    channel () {
-      return (<typeof channelInterface> this.$store.getters['auth/activeChannel'](
+    channel (): ChannelInterface {
+      return this.$store.getters['auth/activeChannel'](
         Number(this.$route.params.id)
-      ))
+      )
     },
-    messages () {
-      return (<typeof messageInterface> this.$store.getters['auth/activeChannel'](
+    messages (): MessageInterface[] {
+      return this.$store.getters['auth/activeChannel'](
         Number(this.$route.params.id)
-      ).messages)
+      ).messages
     }
   },
 

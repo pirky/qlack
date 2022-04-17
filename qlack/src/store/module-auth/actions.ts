@@ -5,7 +5,7 @@ import { authService, authManager, channelService } from 'src/services'
 import { Channel, LoginCredentials, RegisterData } from 'src/contracts'
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
-  async check ({ commit }) {
+  async check ({ state, commit, dispatch }) {
     try {
       console.log('CHECK CLIENT')
       commit('AUTH_START')
@@ -17,7 +17,7 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       if (user && channels) {
         const newChannels: Channel[] = []
 
-        channels.forEach(function (channel) {
+        for (const channel of channels) {
           const tempChannel: Channel = {
             createdBy: channel.createdBy,
             id: channel.id,
@@ -28,12 +28,17 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
           }
 
           if (channel.invitedAt) tempChannel.userState = 'invited'
-          if (channel.joinedAt) tempChannel.userState = 'joined'
+          if (channel.joinedAt) {
+            tempChannel.userState = 'joined'
+            if (user?.id !== state.user?.id) {
+              await dispatch('channels/join', channel.name, { root: true })
+            }
+          }
           if (channel.kickedAt) tempChannel.userState = 'kicked'
           if (channel.bannedAt) tempChannel.userState = 'banned'
 
           newChannels.push(tempChannel)
-        })
+        }
         user.channels = newChannels
       }
 
@@ -75,11 +80,12 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     }
   },
 
-  async logout ({ commit }) {
+  async logout ({ commit, dispatch }) {
     try {
       console.log('LOGOUT CLIENT')
       commit('AUTH_START')
       await authService.logout()
+      await dispatch('channels/leave', null, { root: true })
       commit('AUTH_SUCCESS', null)
       // remove api token and notify listeners
       authManager.removeToken()

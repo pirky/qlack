@@ -8,6 +8,7 @@
       autogrow
       input-style="max-height: 4.5em; min-height: 4.5em"
       label="Message"
+      :disable="loading"
       >
 
       <q-item class="typing_name" clickable>Someone is typing...
@@ -53,6 +54,8 @@
           flat
           icon="send"
           color="white"
+          :disable="loading"
+          @click="send"
         />
       </template>
     </q-input>
@@ -60,12 +63,44 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'CommandLine',
 
+  props: {
+    id: {
+      type: Number,
+      required: true
+    },
+    name: {
+      type: String,
+      required: true
+    },
+    state: {
+      type: String,
+      required: true
+    },
+    createdBy: {
+      type: Number,
+      required: true
+    }
+  },
+
   data () {
     return {
-      newMessage: ''
+      newMessage: '',
+      loading: false
+    }
+  },
+
+  methods: {
+    ...mapActions('channels', ['addMessage']),
+    async send () {
+      this.loading = true
+      await this.addMessage({ channel: this.name, message: this.newMessage })
+      this.message = ''
+      this.loading = false
     }
   }
 }

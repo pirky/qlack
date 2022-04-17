@@ -1,5 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, belongsTo, BelongsTo, column, HasMany, hasMany } from "@ioc:Adonis/Lucid/Orm";
+import User from 'App/Models/User'
+import Message from "App/Models/Message";
+import UserChannel from "App/Models/UserChannel";
 // import { BaseModel, column, BelongsTo, belongsTo, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 // import User from 'App/Models/User'
 // import UserChannel from 'App/Models/UserChannel'
@@ -32,18 +35,18 @@ export class Channel extends BaseModel {
   @column.dateTime({ serializeAs: null })
   public deletedAt: DateTime | null
 
-  // @belongsTo(() => User, {
-  //   foreignKey: 'createdBy',
-  // })
-  // public creator: BelongsTo<typeof User>
+  @belongsTo(() => User, {
+    foreignKey: 'createdBy',
+  })
+  public creator: BelongsTo<typeof User>
 
-  // @hasMany(() => Message, {
-  //   foreignKey: 'channelId',
-  // })
-  // public messages: HasMany<typeof Message>
+  @hasMany(() => Message, {
+    foreignKey: 'channelId',
+  })
+  public messages: HasMany<typeof Message>
 
-  // @hasMany(() => UserChannel, {
-  //   foreignKey: 'channelId',
-  // })
-  // public userChannels: HasMany<typeof UserChannel>
+  @hasMany(() => UserChannel, {
+    foreignKey: 'channelId',
+  })
+  public userChannels: HasMany<typeof UserChannel>
 }
