@@ -5,16 +5,14 @@
       :text-color="authorId === currentUserId? 'dark': 'white'"
       :bg-color="authorId === currentUserId? 'amber': 'primary'"
     >
-      <template v-slot:name>{{ authorNickname }}</template>
-      <template v-slot:stamp>{{ parseTime(sendTime) }}</template>
+      <template v-slot:name>{{ author.nickname }}</template>
+      <template v-slot:stamp>{{ parseTime(new Date(createdAt)) }}</template>
       <template v-slot:avatar>
         <q-avatar color="secondary" text-color="black" style="margin: 0 10px;">
-          {{ authorNickname[0].toUpperCase() }}
+          {{ author.nickname[0].toUpperCase() }}
         </q-avatar>
       </template>
-      <q-markdown>
-{{ content }}
-      </q-markdown>
+      <q-markdown>{{ content }}</q-markdown>
     </q-chat-message>
   </div>
 </template>
@@ -35,36 +33,30 @@ export default defineComponent({
       type: Number,
       required: true
     },
-    authorNickname: {
-      type: String,
+    createdAt: {
+      type: Date,
       required: true
     },
-    sendTime: {
+    updatedAt: {
       type: Date,
       required: true
     },
     content: {
       type: String,
       required: true
+    },
+    author: {
+      type: Object,
+      required: true
     }
   },
 
   computed: {
-    currentUserId: {
-      get () {
-        return this.$store.state.auth.user ? this.$store.state.auth.user.id : null
-      },
-      set (val: number) {
-        this.$store.commit('auth/updateId', val)
-      }
+    currentUserId () {
+      return this.$store.state.auth.user ? this.$store.state.auth.user.id : null
     },
-    currentUserNickname: {
-      get () {
-        return this.$store.state.auth.user ? this.$store.state.auth.user.nickname : null
-      },
-      set (val: number) {
-        this.$store.commit('auth/updateNickname', val)
-      }
+    currentUserNickname () {
+      return this.$store.state.auth.user ? this.$store.state.auth.user.nickname : null
     },
     isTagged () {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands

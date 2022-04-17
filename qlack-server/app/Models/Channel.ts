@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, BelongsTo, column, HasMany, hasMany } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, belongsTo, BelongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import User from 'App/Models/User'
-import Message from "App/Models/Message";
-import UserChannel from "App/Models/UserChannel";
+import Message from 'App/Models/Message'
+import UserChannel from 'App/Models/UserChannel'
 // import { BaseModel, column, BelongsTo, belongsTo, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 // import User from 'App/Models/User'
 // import UserChannel from 'App/Models/UserChannel'

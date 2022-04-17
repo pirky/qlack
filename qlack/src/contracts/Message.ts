@@ -2,8 +2,9 @@ export type RawMessage = string
 
 export interface Message {
   id: number
+  channelId: number
   authorId: number
-  authorNickname: string
-  sendTime: Date
+  author: string
+  createdAt: Date
   content: string
 }

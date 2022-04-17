@@ -36,6 +36,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { mapMutations } from 'vuex'
 
 export default defineComponent({
   name: 'Channel',
@@ -67,6 +68,9 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapMutations('channels', {
+      setActiveChannel: 'SET_ACTIVE'
+    }),
     declineInvite () {
       void this.$store.dispatch('auth/declineInvite', this.id)
     },
@@ -78,6 +82,7 @@ export default defineComponent({
       if (this.userState === 'invited') {
         this.confirm = true
       } else {
+        this.setActiveChannel(this.name)
         void this.$router.push('/' + String(this.id))
       }
     }
