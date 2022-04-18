@@ -4,6 +4,11 @@ import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
 import { RawMessage } from 'src/contracts'
 
+// Function to handle commands
+const handleCommand = (message: RawMessage) => {
+  console.log('handling command', message)
+}
+
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async join ({ commit }, channel: string) {
     try {
@@ -24,9 +29,15 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       commit('CLEAR_CHANNEL', c)
     })
   },
+
   async addMessage ({ commit }, { channel, message }: { channel: string, message: RawMessage }) {
-    const newMessage = await channelService.in(channel)?.addMessage(message)
-    commit('NEW_MESSAGE', { channel, message: newMessage })
+    // If message starts with a slash, it's a command
+    if (message?.startsWith('/')) {
+      handleCommand(message)
+    } else {
+      const newMessage = await channelService.in(channel)?.addMessage(message)
+      commit('NEW_MESSAGE', { channel, message: newMessage })
+    }
   }
 }
 

@@ -9,6 +9,9 @@
       input-style="max-height: 4.5em; min-height: 4.5em"
       label="Message"
       :disable="loading"
+      @keydown.shift="shiftDown = true"
+      @keyup.shift="shiftDown = false"
+      @keydown.enter="send"
       >
 
       <q-item class="typing_name" clickable>Someone is typing...
@@ -90,16 +93,21 @@ export default {
   data () {
     return {
       newMessage: '',
-      loading: false
+      loading: false,
+      shiftDown: false
     }
   },
 
   methods: {
     ...mapActions('channels', ['addMessage']),
     async send () {
+      if (this.shiftDown) {
+        return
+      }
+
       this.loading = true
       await this.addMessage({ channel: this.name, message: this.newMessage })
-      this.message = ''
+      this.newMessage = ''
       this.loading = false
     }
   }
