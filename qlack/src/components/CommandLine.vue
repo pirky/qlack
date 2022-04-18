@@ -1,6 +1,7 @@
 <template>
   <q-page-sticky expand position="bottom" class="bg-transparent command_line">
     <q-input
+      ref="commandLine"
       v-model="newMessage"
       bg-color="dark"
       class="full-width input"
@@ -12,6 +13,7 @@
       @keydown.shift="shiftDown = true"
       @keyup.shift="shiftDown = false"
       @keydown.enter="send"
+      autofocus="true"
       >
 
       <q-item class="typing_name" clickable>Someone is typing...
@@ -98,6 +100,10 @@ export default {
     }
   },
 
+  mounted () {
+    this.focusInput()
+  },
+
   methods: {
     ...mapActions('channels', ['addMessage']),
     async send () {
@@ -109,6 +115,12 @@ export default {
       await this.addMessage({ channel: this.name, message: this.newMessage })
       this.newMessage = ''
       this.loading = false
+
+      this.focusInput()
+    },
+
+    focusInput () {
+      this.$refs.commandLine.$el.focus()
     }
   }
 }
