@@ -13,7 +13,6 @@
       @keydown.shift="shiftDown = true"
       @keyup.shift="shiftDown = false"
       @keydown.enter="send"
-      autofocus="true"
       >
 
       <q-item class="typing_name" clickable>Someone is typing...
