@@ -1,15 +1,15 @@
 import { api } from 'src/boot/axios'
-import { RawMessage, Message, Channel } from 'src/contracts'
+import { RawMessage, Message, ExtraChannel } from 'src/contracts'
 import { BootParams, SocketManager } from './SocketManager'
 
 class ChannelSocketManager extends SocketManager {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   public subscribe ({ store }: BootParams): void {
-    const channel = this.namespace.split('/').pop() as string
+    const channelName = this.namespace.split('/').pop() as string
 
     this.socket.on('message', (message: Message) => {
-      store.commit('channels/NEW_MESSAGE', { channel, message })
+      store.commit('channels/NEW_MESSAGE', { channelName, message })
     })
   }
 
@@ -60,8 +60,8 @@ class ChannelService {
     await api.post('user/declineInvite', { channelId, userId })
   }
 
-  async getChannel (channelName: string): Promise<Channel> {
-    return api.get('channel/getChannel/' + channelName)
+  async getChannel (channelName: string): Promise<ExtraChannel> {
+    return api.get('channel/getChannel/' + channelName).then((response) => response.data)
   }
 }
 

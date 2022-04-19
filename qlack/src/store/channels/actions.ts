@@ -2,11 +2,34 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
-import { RawMessage } from 'src/contracts'
+import { Channel, RawMessage, ExtraChannel } from 'src/contracts'
 
 // Function to handle commands
 const handleCommand = (message: RawMessage) => {
   console.log('handling command', message)
+}
+
+const parseChannel = (channel: ExtraChannel | null) => {
+  if (channel) {
+    console.log('daco: ', channel)
+    const tempChannel: Channel = {
+      createdBy: channel.createdBy,
+      id: channel.id,
+      messages: [],
+      name: channel.name,
+      state: channel.state,
+      userState: 'aaa'
+    }
+
+    if (channel.invitedAt) tempChannel.userState = 'invited'
+    if (channel.joinedAt) tempChannel.userState = 'joined'
+    if (channel.kickedAt) tempChannel.userState = 'kicked'
+    if (channel.bannedAt) tempChannel.userState = 'banned'
+
+    return tempChannel
+  }
+
+  return null
 }
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
@@ -14,7 +37,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     try {
       commit('LOADING_START')
       const messages = await channelService.join(channelName).loadMessages()
-      const channel = await channelService.getChannel(channelName)
+      const channel = parseChannel(await channelService.getChannel(channelName))
       commit('LOADING_SUCCESS', { channelName, messages, channel })
     } catch (err) {
       commit('LOADING_ERROR', err)

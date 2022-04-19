@@ -12,3 +12,15 @@ export interface Channel {
   // channel_messages
   messages: Message[]
 }
+
+export interface ExtraChannel {
+  id: number
+  name: string
+  state: string
+  createdBy: number
+
+  invitedAt: Date
+  joinedAt: Date
+  kickedAt: Date
+  bannedAt: Date
+}

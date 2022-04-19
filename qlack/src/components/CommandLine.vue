@@ -111,7 +111,7 @@ export default {
       }
 
       this.loading = true
-      await this.addMessage({ channel: this.name, message: this.newMessage })
+      await this.addMessage({ channelName: this.name, message: this.newMessage })
       this.newMessage = ''
       this.loading = false
 
