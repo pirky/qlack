@@ -1,5 +1,3 @@
-import { Channel } from 'src/contracts/Channel'
-
 export interface ApiToken {
   type: 'bearer'
   token: string
@@ -26,6 +24,4 @@ export interface User {
   email: string
   notificationType: string
   activeState: string
-
-  channels: Channel[]
 }

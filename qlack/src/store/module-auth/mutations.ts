@@ -49,16 +49,6 @@ const mutation: MutationTree<AuthStateInterface> = {
     if (state.user) {
       state.user.activeState = value
     }
-  },
-  updateUserChannelState (state: AuthStateInterface, { value, id }: { value: string, id: number }) {
-    if (state.user && state.user.channels) {
-      state.user.channels.filter(channel => channel.id === id)[0].userState = value
-    }
-  },
-  removeUserChannel (state: AuthStateInterface, { id }: { id: number }) {
-    if (state.user && state.user.channels) {
-      state.user.channels = state.user.channels.filter(channel => channel.id !== id)
-    }
   }
 }
 

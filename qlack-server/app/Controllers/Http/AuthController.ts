@@ -1,19 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { Channel } from 'App/Models/Channel'
 import User from 'App/Models/User'
 import RegisterUserValidator from 'App/Validators/RegisterUserValidator'
-
-interface ExtraChannel {
-  id: number
-  name: string
-  state: string
-  createdBy: number
-
-  invitedAt: Date
-  joinedAt: Date
-  kickedAt: Date
-  bannedAt: Date
-}
 
 export default class AuthController {
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
@@ -41,36 +28,6 @@ export default class AuthController {
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async me({ auth }: HttpContextContract) {
-    let channels: Channel[] = []
-
-    if (auth.user !== undefined) {
-      channels = await Channel.query()
-        .select('*')
-        .fullOuterJoin('user_channels', 'channels.id', 'channel_id')
-        .where('user_id', auth.user.id)
-    }
-
-    const extraChannels: ExtraChannel[] = []
-
-    channels.forEach(function (channel) {
-      const extraChannel = {
-        id: channel.$extras.channel_id,
-        name: channel.name,
-        state: channel.state,
-        createdBy: channel.createdBy,
-
-        invitedAt: channel.$extras.invited_at,
-        joinedAt: channel.$extras.joined_at,
-        kickedAt: channel.$extras.kicked_at,
-        bannedAt: channel.$extras.banned_at,
-      }
-
-      extraChannels.push(extraChannel)
-    })
-
-    return {
-      user: auth.user,
-      channels: extraChannels,
-    }
+    return auth.user
   }
 }

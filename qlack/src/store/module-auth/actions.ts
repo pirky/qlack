@@ -1,46 +1,15 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { AuthStateInterface } from './state'
-import { authService, authManager, channelService } from 'src/services'
-import { Channel, LoginCredentials, RegisterData } from 'src/contracts'
+import { authService, authManager } from 'src/services'
+import { LoginCredentials, RegisterData } from 'src/contracts'
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
-  async check ({ state, commit, dispatch }) {
+  async check ({ commit }) {
     try {
       console.log('CHECK CLIENT')
       commit('AUTH_START')
-
-      const data = await authService.me()
-      const user = data ? data.user : null
-      const channels = data ? data.channels : null
-
-      if (user && channels) {
-        const newChannels: Channel[] = []
-
-        for (const channel of channels) {
-          const tempChannel: Channel = {
-            createdBy: channel.createdBy,
-            id: channel.id,
-            messages: [],
-            name: channel.name,
-            state: channel.state,
-            userState: 'aaa'
-          }
-
-          if (channel.invitedAt) tempChannel.userState = 'invited'
-          if (channel.joinedAt) {
-            tempChannel.userState = 'joined'
-            if (user?.id !== state.user?.id) {
-              await dispatch('channels/join', channel.name, { root: true })
-            }
-          }
-          if (channel.kickedAt) tempChannel.userState = 'kicked'
-          if (channel.bannedAt) tempChannel.userState = 'banned'
-
-          newChannels.push(tempChannel)
-        }
-        user.channels = newChannels
-      }
+      const user = await authService.me()
 
       commit('AUTH_SUCCESS', user)
       return user !== null
@@ -65,7 +34,7 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     }
   },
 
-  async login ({ commit }, credentials: LoginCredentials) {
+  async login ({ commit, dispatch }, credentials: LoginCredentials) {
     try {
       console.log('LOGIN CLIENT')
       commit('AUTH_START')
@@ -73,6 +42,10 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       commit('AUTH_SUCCESS', null)
       // save api token to local storage and notify listeners
       authManager.setToken(apiToken.token)
+      const channelNames = await authService.getChannelNames()
+      for (const channelName of channelNames) {
+        await dispatch('channels/join', channelName, { root: true })
+      }
       return apiToken
     } catch (err) {
       commit('AUTH_ERROR', err)
@@ -93,18 +66,6 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       commit('AUTH_ERROR', err)
       throw err
     }
-  },
-
-  async acceptInvite ({ commit }, id: number) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    await channelService.acceptInvite(id, this.getters['auth/id'])
-    commit('updateUserChannelState', { value: 'joined', id: id })
-  },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async declineInvite ({ commit }, id: number) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    await channelService.declineInvite(id, this.getters['auth/id'])
-    commit('removeUserChannel', { id: id })
   }
 }
 

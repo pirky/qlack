@@ -26,12 +26,6 @@ const getters: GetterTree<AuthStateInterface, StateInterface> = {
   },
   activeState (state: AuthStateInterface) {
     return state.user ? state.user.activeState : null
-  },
-  channels (state: AuthStateInterface) {
-    return state.user ? state.user.channels : null
-  },
-  activeChannel: (state: AuthStateInterface) => (id: number) => {
-    return state.user && state.user.channels ? state.user.channels.find(thing => thing.id === id) : null
   }
 }
 

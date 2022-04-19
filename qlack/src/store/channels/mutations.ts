@@ -25,6 +25,16 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   },
   NEW_MESSAGE (state, { channelName, message }: { channelName: string, message: Message }) {
     state.channels[channelName].messages.push(message)
+  },
+  updateUserChannelState (state: ChannelsStateInterface, { value, channelName }: { value: string, channelName: string }) {
+    if (state.channels) {
+      state.channels[channelName].userState = value
+    }
+  },
+  removeChannel (state: ChannelsStateInterface, { channelName }: { channelName: string }) {
+    if (state.channels) {
+      delete state.channels[channelName]
+    }
   }
 }
 

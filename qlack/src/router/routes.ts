@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/ChatPage.vue')
       },
       {
-        path: ':id',
+        path: 'channel/:channelName',
         component: () => import('src/pages/ChatPage.vue')
       }
     ]

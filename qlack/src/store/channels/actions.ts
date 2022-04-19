@@ -38,6 +38,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       commit('LOADING_START')
       const messages = await channelService.join(channelName).loadMessages()
       const channel = parseChannel(await channelService.getChannel(channelName))
+      console.log('channel: ', channel)
       commit('LOADING_SUCCESS', { channelName, messages, channel })
     } catch (err) {
       commit('LOADING_ERROR', err)
@@ -62,6 +63,18 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       const newMessage = await channelService.in(channelName)?.addMessage(message)
       commit('NEW_MESSAGE', { channelName, message: newMessage })
     }
+  },
+
+  async acceptInvite ({ commit }, channelName: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    await channelService.acceptInvite(channelName, this.getters['auth/id'])
+    commit('updateUserChannelState', { value: 'joined', channelName })
+  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async declineInvite ({ commit }, channelName: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    await channelService.declineInvite(channelName, this.getters['auth/id'])
+    commit('removeChannel', { channelName })
   }
 }
 

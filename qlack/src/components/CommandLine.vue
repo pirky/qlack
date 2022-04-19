@@ -74,20 +74,16 @@ export default {
 
   props: {
     id: {
-      type: Number,
-      required: true
+      type: Number
     },
     name: {
-      type: String,
-      required: true
+      type: String
     },
     state: {
-      type: String,
-      required: true
+      type: String
     },
     createdBy: {
-      type: Number,
-      required: true
+      type: Number
     }
   },
 

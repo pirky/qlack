@@ -42,8 +42,8 @@ export default defineComponent({
 
   computed: {
     channel (): ChannelInterface {
-      return this.$store.getters['auth/activeChannel'](
-        Number(this.$route.params.id)
+      return this.$store.getters['channels/activeChannel'](
+        this.$route.params.channelName
       )
     },
     messages (): MessageInterface[] {

@@ -7,20 +7,8 @@ interface RegisterReturnInterface {
   apiToken: ApiToken
 }
 
-interface Channel {
-  id: number
-  name: string
-  state: string
-  createdBy: number
-
-  invitedAt: Date
-  joinedAt: Date
-  kickedAt: Date
-  bannedAt: Date
-}
-
 class AuthService {
-  async me (): Promise<{ user: User, channels: Channel[] } | null> {
+  async me (): Promise< User | null> {
     return api.get(
       'auth/me'
     )
@@ -46,6 +34,11 @@ class AuthService {
 
   async logout (): Promise<void> {
     await api.post('auth/logout')
+  }
+
+  async getChannelNames (): Promise<string[]> {
+    const response = await api.get<[{name: string}]>('channel/channelNames')
+    return response.data.map((channel) => channel.name)
   }
 }
 

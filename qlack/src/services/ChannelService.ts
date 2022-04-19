@@ -52,12 +52,12 @@ class ChannelService {
     return this.channels.get(name)
   }
 
-  async acceptInvite (channelId: number, userId: number):Promise<void> {
-    await api.post('user/acceptInvite', { channelId, userId })
+  async acceptInvite (channelName: string, userId: number):Promise<void> {
+    await api.post('user/acceptInvite', { channelName, userId })
   }
 
-  async declineInvite (channelId: number, userId: number) :Promise<void> {
-    await api.post('user/declineInvite', { channelId, userId })
+  async declineInvite (channelName: string, userId: number) :Promise<void> {
+    await api.post('user/declineInvite', { channelName, userId })
   }
 
   async getChannel (channelName: string): Promise<ExtraChannel> {

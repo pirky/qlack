@@ -116,8 +116,7 @@ const userList = [
     nickname: 'kablis',
     email: 'arnost@kabel.com',
     notificationType: 'all',
-    activeState: 'online',
-    channels: []
+    activeState: 'online'
   },
   {
     id: 1,
@@ -126,8 +125,7 @@ const userList = [
     nickname: 'petrzlak',
     email: 'janko@petrzlen.com',
     notificationType: 'all',
-    activeState: 'dnd',
-    channels: []
+    activeState: 'dnd'
   },
   {
     id: 2,
@@ -136,8 +134,7 @@ const userList = [
     nickname: 'pele',
     email: 'pelel@petrovsky.com',
     notificationType: 'all',
-    activeState: 'offline',
-    channels: []
+    activeState: 'offline'
   },
   {
     id: 3,
@@ -146,8 +143,7 @@ const userList = [
     nickname: 'pele',
     email: 'pelel@petrovsky.com',
     notificationType: 'all',
-    activeState: 'online',
-    channels: []
+    activeState: 'online'
   }
 ]
 
@@ -186,11 +182,20 @@ export default defineComponent({
         this.$store.commit('mainStore/updateRightDrawerState', val)
       }
     },
+
     invitedChannels () {
-      return this.$store.state.auth.user && this.$store.state.auth.user.channels ? this.$store.state.auth.user.channels.filter(channel => channel.userState === 'invited') : []
+      if (this.$store.state.channels.channels) {
+        const channels = Object.values(this.$store.state.channels.channels)
+        return channels.filter(channel => channel.userState === 'invited')
+      }
+      return []
     },
     joinedChannels () {
-      return this.$store.state.auth.user && this.$store.state.auth.user.channels ? this.$store.state.auth.user.channels.filter(channel => channel.userState === 'joined') : []
+      if (this.$store.state.channels.channels) {
+        const channels = Object.values(this.$store.state.channels.channels)
+        return channels.filter(channel => channel.userState === 'joined')
+      }
+      return []
     },
 
     orderedUserList () {
@@ -215,7 +220,6 @@ export default defineComponent({
   data () {
     const $q = useQuasar()
     return {
-      channels: this.$store.state.auth.user ? this.$store.state.auth.user.channels : null,
       showDialog () {
         $q.dialog({
           component: CreateChannel,

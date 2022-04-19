@@ -18,4 +18,5 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('getChannel/:channelName', 'ChannelController.getChannel').middleware('auth')
+  Route.get('channelNames', 'ChannelController.getChannelNames').middleware('auth')
 }).prefix('channel')
