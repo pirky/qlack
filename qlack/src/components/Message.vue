@@ -37,10 +37,6 @@ export default defineComponent({
       type: Date,
       required: true
     },
-    updatedAt: {
-      type: Date,
-      required: true
-    },
     content: {
       type: String,
       required: true

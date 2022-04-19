@@ -1,5 +1,5 @@
 import { api } from 'src/boot/axios'
-import { RawMessage, Message } from 'src/contracts'
+import { RawMessage, Message, Channel } from 'src/contracts'
 import { BootParams, SocketManager } from './SocketManager'
 
 class ChannelSocketManager extends SocketManager {
@@ -58,6 +58,10 @@ class ChannelService {
 
   async declineInvite (channelId: number, userId: number) :Promise<void> {
     await api.post('user/declineInvite', { channelId, userId })
+  }
+
+  async getChannel (channelName: string): Promise<Channel> {
+    return api.get('channel/getChannel/' + channelName)
   }
 }
 

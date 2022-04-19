@@ -1,9 +1,9 @@
-import { Message } from 'src/contracts'
+import { Channel } from 'src/contracts'
 
 export interface ChannelsStateInterface {
   loading: boolean,
   error: Error | null,
-  messages: { [channel: string]: Message[] },
+  channels: { [channel: string]: Channel },
   active: string | null
 }
 
@@ -11,7 +11,7 @@ function state (): ChannelsStateInterface {
   return {
     loading: false,
     error: null,
-    messages: {},
+    channels: {},
     active: null
   }
 }
