@@ -20,12 +20,12 @@ const routes: RouteRecordRaw[] = [
 
   {
     path: '/auth',
-    name: 'auth',
     meta: { guestOnly: true },
     component: () => import('layouts/AuthLayout.vue'),
     children: [
       {
         path: '',
+        name: 'auth',
         component: () => import('src/pages/AuthPage.vue')
       }
     ]

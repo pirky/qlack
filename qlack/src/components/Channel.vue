@@ -84,6 +84,9 @@ export default defineComponent({
       } else {
         this.setActiveChannel(this.name)
         void this.$router.push('/' + String(this.id))
+        if (this.$q.screen.width < 1024) {
+          this.$store.commit('mainStore/updateLeftDrawerState', false)
+        }
       }
     }
   },

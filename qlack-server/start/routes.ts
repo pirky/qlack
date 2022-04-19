@@ -15,3 +15,7 @@ Route.group(() => {
   Route.post('acceptInvite', 'UserController.acceptInvite').middleware('auth')
   Route.post('declineInvite', 'UserController.declineInvite').middleware('auth')
 }).prefix('user')
+
+Route.group(() => {
+  Route.get('getChannel/:channelName', 'ChannelController.getChannel').middleware('auth')
+}).prefix('channel')
