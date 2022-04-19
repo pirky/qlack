@@ -41,18 +41,47 @@ export default class ChannelController {
   }
 
   public async createChannel({ auth, request }) {
-    const channel = await Channel.create({
-      name: request.input('channelName'),
-      createdBy: auth.user.id,
-      state: request.input('isPrivate') ? States.PRIVATE : States.PUBLIC,
-    })
+    try {
+      const channel = await Channel.create({
+        name: request.input('channelName'),
+        createdBy: auth.user.id,
+        state: request.input('isPrivate') ? States.PRIVATE : States.PUBLIC,
+      })
+      await UserChannel.create({
+        userId: auth.user.id,
+        channelId: channel.id,
+        joinedAt: DateTime.now(),
+      })
+      console.log(channel.name)
+      return channel
+    } catch (error) {
+      return null
+    }
+  }
 
-    await UserChannel.create({
-      userId: auth.user.id,
-      channelId: channel.id,
-      joinedAt: DateTime.now(),
-    })
-
-    return channel
+  public async deleteChannel({ auth, request }) {
+    try {
+      const channel = await Channel.query().where('id', request.input('channelId')).first()
+      const userChannel = await UserChannel.query()
+        .where('user_id', auth.user.id)
+        .where('channel_id', request.input('channelId'))
+        .first()
+      if (channel) {
+        if (channel.createdBy === auth.user.id) {
+          channel.deletedAt = DateTime.now()
+          await channel.save()
+          userChannel ? (userChannel.deletedAt = DateTime.now()) : null
+          userChannel ? await userChannel.save() : null
+          return true
+        } else {
+          userChannel ? (userChannel.deletedAt = DateTime.now()) : null
+          userChannel ? await userChannel.save() : null
+        }
+        return true
+      }
+      return false
+    } catch (error) {
+      return false
+    }
   }
 }

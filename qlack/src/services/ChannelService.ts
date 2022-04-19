@@ -64,8 +64,12 @@ class ChannelService {
     return api.get('channel/getChannel/' + channelName).then((response) => response.data)
   }
 
-  async createChannel (channelName: string, isPrivate: boolean): Promise<void> {
-    return await api.post('channel/createChannel', { channelName, isPrivate })
+  async createChannel (channelName: string, isPrivate: boolean): Promise<ExtraChannel> {
+    return api.post('channel/createChannel', { channelName, isPrivate }).then((response) => response.data)
+  }
+
+  async deleteChannel (channelId: number): Promise<boolean> {
+    return api.post('channel/deleteChannel', { channelId }).then((response) => response.data)
   }
 }
 

@@ -227,12 +227,24 @@ export default defineComponent({
           componentProps: {
             text: 'something'
           }
-        }).onOk((data) => {
-          console.log('OK, ulozim channel')
-          console.log('channelName: ', data.channelName)
-          createChannel(data.channelName, data.isPrivate)
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        }).onOk(async (data) => {
+          const success = await createChannel(data.channelName, data.isPrivate)
+          if (success) {
+            $q.notify({
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              message: `Channel ${data.channelName} created`,
+              color: 'positive'
+            })
+          } else {
+            $q.notify({
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              message: `Channel ${data.channelName} already exists`,
+              color: 'negative'
+            })
+          }
         }).onCancel(() => {
-          console.log('Cancel, nic neurobim')
+          console.log('cancel')
         })
       },
 
@@ -304,7 +316,7 @@ export default defineComponent({
 
   methods: {
     createChannel (channelName: string, isPrivate: boolean) {
-      void this.$store.dispatch('channels/createChannel', {
+      return this.$store.dispatch('channels/createChannel', {
         channelName,
         isPrivate
       })

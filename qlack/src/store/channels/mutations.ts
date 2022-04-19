@@ -32,6 +32,8 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     }
   },
   removeChannel (state: ChannelsStateInterface, { channelName }: { channelName: string }) {
+    console.log('removeChannel', channelName)
+    console.log('state.channels[channelName]', state.channels[channelName])
     if (state.channels) {
       delete state.channels[channelName]
     }

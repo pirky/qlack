@@ -77,8 +77,17 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
 
   async createChannel ({ commit, dispatch }, { channelName, isPrivate }: { channelName: string, isPrivate: boolean }) {
     const channel = await channelService.createChannel(channelName, isPrivate)
-    commit('NEW_CHANNEL', { channel })
-    await dispatch('channels/join', channelName, { root: true })
+    if (channel) {
+      commit('NEW_CHANNEL', { channel })
+      await dispatch('channels/join', channelName, { root: true })
+      return true
+    } else return false
+  },
+
+  async deleteChannel ({ commit }, { channelName, channelId }: { channelName: string, channelId: number }) {
+    const success = await channelService.deleteChannel(channelId)
+    commit('removeChannel', { channelName })
+    return success
   }
 }
 
