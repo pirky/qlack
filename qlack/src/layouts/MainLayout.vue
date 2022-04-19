@@ -50,7 +50,7 @@
             icon="fa fa-solid fa-plus"
             size="0.5em"
             style="min-height: 0;"
-            @click="showDialog()"
+            @click="showDialog(createChannel)"
           />
         </div>
 
@@ -220,14 +220,17 @@ export default defineComponent({
   data () {
     const $q = useQuasar()
     return {
-      showDialog () {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      showDialog (createChannel: any) {
         $q.dialog({
           component: CreateChannel,
           componentProps: {
             text: 'something'
           }
-        }).onOk(() => {
+        }).onOk((data) => {
           console.log('OK, ulozim channel')
+          console.log('channelName: ', data.channelName)
+          createChannel(data.channelName, data.isPrivate)
         }).onCancel(() => {
           console.log('Cancel, nic neurobim')
         })
@@ -296,6 +299,15 @@ export default defineComponent({
         })
         // }
       }
+    }
+  },
+
+  methods: {
+    createChannel (channelName: string, isPrivate: boolean) {
+      void this.$store.dispatch('channels/createChannel', {
+        channelName,
+        isPrivate
+      })
     }
   }
 })

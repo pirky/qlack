@@ -11,7 +11,6 @@ const handleCommand = (message: RawMessage) => {
 
 const parseChannel = (channel: ExtraChannel | null) => {
   if (channel) {
-    console.log('daco: ', channel)
     const tempChannel: Channel = {
       createdBy: channel.createdBy,
       id: channel.id,
@@ -38,7 +37,6 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       commit('LOADING_START')
       const messages = await channelService.join(channelName).loadMessages()
       const channel = parseChannel(await channelService.getChannel(channelName))
-      console.log('channel: ', channel)
       commit('LOADING_SUCCESS', { channelName, messages, channel })
     } catch (err) {
       commit('LOADING_ERROR', err)
@@ -75,6 +73,12 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await channelService.declineInvite(channelName, this.getters['auth/id'])
     commit('removeChannel', { channelName })
+  },
+
+  async createChannel ({ commit, dispatch }, { channelName, isPrivate }: { channelName: string, isPrivate: boolean }) {
+    const channel = await channelService.createChannel(channelName, isPrivate)
+    commit('NEW_CHANNEL', { channel })
+    await dispatch('channels/join', channelName, { root: true })
   }
 }
 

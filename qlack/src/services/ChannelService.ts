@@ -63,6 +63,10 @@ class ChannelService {
   async getChannel (channelName: string): Promise<ExtraChannel> {
     return api.get('channel/getChannel/' + channelName).then((response) => response.data)
   }
+
+  async createChannel (channelName: string, isPrivate: boolean): Promise<void> {
+    return await api.post('channel/createChannel', { channelName, isPrivate })
+  }
 }
 
 export default new ChannelService()

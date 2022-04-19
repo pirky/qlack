@@ -102,9 +102,9 @@ export default {
   methods: {
     ...mapActions('channels', ['addMessage']),
     async send () {
-      if (this.shiftDown) {
-        return
-      }
+      if (this.newMessage.trim().length === 0) return
+
+      if (this.shiftDown) return
 
       this.loading = true
       await this.addMessage({ channelName: this.name, message: this.newMessage })

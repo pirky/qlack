@@ -72,10 +72,11 @@ export default defineComponent({
       setActiveChannel: 'SET_ACTIVE'
     }),
     declineInvite () {
-      void this.$store.dispatch('auth/declineInvite', this.name)
+      void this.$store.dispatch('channels/declineInvite', this.name)
     },
     acceptInvite () {
-      void this.$store.dispatch('auth/acceptInvite', this.name)
+      void this.$store.dispatch('channels/acceptInvite', this.name)
+      this.setActiveChannel(this.name)
       void this.$router.push('/channel/' + String(this.name))
     },
     manageChannel () {

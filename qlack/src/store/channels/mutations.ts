@@ -35,6 +35,9 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     if (state.channels) {
       delete state.channels[channelName]
     }
+  },
+  NEW_CHANNEL (state, { channelName, channel }: { channelName: string, channel: Channel }) {
+    state.channels[channelName] = channel
   }
 }
 

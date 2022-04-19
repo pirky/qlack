@@ -5,11 +5,18 @@ import { authService, authManager } from 'src/services'
 import { LoginCredentials, RegisterData } from 'src/contracts'
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
-  async check ({ commit }) {
+  async check ({ state, commit, dispatch }) {
     try {
       console.log('CHECK CLIENT')
       commit('AUTH_START')
       const user = await authService.me()
+
+      if (user?.id !== state.user?.id) {
+        const channelNames = await authService.getChannelNames()
+        for (const channelName of channelNames) {
+          await dispatch('channels/join', channelName, { root: true })
+        }
+      }
 
       commit('AUTH_SUCCESS', user)
       return user !== null
@@ -34,7 +41,7 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     }
   },
 
-  async login ({ commit, dispatch }, credentials: LoginCredentials) {
+  async login ({ commit }, credentials: LoginCredentials) {
     try {
       console.log('LOGIN CLIENT')
       commit('AUTH_START')
@@ -42,10 +49,6 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       commit('AUTH_SUCCESS', null)
       // save api token to local storage and notify listeners
       authManager.setToken(apiToken.token)
-      const channelNames = await authService.getChannelNames()
-      for (const channelName of channelNames) {
-        await dispatch('channels/join', channelName, { root: true })
-      }
       return apiToken
     } catch (err) {
       commit('AUTH_ERROR', err)
