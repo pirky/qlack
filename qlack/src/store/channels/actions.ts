@@ -3,21 +3,7 @@ import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
 import { Channel, RawMessage, ExtraChannel } from 'src/contracts'
-
-// Function to handle commands
-const handleCommand = (message: RawMessage) => {
-  if (!message.startsWith('/')) {
-    return false
-  }
-  console.log('handling command', message)
-
-  if (message.startsWith('/join ')) {
-    const channelName = message.slice(6)
-    console.log('channelName:', channelName)
-    return true
-  }
-  return false
-}
+import ChannelService from 'src/services/ChannelService'
 
 const parseChannel = (channel: ExtraChannel | null) => {
   if (channel) {
@@ -38,6 +24,56 @@ const parseChannel = (channel: ExtraChannel | null) => {
   }
 
   return null
+}
+
+// Function to handle commands
+const CommandHandler = {
+  async handleCommand (state: any, dispatch: any, message: RawMessage) {
+    console.log('handling command', message)
+
+    if (message.startsWith('/join ')) {
+      let channelName = message.slice(6)
+
+      // If message ends with -p or --private, then it's a private channel
+      const isPrivate = message.endsWith(' -p') || message.endsWith(' --private')
+
+      if (message.endsWith(' -p')) {
+        channelName = channelName.slice(0, -3)
+      } else if (message.endsWith(' --private')) {
+        channelName = channelName.slice(0, -10)
+      }
+
+      // Check if user already has a channel with that name
+      const joined = channelName in state.channels
+      if (joined) {
+        return `You are already in channel: ${channelName}`
+      }
+
+      const existingChannel = parseChannel(await ChannelService.getChannel(channelName))
+      console.log('channel', existingChannel)
+      if (!existingChannel) {
+        // Create channel
+        await ChannelService.createChannel(channelName, isPrivate)
+        return true
+      }
+
+      // If user is invited to channel, accept invite
+      if (existingChannel.userState === 'invited') {
+        await ChannelService.acceptInvite(channelName, state.user.id)
+        return true
+      }
+
+      if (existingChannel.state === 'private') {
+        return `${channelName} is private.`
+      } else {
+        await dispatch('join', channelName)
+      }
+      // console.log('channelName:', channelName)
+      // return true
+    }
+
+    return `Unknown command: ${message}`
+  }
 }
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
@@ -62,15 +98,19 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     }
   },
 
-  async addMessage ({ state, commit }, { channelName, message }: { channelName: string, message: RawMessage }) {
+  async addMessage ({ state, dispatch, commit }, { channelName, message }: { channelName: string, message: RawMessage }) {
     // If message starts with a slash, it's a command
-    if (!handleCommand(message)) {
-      if (state.active === null) {
-        return false
-      }
-      const newMessage = await channelService.in(channelName)?.addMessage(message)
-      commit('NEW_MESSAGE', { channelName, message: newMessage })
+    if (message.startsWith('/')) {
+      return await CommandHandler.handleCommand(state, dispatch, message)
     }
+
+    // No channel - can't send message
+    if (state.active === null) {
+      return 'no channel'
+    }
+    const newMessage = await channelService.in(channelName)?.addMessage(message)
+    commit('NEW_MESSAGE', { channelName, message: newMessage })
+
     return true
   },
 

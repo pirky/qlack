@@ -13,23 +13,40 @@ export default class ChannelController {
     if (auth.user !== undefined) {
       let channel = await Database.from('channels')
         .select('*')
-        .fullOuterJoin('user_channels', 'channels.id', 'channel_id')
-        .where('user_id', auth.user.id)
         .where('name', channelName)
         .first()
-      return channel
-        ? {
-            id: channel.channel_id,
-            name: channel.name,
-            state: channel.state,
-            createdBy: channel.created_by,
+      
+      let userChannel = await UserChannel.query()
+        .select('*')
+        .where('user_id', auth.user.id)
+        .where('channel_id', channel.id)
+        .first()
+      
+      if (userChannel) {
+        return {
+          id: channel.channel_id,
+          name: channel.name,
+          state: channel.state,
+          createdBy: channel.created_by,
 
-            invitedAt: channel.invited_at,
-            joinedAt: channel.joined_at,
-            kickedAt: channel.kicked_at,
-            bannedAt: channel.banned_at,
-          }
-        : null
+          invitedAt: userChannel.invitedAt,
+          joinedAt: userChannel.joinedAt,
+          kickedAt: userChannel.kickedAt,
+          bannedAt: userChannel.bannedAt,
+        }
+      }
+
+      return {
+        id: channel.channel_id,
+        name: channel.name,
+        state: channel.state,
+        createdBy: channel.created_by,
+
+        invitedAt: null,
+        joinedAt: null,
+        kickedAt: null,
+        bannedAt: null,
+      }
     }
     return null
   }
