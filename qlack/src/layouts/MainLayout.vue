@@ -13,7 +13,7 @@
           Qlack
         </q-toolbar-title>
 
-        <q-btn dense flat round icon="fa fa-solid fa-user-group" @click="rightDrawerState = !rightDrawerState" />
+        <q-btn v-if="activeChannel" dense flat round icon="fa fa-solid fa-user-group" @click="rightDrawerState = !rightDrawerState" />
       </q-toolbar>
       <UserProfileDropdown/>
     </q-header>
@@ -71,6 +71,7 @@
     </q-drawer>
 
     <q-drawer
+      v-if="activeChannel"
       class="drawer"
       show-if-above
       v-model="rightDrawerState"
@@ -166,6 +167,9 @@ export default defineComponent({
   },
 
   computed: {
+    activeChannel () {
+      return this.$store.state.channels.active
+    },
     leftDrawerState: {
       get () {
         return this.$store.state.mainStore.leftDrawerState

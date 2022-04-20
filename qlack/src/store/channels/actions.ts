@@ -32,48 +32,52 @@ const CommandHandler = {
     console.log('handling command', message)
 
     if (message.startsWith('/join ')) {
-      let channelName = message.slice(6)
-
-      // If message ends with -p or --private, then it's a private channel
-      const isPrivate = message.endsWith(' -p') || message.endsWith(' --private')
-
-      if (message.endsWith(' -p')) {
-        channelName = channelName.slice(0, -3)
-      } else if (message.endsWith(' --private')) {
-        channelName = channelName.slice(0, -10)
-      }
-
-      // Check if user already has a channel with that name
-      const joinedChannel = channelName in state.channels
-      if (joinedChannel && state.channels[channelName].userState === 'joined') {
-        return `You are already in channel: ${channelName}`
-      }
-
-      const existingChannel = parseChannel(await ChannelService.getChannel(channelName))
-      if (!existingChannel) {
-        // Create channel
-        await dispatch('createChannel', { channelName, isPrivate })
-        router.push(`/channel/${channelName}`)
-        return true
-      }
-
-      // If user is invited to channel, accept invite
-      if (existingChannel.userState === 'invited') {
-        await dispatch('acceptInvite', channelName)
-        router.push(`/channel/${channelName}`)
-        return true
-      }
-
-      if (existingChannel.state === 'private') {
-        return `${channelName} is private.`
-      } else {
-        await dispatch('join', channelName)
-        router.push(`/channel/${channelName}`)
-        return true
-      }
+      return await this.joinCommand(state, dispatch, message, router)
     }
 
     return `Unknown command: ${message}`
+  },
+
+  async joinCommand (state: any, dispatch: any, message: RawMessage, router: any) {
+    let channelName = message.slice(6)
+
+    // If message ends with -p or --private, then it's a private channel
+    const isPrivate = message.endsWith(' -p') || message.endsWith(' --private')
+
+    if (message.endsWith(' -p')) {
+      channelName = channelName.slice(0, -3)
+    } else if (message.endsWith(' --private')) {
+      channelName = channelName.slice(0, -10)
+    }
+
+    // Check if user already has a channel with that name
+    const joinedChannel = channelName in state.channels
+    if (joinedChannel && state.channels[channelName].userState === 'joined') {
+      return `You are already in channel: ${channelName}`
+    }
+
+    const existingChannel = parseChannel(await ChannelService.getChannel(channelName))
+    if (!existingChannel) {
+      // Create channel
+      await dispatch('createChannel', { channelName, isPrivate })
+      router.push(`/channel/${channelName}`)
+      return true
+    }
+
+    // If user is invited to channel, accept invite
+    if (existingChannel.userState === 'invited') {
+      await dispatch('acceptInvite', channelName)
+      router.push(`/channel/${channelName}`)
+      return true
+    }
+
+    if (existingChannel.state === 'private') {
+      return `${channelName} is private.`
+    } else {
+      await dispatch('join', channelName)
+      router.push(`/channel/${channelName}`)
+      return true
+    }
   }
 }
 

@@ -5,6 +5,7 @@ import { DateTime } from 'luxon'
 import Database from '@ioc:Adonis/Lucid/Database'
 import Message from 'App/Models/Message'
 import UserChannelKick from 'App/Models/UserChannelKick'
+import User from 'App/Models/User'
 
 export default class ChannelController {
   public async getChannel({ auth, request }: HttpContextContract) {
@@ -96,6 +97,23 @@ export default class ChannelController {
       return false
     } catch (error) {
       return false
+    }
+  }
+
+  public async getUsers({ request }) {
+    try {
+      const channelName = request.params().channelName.replace('%20', ' ')
+      const channel = await Channel.query().where('name', channelName).first()
+      if (channel) {
+        const allUserIds = await UserChannel.query()
+          .select('user_id')
+          .where('channel_id', channel.id)
+        // @ts-ignore
+        return await User.query().select('nickname', 'active_state').whereIn('id', allUserIds)
+      }
+      return null
+    } catch (error) {
+      return null
     }
   }
 }

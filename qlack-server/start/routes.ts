@@ -18,6 +18,7 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('getChannel/:channelName', 'ChannelController.getChannel').middleware('auth')
+  Route.get('getUsers/:channelName', 'ChannelController.getUsers').middleware('auth')
   Route.get('channelNames', 'ChannelController.getChannelNames').middleware('auth')
   Route.post('createChannel', 'ChannelController.createChannel').middleware('auth')
   Route.post('deleteChannel', 'ChannelController.deleteChannel').middleware('auth')

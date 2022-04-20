@@ -35,14 +35,9 @@ const routes: RouteRecordRaw[] = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    meta: { requiresAuth: true },
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      {
-        path: '',
-        component: () => import('src/pages/ChatPage.vue')
-      }
-    ]
+    redirect: () => {
+      return { path: '/' }
+    }
   }
 ]
 
