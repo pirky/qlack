@@ -3,8 +3,8 @@ import { Channel, States } from 'App/Models/Channel'
 import UserChannel from 'App/Models/UserChannel'
 import { DateTime } from 'luxon'
 import Database from '@ioc:Adonis/Lucid/Database'
-import Message from "App/Models/Message";
-import UserChannelKick from "App/Models/UserChannelKick";
+import Message from 'App/Models/Message'
+import UserChannelKick from 'App/Models/UserChannelKick'
 
 export default class ChannelController {
   public async getChannel({ auth, request }: HttpContextContract) {

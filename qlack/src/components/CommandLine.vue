@@ -107,10 +107,16 @@ export default {
       if (this.shiftDown) return
 
       this.loading = true
-      await this.addMessage({ channelName: this.name, message: this.newMessage })
-      this.newMessage = ''
+      const success = await this.addMessage({ channelName: this.name, message: this.newMessage })
+      this.newMessage = success ? '' : this.newMessage
       this.loading = false
 
+      if (!success) {
+        this.$q.notify({
+          color: 'negative',
+          message: 'Message could not be sent.'
+        })
+      }
       this.focusInput()
     },
 

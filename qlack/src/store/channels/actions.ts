@@ -6,7 +6,17 @@ import { Channel, RawMessage, ExtraChannel } from 'src/contracts'
 
 // Function to handle commands
 const handleCommand = (message: RawMessage) => {
+  if (!message.startsWith('/')) {
+    return false
+  }
   console.log('handling command', message)
+
+  if (message.startsWith('/join ')) {
+    const channelName = message.slice(6)
+    console.log('channelName:', channelName)
+    return true
+  }
+  return false
 }
 
 const parseChannel = (channel: ExtraChannel | null) => {
@@ -52,14 +62,16 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     }
   },
 
-  async addMessage ({ commit }, { channelName, message }: { channelName: string, message: RawMessage }) {
+  async addMessage ({ state, commit }, { channelName, message }: { channelName: string, message: RawMessage }) {
     // If message starts with a slash, it's a command
-    if (message?.startsWith('/')) {
-      handleCommand(message)
-    } else {
+    if (!handleCommand(message)) {
+      if (state.active === null) {
+        return false
+      }
       const newMessage = await channelService.in(channelName)?.addMessage(message)
       commit('NEW_MESSAGE', { channelName, message: newMessage })
     }
+    return true
   },
 
   async acceptInvite ({ commit }, channelName: string) {
