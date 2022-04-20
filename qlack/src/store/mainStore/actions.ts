@@ -3,8 +3,8 @@ import { StateInterface } from '../index'
 import { MainStateInterface } from './state'
 
 const actions: ActionTree<MainStateInterface, StateInterface> = {
-  someAction (/* context */) {
-    // your code
+  updateRightDrawerState ({ commit }, newState) {
+    commit('updateRightDrawerState', newState)
   }
 }
 

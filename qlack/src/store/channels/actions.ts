@@ -28,11 +28,20 @@ const parseChannel = (channel: ExtraChannel | null) => {
 
 // Function to handle commands
 const CommandHandler = {
-  async handleCommand (state: any, dispatch: any, message: RawMessage, router: any) {
+  async handleCommand (state: any, rootState: any, dispatch: any, message: RawMessage, router: any) {
     console.log('handling command', message)
 
     if (message.startsWith('/join ')) {
       return await this.joinCommand(state, dispatch, message, router)
+    }
+
+    if (message.startsWith('/list')) {
+      if (message !== '/list') {
+        return 'Invalid command'
+      }
+
+      await this.listCommand(rootState, dispatch)
+      return true
     }
 
     return `Unknown command: ${message}`
@@ -78,6 +87,20 @@ const CommandHandler = {
       router.push(`/channel/${channelName}`)
       return true
     }
+  },
+
+  async listCommand (rootState: any, dispatch: any) {
+    if (rootState.mainStore.rightDrawerState) {
+      dispatch('mainStore/updateRightDrawerState', false, { root: true })
+    }
+    await this.sleep(150)
+    dispatch('mainStore/updateRightDrawerState', true, { root: true })
+  },
+
+  sleep (ms: number) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms)
+    })
   }
 }
 
@@ -103,10 +126,10 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     }
   },
 
-  async addMessage ({ state, dispatch, commit }, { channelName, message, router }: { channelName: string, message: RawMessage, router: any }) {
+  async addMessage ({ state, rootState, dispatch, commit }, { channelName, message, router }: { channelName: string, message: RawMessage, router: any }) {
     // If message starts with a slash, it's a command
     if (message.startsWith('/')) {
-      return await CommandHandler.handleCommand(state, dispatch, message, router)
+      return await CommandHandler.handleCommand(state, rootState, dispatch, message, router)
     }
 
     // No channel - can't send message

@@ -43,7 +43,7 @@ export default defineComponent({
   mounted () {
     const channelName = this.$route.params.channelName
     if (this.$store.getters['channels/joinedChannels'].includes(channelName)) {
-      void this.$store.commit('channels/SET_ACTIVE', channelName)
+      void this.$store.dispatch('channels/setActiveChannel', channelName)
     }
   },
 
