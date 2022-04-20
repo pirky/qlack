@@ -50,7 +50,7 @@
             icon="fa fa-solid fa-plus"
             size="0.5em"
             style="min-height: 0;"
-            @click="showDialog(createChannel)"
+            @click="showDialog(createChannel, this.$router)"
           />
         </div>
 
@@ -221,24 +221,23 @@ export default defineComponent({
     const $q = useQuasar()
     return {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      showDialog (createChannel: any) {
+      showDialog (createChannel: any, router: any) {
         $q.dialog({
           component: CreateChannel,
           componentProps: {
             text: 'something'
           }
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        }).onOk(async (data) => {
+        }).onOk(async (data: {channelName: string, isPrivate: boolean}) => {
           const success = await createChannel(data.channelName, data.isPrivate)
           if (success) {
+            router.push(`/channel/${data.channelName}`)
             $q.notify({
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
               message: `Channel ${data.channelName} created`,
               color: 'positive'
             })
           } else {
             $q.notify({
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
               message: `Channel ${data.channelName} already exists`,
               color: 'negative'
             })

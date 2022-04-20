@@ -1,5 +1,5 @@
 import { api } from 'src/boot/axios'
-import { RawMessage, Message, ExtraChannel } from 'src/contracts'
+import { ExtraChannel, Message, RawMessage } from 'src/contracts'
 import { BootParams, SocketManager } from './SocketManager'
 
 class ChannelSocketManager extends SocketManager {
@@ -36,15 +36,16 @@ class ChannelService {
     return channel
   }
 
-  public leave (name: string): boolean {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public leave (name: string) {
     const channel = this.channels.get(name)
-
     if (!channel) {
       return false
     }
 
     // disconnect namespace and remove references to socket
     channel.destroy()
+
     return this.channels.delete(name)
   }
 
@@ -68,8 +69,8 @@ class ChannelService {
     return api.post('channel/createChannel', { channelName, isPrivate }).then((response) => response.data)
   }
 
-  async deleteChannel (channelId: number): Promise<boolean> {
-    return api.post('channel/deleteChannel', { channelId }).then((response) => response.data)
+  async deleteChannel (channelName: string): Promise<boolean> {
+    return api.post('channel/deleteChannel', { channelName }).then((response) => response.data)
   }
 }
 

@@ -9,8 +9,8 @@ const getters: GetterTree<ChannelsStateInterface, StateInterface> = {
   currentMessages (context) {
     return context.active !== null ? context.channels[context.active].messages : []
   },
-  activeChannel: (state: ChannelsStateInterface) => (channelName: string) => {
-    return state.channels ? state.channels[channelName] : null
+  activeChannel: (state: ChannelsStateInterface, context) => (channelName: string) => {
+    return state.channels && context.active !== null ? state.channels[channelName] : null
   }
 }
 

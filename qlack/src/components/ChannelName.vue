@@ -19,7 +19,7 @@
       icon="logout"
       size="1em"
       style="min-height: 0; position: absolute; right: 0.2em"
-      @click="confirm(createdBy === userId(), deleteChannel, name, id, this.$router)"
+      @click="confirm(createdBy === userId(), leaveChannel, name, this.$router)"
     />
   </q-page-sticky>
 </template>
@@ -55,16 +55,15 @@ export default defineComponent({
     const $q = useQuasar()
     return {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      confirm (isOwner: boolean, deleteChannel: any, name: string, id: number, router: any) {
+      confirm (isOwner: boolean, leaveChannel: any, name: string, router: any) {
         $q.dialog({
-          title: 'Leaving?',
+          title: isOwner ? 'Deleting?' : 'Leaving?',
           message: isOwner ? 'Are you sure you want to delete this channel?' : 'Are you sure you want to leave this channel?',
           cancel: true,
           persistent: true
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
         }).onOk(async () => {
-          const success = await deleteChannel(name, id)
-          console.log(success)
+          const success = await leaveChannel(name)
           if (success) {
             router.push('/')
             $q.notify({
@@ -86,11 +85,8 @@ export default defineComponent({
     ...mapGetters('auth', {
       userId: 'id'
     }),
-    async deleteChannel (channelName: string, channelId: number) {
-      return this.$store.dispatch('channels/deleteChannel', {
-        channelName,
-        channelId
-      }).then((response) => response.data())
+    async leaveChannel (channelName: string) {
+      return this.$store.dispatch('channels/deleteChannel', channelName)
     }
   }
 })

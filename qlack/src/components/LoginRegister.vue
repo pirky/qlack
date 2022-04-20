@@ -89,7 +89,7 @@ export default defineComponent({
     submitForm () {
       this.$store.dispatch(`auth/${this.tab}`, this.form).then(
         () => this.$router.push('/')
-      ).catch((e) => { console.log('FU: ', e) }
+      ).catch((e) => { console.log('submit error: ', e) }
       )
     }
   }

@@ -17,14 +17,13 @@ const parseChannel = (channel: ExtraChannel | null) => {
       messages: [],
       name: channel.name,
       state: channel.state,
-      userState: 'aaa'
+      userState: 'none'
     }
 
     if (channel.invitedAt) tempChannel.userState = 'invited'
     if (channel.joinedAt) tempChannel.userState = 'joined'
     if (channel.kickedAt) tempChannel.userState = 'kicked'
     if (channel.bannedAt) tempChannel.userState = 'banned'
-
     return tempChannel
   }
 
@@ -47,10 +46,10 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async leave ({ getters, commit }, channelName: string | null) {
     const leaving: string[] = channelName !== null ? [channelName] : getters.joinedChannels
 
-    leaving.forEach((c) => {
+    for (const c of leaving) {
       channelService.leave(c)
       commit('CLEAR_CHANNEL', c)
-    })
+    }
   },
 
   async addMessage ({ commit }, { channelName, message }: { channelName: string, message: RawMessage }) {
@@ -75,19 +74,21 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('removeChannel', { channelName })
   },
 
-  async createChannel ({ commit, dispatch }, { channelName, isPrivate }: { channelName: string, isPrivate: boolean }) {
+  async createChannel ({ dispatch }, { channelName, isPrivate }: { channelName: string, isPrivate: boolean }) {
     const channel = await channelService.createChannel(channelName, isPrivate)
     if (channel) {
-      commit('NEW_CHANNEL', { channel })
       await dispatch('channels/join', channelName, { root: true })
       return true
     } else return false
   },
 
-  async deleteChannel ({ commit }, { channelName, channelId }: { channelName: string, channelId: number }) {
-    const success = await channelService.deleteChannel(channelId)
-    commit('removeChannel', { channelName })
-    return success
+  async deleteChannel ({ commit }, channelName: string) {
+    const success = await channelService.deleteChannel(channelName)
+    if (success) {
+      channelService.leave(channelName)
+      commit('CLEAR_CHANNEL', channelName)
+      return true
+    } else return false
   }
 }
 
