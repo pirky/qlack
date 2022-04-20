@@ -154,6 +154,16 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('removeChannel', { channelName })
   },
 
+  async updateState ({ commit }, newState: string) {
+    await channelService.updateState(newState, this.getters['auth/id'])
+    return commit('auth/updateActiveState', newState, { root: true })
+  },
+
+  async updateNotification ({ commit }, notificationType: string) {
+    await channelService.updateNotification(notificationType, this.getters['auth/id'])
+    return commit('auth/updateNotificationType', notificationType, { root: true })
+  },
+
   async createChannel ({ dispatch }, { channelName, isPrivate }: { channelName: string, isPrivate: boolean }) {
     const channel = await channelService.createChannel(channelName, isPrivate)
     if (channel) {
@@ -174,7 +184,6 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async setActiveChannel ({ commit }, channelName: string) {
     commit('SET_ACTIVE', channelName)
     const users = await channelService.getUsers(channelName)
-    console.log('users', users)
     commit('SET_USERS', users)
   }
 }

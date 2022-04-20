@@ -61,6 +61,14 @@ class ChannelService {
     await api.post('user/declineInvite', { channelName, userId })
   }
 
+  async updateState (activeState: string, userId: number): Promise<void> {
+    await api.post('user/updateState', { activeState, userId })
+  }
+
+  async updateNotification (notificationType: string, userId: number): Promise<void> {
+    await api.post('user/updateNotification', { notificationType, userId })
+  }
+
   async getChannel (channelName: string): Promise<ExtraChannel> {
     return api.get('channel/getChannel/' + channelName).then((response) => response.data)
   }

@@ -15,31 +15,6 @@ const mutation: MutationTree<AuthStateInterface> = {
     state.status = 'error'
     state.errors = errors
   },
-  updateId (state: AuthStateInterface, value: number) {
-    if (state.user) {
-      state.user.id = value
-    }
-  },
-  updateFirstName (state: AuthStateInterface, value: string) {
-    if (state.user) {
-      state.user.firstName = value
-    }
-  },
-  updateLastName (state: AuthStateInterface, value: string) {
-    if (state.user) {
-      state.user.lastName = value
-    }
-  },
-  updateNickname (state: AuthStateInterface, value: string) {
-    if (state.user) {
-      state.user.nickname = value
-    }
-  },
-  updateEmail (state: AuthStateInterface, value: string) {
-    if (state.user) {
-      state.user.email = value
-    }
-  },
   updateNotificationType (state: AuthStateInterface, value: string) {
     if (state.user) {
       state.user.notificationType = value

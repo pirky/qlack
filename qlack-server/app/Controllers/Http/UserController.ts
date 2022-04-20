@@ -2,6 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import UserChannel from 'App/Models/UserChannel'
 import { DateTime } from 'luxon'
 import { Channel } from 'App/Models/Channel'
+import User from 'App/Models/User'
 
 export default class UserController {
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
@@ -33,6 +34,26 @@ export default class UserController {
       userChannel.invitedAt = null
       // userChannel.joinedAt = DateTime.now()
       userChannel?.save()
+      return true
+    }
+    return false
+  }
+
+  async updateState({ request }: HttpContextContract) {
+    const user = await User.query().where('id', request.input('userId')).first()
+    if (user) {
+      user.activeState = request.input('activeState')
+      user.save()
+      return true
+    }
+    return false
+  }
+
+  async updateNotification({ request }: HttpContextContract) {
+    const user = await User.query().where('id', request.input('userId')).first()
+    if (user) {
+      user.notificationType = request.input('notificationType')
+      user.save()
       return true
     }
     return false

@@ -14,6 +14,8 @@ Route.group(() => {
 Route.group(() => {
   Route.post('acceptInvite', 'UserController.acceptInvite').middleware('auth')
   Route.post('declineInvite', 'UserController.declineInvite').middleware('auth')
+  Route.post('updateState', 'UserController.updateState').middleware('auth')
+  Route.post('updateNotification', 'UserController.updateNotification').middleware('auth')
 }).prefix('user')
 
 Route.group(() => {

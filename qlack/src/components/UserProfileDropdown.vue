@@ -14,6 +14,7 @@
           :options="options"
           model-value="{{status}}"
           filled
+          @update:model-value="changeStatus()"
         >
           <template v-slot:append>
             <q-icon v-if="status === 'online'" name="fa fa-solid fa-circle" size="0.5em" color="positive" />
@@ -31,6 +32,7 @@
           unchecked-icon="tag"
           false-value="tagged"
           keep-color
+          @update:model-value="changeNotificationType()"
         />
 
       </div>
@@ -71,8 +73,17 @@ export default defineComponent({
         () => this.$router.push('/auth')
       ).catch((e) => { console.log('logout error: ', e) }
       )
+    },
+
+    async changeStatus () {
+      await this.$store.dispatch('channels/updateState', this.status)
+    },
+
+    async changeNotificationType () {
+      await this.$store.dispatch('channels/updateNotification', this.notificationType)
     }
   },
+
   computed: {
     firstName: {
       get () {
