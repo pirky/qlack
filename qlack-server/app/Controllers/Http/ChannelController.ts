@@ -12,7 +12,9 @@ export default class ChannelController {
 
     if (auth.user !== undefined) {
       let channel = await Database.from('channels').select('*').where('name', channelName).first()
-
+      if (channel === null) {
+        return null
+      }
       let userChannel = await UserChannel.query()
         .select('*')
         .where('user_id', auth.user.id)

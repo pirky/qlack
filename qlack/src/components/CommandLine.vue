@@ -107,7 +107,7 @@ export default {
       if (this.shiftDown) return
 
       this.loading = true
-      const response = await this.addMessage({ channelName: this.name, message: this.newMessage })
+      const response = await this.addMessage({ channelName: this.name, message: this.newMessage, router: this.$router })
       this.newMessage = response === true ? '' : this.newMessage
       this.loading = false
 

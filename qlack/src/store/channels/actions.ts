@@ -28,7 +28,7 @@ const parseChannel = (channel: ExtraChannel | null) => {
 
 // Function to handle commands
 const CommandHandler = {
-  async handleCommand (state: any, dispatch: any, message: RawMessage) {
+  async handleCommand (state: any, dispatch: any, message: RawMessage, router: any) {
     console.log('handling command', message)
 
     if (message.startsWith('/join ')) {
@@ -44,22 +44,23 @@ const CommandHandler = {
       }
 
       // Check if user already has a channel with that name
-      const joined = channelName in state.channels
-      if (joined) {
+      const joinedChannel = channelName in state.channels
+      if (joinedChannel && state.channels[channelName].userState === 'joined') {
         return `You are already in channel: ${channelName}`
       }
 
       const existingChannel = parseChannel(await ChannelService.getChannel(channelName))
-      console.log('channel', existingChannel)
       if (!existingChannel) {
         // Create channel
-        await ChannelService.createChannel(channelName, isPrivate)
+        await dispatch('createChannel', { channelName, isPrivate })
+        router.push(`/channel/${channelName}`)
         return true
       }
 
       // If user is invited to channel, accept invite
       if (existingChannel.userState === 'invited') {
-        await ChannelService.acceptInvite(channelName, state.user.id)
+        await dispatch('acceptInvite', channelName)
+        router.push(`/channel/${channelName}`)
         return true
       }
 
@@ -67,9 +68,9 @@ const CommandHandler = {
         return `${channelName} is private.`
       } else {
         await dispatch('join', channelName)
+        router.push(`/channel/${channelName}`)
+        return true
       }
-      // console.log('channelName:', channelName)
-      // return true
     }
 
     return `Unknown command: ${message}`
@@ -98,10 +99,10 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     }
   },
 
-  async addMessage ({ state, dispatch, commit }, { channelName, message }: { channelName: string, message: RawMessage }) {
+  async addMessage ({ state, dispatch, commit }, { channelName, message, router }: { channelName: string, message: RawMessage, router: any }) {
     // If message starts with a slash, it's a command
     if (message.startsWith('/')) {
-      return await CommandHandler.handleCommand(state, dispatch, message)
+      return await CommandHandler.handleCommand(state, dispatch, message, router)
     }
 
     // No channel - can't send message
