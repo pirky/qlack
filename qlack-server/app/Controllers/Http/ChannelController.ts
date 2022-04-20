@@ -11,17 +11,14 @@ export default class ChannelController {
     const channelName = request.params().channelName.replace('%20', ' ')
 
     if (auth.user !== undefined) {
-      let channel = await Database.from('channels')
-        .select('*')
-        .where('name', channelName)
-        .first()
-      
+      let channel = await Database.from('channels').select('*').where('name', channelName).first()
+
       let userChannel = await UserChannel.query()
         .select('*')
         .where('user_id', auth.user.id)
         .where('channel_id', channel.id)
         .first()
-      
+
       if (userChannel) {
         return {
           id: channel.channel_id,
