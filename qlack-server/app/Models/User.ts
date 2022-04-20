@@ -38,33 +38,11 @@ export default class User extends BaseModel {
   @column()
   public activeState: ActiveStates
 
-  // @column()
-  // public rememberMeToken?: string
-
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
-
-  @column.dateTime({ serializeAs: null })
-  public deletedAt: DateTime | null
-
-  // @manyToMany(() => Channel, {
-  //   localKey: 'id',
-  //   relatedKey: 'id',
-  //   pivotForeignKey: 'user_id',
-  //   pivotRelatedForeignKey: 'channel_id',
-  //   pivotTable: 'user_channels',
-  //   pivotTimestamps: true,
-  //   pivotColumns: [
-  //     'invited_at',
-  //     'joined_at',
-  //     'kicked_at',
-  //     'banned_at'
-  //   ],
-  // })
-  // public channels: ManyToMany<typeof Channel>
 
   @beforeSave()
   public static async hashPassword(user: User) {

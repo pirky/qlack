@@ -13,14 +13,12 @@ export default class UsersSchema extends BaseSchema {
       table.string('password', 180).notNullable()
       table.enum('notification_type', ['all', 'tagged']).defaultTo('all')
       table.enum('active_state', ['online', 'dnd', 'offline']).defaultTo('online')
-      // table.string('remember_me_token').nullable()
 
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
        */
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()
-      table.timestamp('deleted_at', { useTz: true }).defaultTo(null)
     })
   }
 

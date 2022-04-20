@@ -2,13 +2,16 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { Channel, States } from 'App/Models/Channel'
 import UserChannel from 'App/Models/UserChannel'
 import { DateTime } from 'luxon'
+import Database from '@ioc:Adonis/Lucid/Database'
+import Message from "App/Models/Message";
+import UserChannelKick from "App/Models/UserChannelKick";
 
 export default class ChannelController {
   public async getChannel({ auth, request }: HttpContextContract) {
     const channelName = request.params().channelName.replace('%20', ' ')
 
     if (auth.user !== undefined) {
-      let channel = await Channel.query()
+      let channel = await Database.from('channels')
         .select('*')
         .fullOuterJoin('user_channels', 'channels.id', 'channel_id')
         .where('user_id', auth.user.id)
@@ -16,15 +19,15 @@ export default class ChannelController {
         .first()
       return channel
         ? {
-            id: channel.$extras.channel_id,
+            id: channel.channel_id,
             name: channel.name,
             state: channel.state,
-            createdBy: channel.createdBy,
+            createdBy: channel.created_by,
 
-            invitedAt: channel.$extras.invited_at,
-            joinedAt: channel.$extras.joined_at,
-            kickedAt: channel.$extras.kicked_at,
-            bannedAt: channel.$extras.banned_at,
+            invitedAt: channel.invited_at,
+            joinedAt: channel.joined_at,
+            kickedAt: channel.kicked_at,
+            bannedAt: channel.banned_at,
           }
         : null
     }
@@ -52,7 +55,6 @@ export default class ChannelController {
         channelId: channel.id,
         joinedAt: DateTime.now(),
       })
-      console.log(channel.name)
       return channel
     } catch (error) {
       return null
@@ -61,21 +63,17 @@ export default class ChannelController {
 
   public async deleteChannel({ auth, request }) {
     try {
-      const channel = await Channel.query().where('id', request.input('channelId')).first()
-      const userChannel = await UserChannel.query()
-        .where('user_id', auth.user.id)
-        .where('channel_id', request.input('channelId'))
-        .first()
+      const channel = await Channel.query().where('name', request.input('channelName')).first()
       if (channel) {
+        await UserChannel.query()
+          .where('user_id', auth.user.id)
+          .where('channel_id', channel.id)
+          .delete()
         if (channel.createdBy === auth.user.id) {
-          channel.deletedAt = DateTime.now()
-          await channel.save()
-          userChannel ? (userChannel.deletedAt = DateTime.now()) : null
-          userChannel ? await userChannel.save() : null
+          await Message.query().where('channel_id', channel.id).delete()
+          await UserChannelKick.query().where('channel_id', channel.id).delete()
+          await channel.delete()
           return true
-        } else {
-          userChannel ? (userChannel.deletedAt = DateTime.now()) : null
-          userChannel ? await userChannel.save() : null
         }
         return true
       }
