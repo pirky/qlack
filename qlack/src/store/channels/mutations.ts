@@ -23,6 +23,9 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   SET_ACTIVE (state, channelName: string) {
     state.active = channelName
   },
+  SET_USERS (state, users: [{ nickname: string, activeState: string}]) {
+    state.users = users
+  },
   NEW_MESSAGE (state, { channelName, message }: { channelName: string, message: Message }) {
     state.channels[channelName].messages.push(message)
   },

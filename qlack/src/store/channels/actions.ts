@@ -146,6 +146,13 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       commit('CLEAR_CHANNEL', channelName)
       return true
     } else return false
+  },
+
+  async setActiveChannel ({ commit }, channelName: string) {
+    commit('SET_ACTIVE', channelName)
+    const users = await channelService.getUsers(channelName)
+    console.log('users', users)
+    commit('SET_USERS', users)
   }
 }
 

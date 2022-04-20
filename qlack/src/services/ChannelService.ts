@@ -65,6 +65,10 @@ class ChannelService {
     return api.get('channel/getChannel/' + channelName).then((response) => response.data)
   }
 
+  async getUsers (channelName: string): Promise<[{ nickname: string, activeState: string}]> {
+    return await api.get('channel/getUsers/' + channelName).then((response) => response.data)
+  }
+
   async createChannel (channelName: string, isPrivate: boolean): Promise<ExtraChannel> {
     return api.post('channel/createChannel', { channelName, isPrivate }).then((response) => response.data)
   }

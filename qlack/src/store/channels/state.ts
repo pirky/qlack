@@ -4,7 +4,8 @@ export interface ChannelsStateInterface {
   loading: boolean,
   error: Error | null,
   channels: { [channel: string]: Channel },
-  active: string | null
+  active: string | null,
+  users: [{ nickname: string, activeState: string}] | null
 }
 
 function state (): ChannelsStateInterface {
@@ -12,7 +13,8 @@ function state (): ChannelsStateInterface {
     loading: false,
     error: null,
     channels: {},
-    active: null
+    active: null,
+    users: null
   }
 }
 

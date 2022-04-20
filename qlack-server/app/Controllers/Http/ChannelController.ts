@@ -105,11 +105,16 @@ export default class ChannelController {
       const channelName = request.params().channelName.replace('%20', ' ')
       const channel = await Channel.query().where('name', channelName).first()
       if (channel) {
-        const allUserIds = await UserChannel.query()
+        // get user ids as array
+        const userRes = await UserChannel.query()
           .select('user_id')
           .where('channel_id', channel.id)
-        // @ts-ignore
-        return await User.query().select('nickname', 'active_state').whereIn('id', allUserIds)
+        
+        const userIds = userRes.map((userId) => {
+          return userId.userId
+        })
+        
+        return await User.query().select('nickname', 'active_state').whereIn('id', userIds)
       }
       return null
     } catch (error) {

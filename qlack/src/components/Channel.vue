@@ -36,7 +36,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { mapMutations } from 'vuex'
 
 export default defineComponent({
   name: 'Channel',
@@ -68,22 +67,22 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapMutations('channels', {
-      setActiveChannel: 'SET_ACTIVE'
-    }),
+    async setActiveChannel (channelName: string) {
+      await this.$store.dispatch('channels/setActiveChannel', channelName)
+    },
     declineInvite () {
       void this.$store.dispatch('channels/declineInvite', this.name)
     },
-    acceptInvite () {
+    async acceptInvite () {
       void this.$store.dispatch('channels/acceptInvite', this.name)
-      this.setActiveChannel(this.name)
+      await this.setActiveChannel(this.name)
       void this.$router.push('/channel/' + String(this.name))
     },
-    manageChannel () {
+    async manageChannel () {
       if (this.userState === 'invited') {
         this.confirm = true
       } else {
-        this.setActiveChannel(this.name)
+        await this.setActiveChannel(this.name)
         void this.$router.push('/channel/' + String(this.name))
         if (this.$q.screen.width < 1024) {
           this.$store.commit('mainStore/updateLeftDrawerState', false)

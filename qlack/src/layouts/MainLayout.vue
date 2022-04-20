@@ -107,48 +107,8 @@ import UserProfileDropdown from 'components/UserProfileDropdown.vue'
 import { defineComponent } from 'vue'
 import { useQuasar } from 'quasar'
 import CreateChannel from 'components/CreateChannel.vue'
-import { User as UserContract } from 'src/contracts'
 
-const userList = [
-  {
-    id: 0,
-    firstName: 'Arnost',
-    lastName: 'Kabel',
-    nickname: 'kablis',
-    email: 'arnost@kabel.com',
-    notificationType: 'all',
-    activeState: 'online'
-  },
-  {
-    id: 1,
-    firstName: 'Janko',
-    lastName: 'Petrzlen',
-    nickname: 'petrzlak',
-    email: 'janko@petrzlen.com',
-    notificationType: 'all',
-    activeState: 'dnd'
-  },
-  {
-    id: 2,
-    firstName: 'Pelel',
-    lastName: 'Petrovsky',
-    nickname: 'pele',
-    email: 'pelel@petrovsky.com',
-    notificationType: 'all',
-    activeState: 'offline'
-  },
-  {
-    id: 3,
-    firstName: 'Pelel',
-    lastName: 'Petrovsky',
-    nickname: 'pele',
-    email: 'pelel@petrovsky.com',
-    notificationType: 'all',
-    activeState: 'online'
-  }
-]
-
-function compare (a: UserContract, b: UserContract) {
+function compare (a: { nickname: string, activeState: string}, b: { nickname: string, activeState: string}) {
   if (a.nickname < b.nickname) {
     return -1
   }
@@ -203,11 +163,13 @@ export default defineComponent({
     },
 
     orderedUserList () {
-      const onlineUserList: Array<UserContract> = []
-      const dndUserList: Array<UserContract> = []
-      const offlineUserList: Array<UserContract> = []
+      const onlineUserList: Array<{ nickname: string, activeState: string}> = []
+      const dndUserList: Array<{ nickname: string, activeState: string}> = []
+      const offlineUserList: Array<{ nickname: string, activeState: string}> = []
 
-      userList.forEach(function (user) {
+      const userList = this.$store.state.channels.users
+
+      userList?.forEach(function (user) {
         if (user.activeState === 'online') onlineUserList.push(user)
         if (user.activeState === 'dnd') dndUserList.push(user)
         if (user.activeState === 'offline') offlineUserList.push(user)
