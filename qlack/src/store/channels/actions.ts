@@ -28,15 +28,15 @@ const parseChannel = (channel: ExtraChannel | null) => {
 
 // Function to handle commands
 const CommandHandler = {
-  async handleCommand (state: any, rootState: any, dispatch: any, message: RawMessage, router: any) {
+  async handleCommand (state: any, rootState: any, dispatch: any, message: RawMessage, router: any, userId: number) {
     console.log('handling command', message)
 
-    if (message.startsWith('/join ')) {
-      return await this.joinCommand(state, dispatch, message, router)
+    if (message.trim().startsWith('/join ')) {
+      return await this.joinCommand(state, dispatch, message.trim(), router)
     }
 
-    if (message.startsWith('/list')) {
-      if (message !== '/list') {
+    if (message.trim().startsWith('/list')) {
+      if (message.trim() !== '/list') {
         return 'Invalid command'
       }
       if (state.active === null) {
@@ -46,9 +46,19 @@ const CommandHandler = {
       return true
     }
 
-    if (message.startsWith('/invite')) {
-      await this.inviteCommand(state, dispatch, message, router)
+    if (message.trim().startsWith('/invite ')) {
+      return await this.inviteCommand(message)
     }
+
+    if (message.trim().startsWith('/cancel')) {
+      if (message.trim() === '/cancel') {
+        return await this.cancelCommand(dispatch, state, userId, router)
+      }
+    }
+
+    // if (message.trim().startsWith('/kick ')) {
+    //   return await this.kickCommand(state, message)
+    // }
 
     return `Unknown command: ${message}`
   },
@@ -103,9 +113,33 @@ const CommandHandler = {
     dispatch('mainStore/updateRightDrawerState', true, { root: true })
   },
 
-  async inviteCommand () {
-    console.log('invite command')
+  // invite az nakoniec lebo treba riesit ci nema ban user nahodou, tak aby sme to vedeli aj otestovat ked sa to bude kodit
+  // nefungiruje este
+  async inviteCommand (message: RawMessage) {
+    const users = await channelService.getAllUsers()
+    const currUser = message.slice(8)
+    if (!(users.includes(currUser))) {
+      return `User ${currUser} does not exist`
+    }
+    return true
   },
+
+  async cancelCommand (dispatch: any, state: any, userId: number, router: any) {
+    const isOwner = state.channels[state.active].createdBy === userId
+    const success = await dispatch('deleteChannel', state.active)
+    if (!success) {
+      return isOwner ? 'Error deleting channel' : 'Error leaving channel'
+    }
+    router.push('/')
+    return true
+  },
+
+  // async kickCommand (state: any, message: RawMessage) {
+  //   const channelName = state.active
+  //   const nickname = message.slice(6)
+  //
+  //   return true
+  // },
 
   sleep (ms: number) {
     return new Promise((resolve) => {
@@ -139,7 +173,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async addMessage ({ state, rootState, dispatch, commit }, { channelName, message, router }: { channelName: string, message: RawMessage, router: any }) {
     // If message starts with a slash, it's a command
     if (message.startsWith('/')) {
-      return await CommandHandler.handleCommand(state, rootState, dispatch, message, router)
+      return await CommandHandler.handleCommand(state, rootState, dispatch, message, router, this.getters['auth/id'])
     }
 
     // No channel - can't send message
