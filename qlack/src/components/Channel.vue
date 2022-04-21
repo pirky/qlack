@@ -74,16 +74,16 @@ export default defineComponent({
       void this.$store.dispatch('channels/declineInvite', this.name)
     },
     async acceptInvite () {
-      void this.$store.dispatch('channels/acceptInvite', this.name)
+      void await this.$store.dispatch('channels/acceptInvite', this.name)
       await this.setActiveChannel(this.name)
-      void this.$router.push('/channel/' + String(this.name))
+      void await this.$router.push('/channel/' + String(this.name))
     },
     async manageChannel () {
       if (this.userState === 'invited') {
         this.confirm = true
       } else {
         await this.setActiveChannel(this.name)
-        void this.$router.push('/channel/' + String(this.name))
+        void await this.$router.push('/channel/' + String(this.name))
         if (this.$q.screen.width < 1024) {
           this.$store.commit('mainStore/updateLeftDrawerState', false)
         }

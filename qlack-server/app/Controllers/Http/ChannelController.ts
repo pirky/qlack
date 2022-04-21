@@ -106,14 +106,12 @@ export default class ChannelController {
       const channel = await Channel.query().where('name', channelName).first()
       if (channel) {
         // get user ids as array
-        const userRes = await UserChannel.query()
-          .select('user_id')
-          .where('channel_id', channel.id)
-        
+        const userRes = await UserChannel.query().select('user_id').where('channel_id', channel.id)
+
         const userIds = userRes.map((userId) => {
           return userId.userId
         })
-        
+
         return await User.query().select('nickname', 'active_state').whereIn('id', userIds)
       }
       return null

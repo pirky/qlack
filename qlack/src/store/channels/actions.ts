@@ -39,9 +39,15 @@ const CommandHandler = {
       if (message !== '/list') {
         return 'Invalid command'
       }
-
+      if (state.active === null) {
+        return 'No active channel'
+      }
       await this.listCommand(rootState, dispatch)
       return true
+    }
+
+    if (message.startsWith('/invite')) {
+      await this.inviteCommand(state, dispatch, message, router)
     }
 
     return `Unknown command: ${message}`
@@ -95,6 +101,10 @@ const CommandHandler = {
     }
     await this.sleep(150)
     dispatch('mainStore/updateRightDrawerState', true, { root: true })
+  },
+
+  async inviteCommand () {
+    console.log('invite command')
   },
 
   sleep (ms: number) {
