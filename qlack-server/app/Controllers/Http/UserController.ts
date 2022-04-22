@@ -16,13 +16,13 @@ export default class UserController {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  async acceptInvite({ request }: HttpContextContract) {
+  async acceptInvite({ auth, request }: HttpContextContract) {
     //get channel id by name
     const channel = await Channel.query().where('name', request.input('channelName')).first()
-    if (channel) {
+    if (channel && auth.user !== undefined) {
       const userChannel = await UserChannel.query()
         .select('*')
-        .where('user_id', request.input('userId'))
+        .where('user_id', auth.user.id)
         .where('channel_id', channel.id)
         .firstOrFail()
 
@@ -34,12 +34,12 @@ export default class UserController {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  async declineInvite({ request }: HttpContextContract) {
+  async declineInvite({ auth, request }: HttpContextContract) {
     const channel = await Channel.query().where('name', request.input('channelName')).first()
-    if (channel) {
+    if (channel && auth.user !== undefined) {
       const userChannel = await UserChannel.query()
         .select('*')
-        .where('user_id', request.input('userId'))
+        .where('user_id', auth.user.id)
         .where('channel_id', channel.id)
         .firstOrFail()
       userChannel.invitedAt = null
@@ -51,23 +51,27 @@ export default class UserController {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  async updateState({ request }: HttpContextContract) {
-    const user = await User.query().where('id', request.input('userId')).first()
-    if (user) {
-      user.activeState = request.input('activeState')
-      user.save()
-      return true
+  async updateState({ auth, request }: HttpContextContract) {
+    if (auth.user !== undefined) {
+      const user = await User.query().where('id', auth.user.id).first()
+      if (user) {
+        user.activeState = request.input('activeState')
+        user.save()
+        return true
+      }
     }
     return false
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  async updateNotification({ request }: HttpContextContract) {
-    const user = await User.query().where('id', request.input('userId')).first()
-    if (user) {
-      user.notificationType = request.input('notificationType')
-      user.save()
-      return true
+  async updateNotification({ auth, request }: HttpContextContract) {
+    if (auth.user !== undefined) {
+      const user = await User.query().where('id', auth.user.id).first()
+      if (user) {
+        user.notificationType = request.input('notificationType')
+        user.save()
+        return true
+      }
     }
     return false
   }

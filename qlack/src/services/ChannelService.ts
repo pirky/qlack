@@ -53,20 +53,24 @@ class ChannelService {
     return this.channels.get(name)
   }
 
-  async acceptInvite (channelName: string, userId: number):Promise<void> {
-    await api.post('user/acceptInvite', { channelName, userId })
+  async joinExisting (channelName: string): Promise<void> {
+    return api.post('channel/joinExisting', { channelName }).then((response) => response.data)
   }
 
-  async declineInvite (channelName: string, userId: number) :Promise<void> {
-    await api.post('user/declineInvite', { channelName, userId })
+  async acceptInvite (channelName: string):Promise<void> {
+    await api.post('user/acceptInvite', { channelName })
   }
 
-  async updateState (activeState: string, userId: number): Promise<void> {
-    await api.post('user/updateState', { activeState, userId })
+  async declineInvite (channelName: string) :Promise<void> {
+    await api.post('user/declineInvite', { channelName })
   }
 
-  async updateNotification (notificationType: string, userId: number): Promise<void> {
-    await api.post('user/updateNotification', { notificationType, userId })
+  async updateState (activeState: string): Promise<void> {
+    await api.post('user/updateState', { activeState })
+  }
+
+  async updateNotification (notificationType: string): Promise<void> {
+    await api.post('user/updateNotification', { notificationType })
   }
 
   async getChannel (channelName: string): Promise<ExtraChannel> {

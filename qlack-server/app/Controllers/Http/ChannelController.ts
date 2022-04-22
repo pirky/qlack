@@ -37,7 +37,7 @@ export default class ChannelController {
       }
 
       return {
-        id: channel.channel_id,
+        id: channel.id,
         name: channel.name,
         state: channel.state,
         createdBy: channel.created_by,
@@ -117,6 +117,24 @@ export default class ChannelController {
       return null
     } catch (error) {
       return null
+    }
+  }
+
+  public async joinExisting({ auth, request }) {
+    try {
+      const channelName = request.input('channelName').replace('%20', ' ')
+      const channel = await Channel.query().where('name', channelName).first()
+      if (channel) {
+        await UserChannel.create({
+          userId: auth.user.id,
+          channelId: channel.id,
+          joinedAt: DateTime.now(),
+        })
+        return true
+      }
+      return false
+    } catch (error) {
+      return false
     }
   }
 }

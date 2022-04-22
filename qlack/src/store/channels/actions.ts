@@ -6,7 +6,6 @@ import { Channel, RawMessage, ExtraChannel } from 'src/contracts'
 import ChannelService from 'src/services/ChannelService'
 
 const parseChannel = (channel: ExtraChannel | null) => {
-  console.log('stuff', channel)
   if (channel) {
     const tempChannel: Channel = {
       createdBy: channel.createdBy,
@@ -29,7 +28,7 @@ const parseChannel = (channel: ExtraChannel | null) => {
 
 // Function to handle commands
 const CommandHandler = {
-  async handleCommand (state: any, rootState: any, dispatch: any, message: RawMessage, router: any, userId: number) {
+  async handleCommand (state: any, rootState: any, dispatch: any, message: RawMessage, router: any) {
     console.log('handling command', message)
 
     if (message.trim().startsWith('/join ')) {
@@ -53,7 +52,7 @@ const CommandHandler = {
 
     if (message.trim().startsWith('/cancel')) {
       if (message.trim() === '/cancel') {
-        return await this.cancelCommand(dispatch, state, userId, router)
+        return await this.cancelCommand(dispatch, state, router)
       }
     }
 
@@ -100,6 +99,8 @@ const CommandHandler = {
     if (existingChannel.state === 'private') {
       return `${channelName} is private, and you're not invited.`
     } else {
+      const result = await channelService.joinExisting(channelName)
+      console.log('result', result)
       await dispatch('join', channelName)
       router.push(`/channel/${channelName}`)
       return true
@@ -125,8 +126,8 @@ const CommandHandler = {
     return true
   },
 
-  async cancelCommand (dispatch: any, state: any, userId: number, router: any) {
-    const isOwner = state.channels[state.active].createdBy === userId
+  async cancelCommand (dispatch: any, state: any, router: any) {
+    const isOwner = state.channels[state.active].createdBy === state.user.id
     const success = await dispatch('deleteChannel', state.active)
     if (!success) {
       return isOwner ? 'Error deleting channel' : 'Error leaving channel'
@@ -175,7 +176,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async addMessage ({ state, rootState, dispatch, commit }, { channelName, message, router }: { channelName: string, message: RawMessage, router: any }) {
     // If message starts with a slash, it's a command
     if (message.startsWith('/')) {
-      return await CommandHandler.handleCommand(state, rootState, dispatch, message, router, this.getters['auth/id'])
+      return await CommandHandler.handleCommand(state, rootState, dispatch, message, router)
     }
 
     // No channel - can't send message
@@ -190,24 +191,24 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
 
   async acceptInvite ({ commit, dispatch }, channelName: string) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    await channelService.acceptInvite(channelName, this.getters['auth/id'])
+    await channelService.acceptInvite(channelName)
     commit('updateUserChannelState', { value: 'joined', channelName })
     await dispatch('setActiveChannel', channelName)
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async declineInvite ({ commit }, channelName: string) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    await channelService.declineInvite(channelName, this.getters['auth/id'])
+    await channelService.declineInvite(channelName)
     commit('removeChannel', { channelName })
   },
 
   async updateState ({ commit }, newState: string) {
-    await channelService.updateState(newState, this.getters['auth/id'])
+    await channelService.updateState(newState)
     return commit('auth/updateActiveState', newState, { root: true })
   },
 
   async updateNotification ({ commit }, notificationType: string) {
-    await channelService.updateNotification(notificationType, this.getters['auth/id'])
+    await channelService.updateNotification(notificationType)
     return commit('auth/updateNotificationType', notificationType, { root: true })
   },
 
