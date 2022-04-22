@@ -1,20 +1,20 @@
 <template>
   <q-page class="background">
-    <q-page class="flex column q-pa-md justify-end" padding style="padding: 6em 0 6.2em 0">
-<!--      <q-infinite-scroll @load="onLoad" :offset="250" reverse v-if="channel != null">-->
-<!--        <template v-slot:loading>-->
-<!--          <div class="row justify-center q-my-md">-->
-<!--            <q-spinner-dots color="primary" size="40px" />-->
-<!--          </div>-->
-<!--        </template>-->
+    <q-page class="flex column q-pa-md justify-end" padding style="padding: 6em 0 6.2em 0" ref="scrollArea">
+      <q-infinite-scroll @load="onLoad" :offset="250" reverse :key="scrollKey" ref="infiScroll">
+        <template v-slot:loading>
+          <div class="row justify-center q-my-md">
+            <q-spinner-dots color="primary" size="40px" />
+          </div>
+        </template>
 
-<!--        <div v-for="message in messages" v-bind:key="message.id" class="q-pa-md">-->
-<!--          <Message v-bind="message" v-if="channel != null"/>-->
-<!--        </div>-->
-<!--      </q-infinite-scroll>-->
-      <div v-for="message in messages" v-bind:key="message.id" class="q-pa-md">
+        <div v-for="message in messages" v-bind:key="message.id" class="q-pa-md">
+          <Message v-bind="message" v-if="channel != null"/>
+        </div>
+      </q-infinite-scroll>
+      <!-- <div v-for="message in messages" v-bind:key="message.id" class="q-pa-md">
         <Message v-bind="message" v-if="channel != null"/>
-      </div>
+      </div> -->
     </q-page>
 
     <ChannelName v-bind="channel" v-if="channel != null"/>
@@ -51,6 +51,8 @@ export default defineComponent({
   watch: {
     // watch store for new messages and show notification
     '$store.state.channels.latestMessage': function () {
+      this.scrollToBottom()
+
       const message = this.$store.state.channels.latestMessage
       if (!message) return
 
@@ -93,6 +95,7 @@ export default defineComponent({
   data () {
     const $q = useQuasar()
     return {
+      scrollKey: 0,
       useQuasar: $q
       // onLoad (index: number, done: (arg: boolean) => void) {
       //   setTimeout(() => {
@@ -119,6 +122,12 @@ export default defineComponent({
       //     // done(false)
       //   }, 1000)
       // }
+    }
+  },
+
+  methods: {
+    scrollToBottom () {
+      this.scrollKey++
     }
   }
 })

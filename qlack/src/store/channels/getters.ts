@@ -14,8 +14,6 @@ const getters: GetterTree<ChannelsStateInterface, StateInterface> = {
   },
 
   channelById: (state: ChannelsStateInterface) => (channelId: number) => {
-    console.log('channelById', channelId)
-    console.log('state.channels', Object.values(state.channels))
     const channel = Object.values(state.channels).find(x => x.id === channelId)
     return channel
   }
