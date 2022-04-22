@@ -79,7 +79,7 @@ const CommandHandler = {
     // Check if user already has a channel with that name
     const joinedChannel = channelName in state.channels
     if (joinedChannel && state.channels[channelName].userState === 'joined') {
-      return `You are already in channel: ${channelName}`
+      return `You are already a member of: ${channelName}`
     }
 
     const existingChannel = parseChannel(await ChannelService.getChannel(channelName))
@@ -98,7 +98,7 @@ const CommandHandler = {
     }
 
     if (existingChannel.state === 'private') {
-      return `${channelName} is private.`
+      return `${channelName} is private, and you're not invited.`
     } else {
       await dispatch('join', channelName)
       router.push(`/channel/${channelName}`)
@@ -212,7 +212,8 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async createChannel ({ dispatch }, { channelName, isPrivate }: { channelName: string, isPrivate: boolean }) {
     const channel = await channelService.createChannel(channelName, isPrivate)
     if (channel) {
-      await dispatch('channels/join', channelName, { root: true })
+      await dispatch('join', channelName)
+      await dispatch('setActiveChannel', channelName)
       return true
     } else return false
   },
