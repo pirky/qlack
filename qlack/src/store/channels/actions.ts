@@ -6,6 +6,7 @@ import { Channel, RawMessage, ExtraChannel } from 'src/contracts'
 import ChannelService from 'src/services/ChannelService'
 
 const parseChannel = (channel: ExtraChannel | null) => {
+  console.log('stuff', channel)
   if (channel) {
     const tempChannel: Channel = {
       createdBy: channel.createdBy,

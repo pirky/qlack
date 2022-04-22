@@ -12,7 +12,7 @@
           {{ author.nickname[0].toUpperCase() }}
         </q-avatar>
       </template>
-      <q-markdown>{{ content }}</q-markdown>
+      <q-markdown>{{ highlightMentions(content) }}</q-markdown>
     </q-chat-message>
   </div>
 </template>
@@ -56,13 +56,18 @@ export default defineComponent({
     },
     isTagged () {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      return this.content.includes('@' + this.currentUserNickname)
+      return this.content.split(' ').includes('@' + this.currentUserNickname)
     }
   },
 
   methods: {
     parseTime (sendTime: Date) {
       const minDiff = Math.floor((Date.now() - sendTime.getTime()) / 1000 / 60)
+
+      if (minDiff < 1) {
+        return 'just now.'
+      }
+
       if (minDiff < 60) {
         return `${minDiff} minute${minDiff === 1 ? '' : 's'} ago.`
       }
@@ -76,6 +81,16 @@ export default defineComponent({
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
       return `${weekdays[sendTime.getDay()]} ${months[sendTime.getMonth()]} ${sendTime.getDate()} ${sendTime.getFullYear()}`
+    },
+
+    highlightMentions (content: string): string {
+      const words = content.split(' ')
+
+      const newWords = words.map((word: string) => {
+        return word.startsWith('@') ? `**${word}**` : word
+      })
+
+      return newWords.join(' ')
     }
   }
 })

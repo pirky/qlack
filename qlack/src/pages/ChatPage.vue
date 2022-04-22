@@ -29,7 +29,8 @@ import ChannelName from 'components/ChannelName.vue'
 import CommandLine from 'components/CommandLine.vue'
 import Message from 'components/Message.vue'
 import { defineComponent } from 'vue'
-import { Channel as ChannelInterface, Message as MessageInterface } from 'src/contracts'
+import { Channel, Channel as ChannelInterface, Message as MessageInterface } from 'src/contracts'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'ChatPage',
@@ -47,6 +48,37 @@ export default defineComponent({
     }
   },
 
+  watch: {
+    // watch store for new messages and show notification
+    '$store.state.channels.latestMessage': function () {
+      const message = this.$store.state.channels.latestMessage
+      if (!message) return
+
+      const channel: Channel = this.$store.getters['channels/channelById'](message.channelId)
+
+      // if (this.useQuasar.appVisible) {
+      let messageContent = message.content
+      if (message.content.length > 75) {
+        messageContent = message.content.slice(0, 75) + '...'
+      }
+
+      this.useQuasar.notify({
+        // If longer, replace rest with ...
+        message: messageContent,
+        caption: `${message.author.nickname} ${channel.name}`,
+        color: 'accent',
+        textColor: 'black',
+        icon: 'fa fa-solid fa-message',
+        group: channel.name,
+        position: 'top',
+        actions: [
+          { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
+        ]
+      })
+      // }
+    }
+  },
+
   computed: {
     channel (): ChannelInterface {
       return this.$store.getters['channels/activeChannel'](
@@ -59,7 +91,9 @@ export default defineComponent({
   },
 
   data () {
+    const $q = useQuasar()
     return {
+      useQuasar: $q
       // onLoad (index: number, done: (arg: boolean) => void) {
       //   setTimeout(() => {
       //     this.messages.splice(0, 0,

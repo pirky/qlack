@@ -24,7 +24,7 @@ export default class ChannelController {
 
       if (userChannel) {
         return {
-          id: channel.channel_id,
+          id: channel.id,
           name: channel.name,
           state: channel.state,
           createdBy: channel.created_by,
