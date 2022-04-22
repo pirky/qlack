@@ -150,12 +150,13 @@ const CommandHandler = {
 }
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
-  async join ({ commit }, channelName: string) {
+  async join ({ commit, dispatch }, channelName: string) {
     try {
       commit('LOADING_START')
       const messages = await channelService.join(channelName).loadMessages()
       const channel = parseChannel(await channelService.getChannel(channelName))
       commit('LOADING_SUCCESS', { channelName, messages, channel })
+      await dispatch('setActiveChannel', channelName)
     } catch (err) {
       commit('LOADING_ERROR', err)
       throw err
@@ -187,10 +188,11 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     return true
   },
 
-  async acceptInvite ({ commit }, channelName: string) {
+  async acceptInvite ({ commit, dispatch }, channelName: string) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await channelService.acceptInvite(channelName, this.getters['auth/id'])
     commit('updateUserChannelState', { value: 'joined', channelName })
+    await dispatch('setActiveChannel', channelName)
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async declineInvite ({ commit }, channelName: string) {
@@ -213,7 +215,6 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     const channel = await channelService.createChannel(channelName, isPrivate)
     if (channel) {
       await dispatch('join', channelName)
-      await dispatch('setActiveChannel', channelName)
       return true
     } else return false
   },
@@ -229,6 +230,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
 
   async setActiveChannel ({ commit }, channelName: string) {
     commit('SET_ACTIVE', channelName)
+    console.log('channelName', channelName)
     const users = await channelService.getUsers(channelName)
     commit('SET_USERS', users)
   }

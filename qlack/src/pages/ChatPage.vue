@@ -56,26 +56,26 @@ export default defineComponent({
 
       const channel: Channel = this.$store.getters['channels/channelById'](message.channelId)
 
-      // if (this.useQuasar.appVisible) {
-      let messageContent = message.content
-      if (message.content.length > 75) {
-        messageContent = message.content.slice(0, 75) + '...'
-      }
+      if (!this.useQuasar.appVisible) {
+        let messageContent = message.content
+        if (message.content.length > 75) {
+          messageContent = message.content.slice(0, 75) + '...'
+        }
 
-      this.useQuasar.notify({
-        // If longer, replace rest with ...
-        message: messageContent,
-        caption: `${message.author.nickname} ${channel.name}`,
-        color: 'accent',
-        textColor: 'black',
-        icon: 'fa fa-solid fa-message',
-        group: channel.name,
-        position: 'top',
-        actions: [
-          { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
-        ]
-      })
-      // }
+        this.useQuasar.notify({
+          // If longer, replace rest with ...
+          message: messageContent,
+          caption: `${message.author.nickname} ${channel.name}`,
+          color: 'accent',
+          textColor: 'black',
+          icon: 'fa fa-solid fa-message',
+          group: channel.name,
+          position: 'top',
+          actions: [
+            { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
+          ]
+        })
+      }
     }
   },
 
