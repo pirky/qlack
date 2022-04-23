@@ -1,5 +1,5 @@
 import { api } from 'src/boot/axios'
-import { ExtraChannel, Message, RawMessage, User } from 'src/contracts'
+import { ExtraChannel, Message, RawMessage } from 'src/contracts'
 import { BootParams, SocketManager } from './SocketManager'
 
 class ChannelSocketManager extends SocketManager {
@@ -12,8 +12,18 @@ class ChannelSocketManager extends SocketManager {
       store.commit('channels/NEW_MESSAGE', { channelName, message })
     })
 
-    this.socket.on('changeUserState', (user: User) => {
+    this.socket.on('changeUserState', (user: { nickname: string, activeState: string }) => {
       store.commit('channels/CHANGE_USER_STATE', { nickname: user.nickname, activeState: user.activeState })
+    })
+
+    this.socket.on('kickUser', ({ victimNickname, channelName }: {victimNickname: string, channelName: string}) => {
+      if (store.state.channels.active === channelName) {
+        store.commit('channels/KICK_USER', { victimNickname, channelName })
+        if (victimNickname === store.state.auth.user.nickname) {
+          // opened channel and I am kicked
+          store.dispatch('channels/leave', channelName)
+        }
+      }
     })
   }
 
@@ -27,6 +37,10 @@ class ChannelSocketManager extends SocketManager {
 
   public updateState (newState: string): Promise<boolean> {
     return this.emitAsync('changeUserState', newState)
+  }
+
+  public kickUser (channelName: string, nickname: string) {
+    return this.emitAsync('kickUser', { channelName, nickname })
   }
 }
 
@@ -44,7 +58,6 @@ class ChannelService {
     return channel
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   public leave (name: string) {
     const channel = this.channels.get(name)
     if (!channel) {

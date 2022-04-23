@@ -87,7 +87,7 @@
 
         <User
           v-for="user in orderedUserList"
-          :key="user.id"
+          :key="user.nickname"
           v-bind="user"
         />
       </q-list>
@@ -107,6 +107,7 @@ import UserProfileDropdown from 'components/UserProfileDropdown.vue'
 import { defineComponent } from 'vue'
 import { useQuasar } from 'quasar'
 import CreateChannel from 'components/CreateChannel.vue'
+import { Channel as ChannelInterface } from 'src/contracts'
 
 function compare (a: { nickname: string, activeState: string}, b: { nickname: string, activeState: string}) {
   if (a.nickname < b.nickname) {
@@ -147,14 +148,14 @@ export default defineComponent({
       }
     },
 
-    invitedChannels () {
+    invitedChannels (): ChannelInterface[] {
       if (this.$store.state.channels.channels) {
         const channels = Object.values(this.$store.state.channels.channels)
         return channels.filter(channel => channel.userState === 'invited')
       }
       return []
     },
-    joinedChannels () {
+    joinedChannels (): ChannelInterface[] {
       if (this.$store.state.channels.channels) {
         const channels = Object.values(this.$store.state.channels.channels)
         return channels.filter(channel => channel.userState === 'joined')

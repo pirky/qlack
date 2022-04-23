@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
-import { Channel, RawMessage, ExtraChannel } from 'src/contracts'
+import { Channel, ExtraChannel, RawMessage } from 'src/contracts'
 import ChannelService from 'src/services/ChannelService'
 
 const parseChannel = (channel: ExtraChannel | null) => {
@@ -56,9 +56,9 @@ const CommandHandler = {
       }
     }
 
-    // if (message.trim().startsWith('/kick ')) {
-    //   return await this.kickCommand(state, message)
-    // }
+    if (message.trim().startsWith('/kick ')) {
+      return await this.kickCommand(dispatch, rootState, message)
+    }
 
     return `Unknown command: ${message}`
   },
@@ -135,12 +135,17 @@ const CommandHandler = {
     return true
   },
 
-  // async kickCommand (state: any, message: RawMessage) {
-  //   const channelName = state.active
-  //   const nickname = message.slice(6)
-  //
-  //   return true
-  // },
+  async kickCommand (dispatch: any, rootState: any, message: RawMessage) {
+    const channelName: string = rootState.channels.active
+    const nickname = message.slice(6)
+    const channelUsers = rootState.channels.users
+    for (const user of channelUsers) {
+      if (user.nickname === nickname) {
+        return await dispatch('kickUser', { channelName, nickname })
+      }
+    }
+    return `User ${nickname} is not in channel ${channelName}`
+  },
 
   sleep (ms: number) {
     return new Promise((resolve) => {
@@ -191,7 +196,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async acceptInvite ({ commit, dispatch }, channelName: string) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await channelService.acceptInvite(channelName)
-    commit('updateUserChannelState', { value: 'joined', channelName })
+    commit('UPDATE_USER_CHANNEL_STATE', { value: 'joined', channelName })
     await dispatch('setActiveChannel', channelName)
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -234,9 +239,13 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
 
   async setActiveChannel ({ commit }, channelName: string) {
     commit('SET_ACTIVE', channelName)
-    console.log('channelName', channelName)
     const users = await channelService.getUsers(channelName)
     commit('SET_USERS', users)
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async kickUser ({ commit }, { channelName, nickname }: { channelName: string, nickname: string }) {
+    return channelService.in(channelName)?.kickUser(channelName, nickname)
   }
 }
 

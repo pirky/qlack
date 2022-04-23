@@ -15,6 +15,7 @@ Ws.namespace('channels/:name')
   .on('loadMessages', 'MessageController.loadMessages')
   .on('addMessage', 'MessageController.addMessage')
   .on('changeUserState', 'UserController.changeUserState')
+  .on('kickUser', 'ChannelController.kickUser')
 
 Ws.namespace('/')
   .connected(({ socket }) => {

@@ -39,9 +39,23 @@ const mutation: MutationTree<ChannelsStateInterface> = {
       }
     }
   },
-  updateUserChannelState (state: ChannelsStateInterface, { value, channelName }: { value: string, channelName: string }) {
+  UPDATE_USER_CHANNEL_STATE (state: ChannelsStateInterface, { value, channelName }: { value: string, channelName: string }) {
     if (state.channels) {
       state.channels[channelName].userState = value
+    }
+  },
+  KICK_USER (state: ChannelsStateInterface, { victimNickname, channelName }: { victimNickname: string, channelName: string }) {
+    let users: [{ nickname: string, activeState: string}] | null = null
+    if (state.active === channelName && state.users) {
+      for (const user of state.users) {
+        if (user.nickname !== victimNickname) {
+          if (!users) users = [user]
+          else users.push(user)
+        }
+      }
+      console.log('before', state.users)
+      state.users = users
+      console.log('after', state.users)
     }
   }
 }
