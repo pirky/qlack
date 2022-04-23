@@ -49,7 +49,7 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     }
   },
   KICK_USER (state: ChannelsStateInterface, { victimNickname, channelName }: { victimNickname: string, channelName: string }) {
-    let users: [{ nickname: string, activeState: string}] | null = null
+    let users: { nickname: string, activeState: string }[] = []
     if (state.active === channelName && state.users) {
       for (const user of state.users) {
         if (user.nickname !== victimNickname) {
