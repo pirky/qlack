@@ -7,22 +7,17 @@ export default class MessageRepository implements MessageRepositoryContract {
 
     if (id === -1) {
       channel = await Channel.query()
-      .where('name', channelName)
-      .preload('messages', (messagesQuery) => messagesQuery
-        .orderBy('id', 'desc')
+        .where('name', channelName)
+        .preload('messages', (messagesQuery) =>
+          messagesQuery.orderBy('id', 'desc').limit(2).preload('author')
+        )
         .limit(2)
-        .preload('author')
-      )
-      .limit(2)
-      .firstOrFail()
+        .firstOrFail()
     } else {
       channel = await Channel.query()
         .where('name', channelName)
-        .preload('messages', (messagesQuery) => messagesQuery
-          .where('id', '<', id)
-          .orderBy('id', 'desc')
-          .limit(2)
-          .preload('author')
+        .preload('messages', (messagesQuery) =>
+          messagesQuery.where('id', '<', id).orderBy('id', 'desc').limit(2).preload('author')
         )
         .limit(2)
         .firstOrFail()
