@@ -87,7 +87,16 @@ export default defineComponent({
       const words = content.split(' ')
 
       const newWords = words.map((word: string) => {
-        return word.startsWith('@') ? `**${word}**` : word
+        if (word.startsWith('@')) {
+          const userName = word.slice(1)
+          const userNames = this.$store.state.channels.users.map((user) => user.nickname)
+
+          if (userNames.includes(userName)) {
+            return `**${word}**`
+          }
+        }
+
+        return word
       })
 
       return newWords.join(' ')

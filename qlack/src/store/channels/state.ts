@@ -6,7 +6,7 @@ export interface ChannelsStateInterface {
   channels: { [channel: string]: Channel },
   latestMessage: Message | null,
   active: string | null,
-  users: [{ nickname: string, activeState: string}] | null
+  users: { nickname: string, activeState: string}[]
 }
 
 function state (): ChannelsStateInterface {
@@ -16,7 +16,7 @@ function state (): ChannelsStateInterface {
     channels: {},
     latestMessage: null,
     active: null,
-    users: null
+    users: []
   }
 }
 

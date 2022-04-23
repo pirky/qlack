@@ -1,7 +1,7 @@
 <template>
   <q-page class="background">
     <q-page class="flex column q-pa-md justify-end" padding style="padding: 6em 0 6.2em 0" ref="scrollArea">
-      <q-infinite-scroll @load="onLoad" :offset="250" reverse :key="scrollKey" ref="infiScroll">
+      <q-infinite-scroll @load="onLoad" :offset="250" reverse :key="scrollKey" v-if="channel != null">
         <template v-slot:loading>
           <div class="row justify-center q-my-md">
             <q-spinner-dots color="primary" size="40px" />
@@ -55,6 +55,15 @@ export default defineComponent({
 
       const message = this.$store.state.channels.latestMessage
       if (!message) return
+
+      const user = this.$store.state.auth.user
+      if (user?.activeState === 'dnd') return
+
+      if (user?.notificationType === 'tagged') {
+        if (!message.content.split(' ').includes('@' + user.nickname)) {
+          return
+        }
+      }
 
       const channel: Channel = this.$store.getters['channels/channelById'](message.channelId)
 
