@@ -29,8 +29,16 @@ export default defineComponent({
       type: Number,
       required: true
     },
+    channelId: {
+      type: Number,
+      required: true
+    },
     authorId: {
       type: Number,
+      required: true
+    },
+    author: {
+      type: Object,
       required: true
     },
     createdAt: {
@@ -39,10 +47,6 @@ export default defineComponent({
     },
     content: {
       type: String,
-      required: true
-    },
-    author: {
-      type: Object,
       required: true
     }
   },

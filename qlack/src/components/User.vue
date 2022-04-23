@@ -28,27 +28,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'User',
   props: {
-    id: {
-      type: Number,
-      required: true
-    },
-    firstName: {
-      type: String,
-      required: true
-    },
-    lastName: {
-      type: String,
-      required: true
-    },
     nickname: {
-      type: String,
-      required: true
-    },
-    email: {
-      type: String,
-      required: true
-    },
-    notificationType: {
       type: String,
       required: true
     },
