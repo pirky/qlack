@@ -154,9 +154,10 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async join ({ commit, dispatch }, channelName: string) {
     try {
       commit('LOADING_START')
-      const messages = await channelService.join(channelName).loadMessages()
+      console.log('joining channel', channelName)
+      channelService.join(channelName)
       const channel = parseChannel(await channelService.getChannel(channelName))
-      commit('LOADING_SUCCESS', { channelName, messages, channel })
+      commit('LOADING_SUCCESS', { channelName, channel })
       await dispatch('setActiveChannel', channelName)
     } catch (err) {
       commit('LOADING_ERROR', err)
@@ -186,6 +187,26 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     const newMessage = await channelService.in(channelName)?.addMessage(message)
     commit('NEW_MESSAGE', { channelName, message: newMessage })
 
+    return true
+  },
+
+  async loadMessages ({ state, commit }) {
+    if (state.active === null) {
+      return
+    }
+
+    let loadedMessages
+    if (state.channels[state.active].messages.length === 0) {
+      loadedMessages = (await channelService.in(state.active)?.loadMessages(-1))?.reverse()
+    } else {
+      loadedMessages = (await channelService.in(state.active)?.loadMessages(state.channels[state.active].messages[0].id))?.reverse()
+    }
+
+    if (loadedMessages !== undefined && loadedMessages.length === 0) {
+      return false
+    }
+
+    commit('LOAD_MESSAGES', { channelName: state.active, messages: loadedMessages })
     return true
   },
 
@@ -231,7 +252,6 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
 
   async setActiveChannel ({ commit }, channelName: string) {
     commit('SET_ACTIVE', channelName)
-    console.log('channelName', channelName)
     const users = await channelService.getUsers(channelName)
     commit('SET_USERS', users)
   }

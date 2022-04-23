@@ -2,11 +2,31 @@ import type { MessageRepositoryContract, Message } from '@ioc:Repositories/Messa
 import { Channel } from 'App/Models/Channel'
 
 export default class MessageRepository implements MessageRepositoryContract {
-  public async getAll(channelName: string): Promise<Message[]> {
-    const channel = await Channel.query()
+  public async loadSome(channelName: string, id: number): Promise<Message[]> {
+    let channel: Channel
+
+    if (id === -1) {
+      channel = await Channel.query()
       .where('name', channelName)
-      .preload('messages', (messagesQuery) => messagesQuery.preload('author'))
+      .preload('messages', (messagesQuery) => messagesQuery
+        .orderBy('id', 'desc')
+        .limit(2)
+        .preload('author')
+      )
+      .limit(2)
       .firstOrFail()
+    } else {
+      channel = await Channel.query()
+        .where('name', channelName)
+        .preload('messages', (messagesQuery) => messagesQuery
+          .where('id', '<', id)
+          .orderBy('id', 'desc')
+          .limit(2)
+          .preload('author')
+        )
+        .limit(2)
+        .firstOrFail()
+    }
 
     return channel.messages.map((message) => message.serialize() as Message)
   }

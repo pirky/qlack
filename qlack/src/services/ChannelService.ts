@@ -17,8 +17,8 @@ class ChannelSocketManager extends SocketManager {
     return this.emitAsync('addMessage', message)
   }
 
-  public loadMessages (): Promise<Message[]> {
-    return this.emitAsync('loadMessages')
+  public loadMessages (id: number): Promise<Message[]> {
+    return this.emitAsync('loadMessages', id)
   }
 }
 

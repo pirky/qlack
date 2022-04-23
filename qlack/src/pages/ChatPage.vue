@@ -1,7 +1,7 @@
 <template>
   <q-page class="background">
     <q-page class="flex column q-pa-md justify-end" padding style="padding: 6em 0 6.2em 0" ref="scrollArea">
-      <q-infinite-scroll @load="onLoad" :offset="250" reverse :key="scrollKey" v-if="channel != null">
+      <q-infinite-scroll @load="onLoad" :offset="500" reverse :key="scrollKey" ref="infiScroll" v-if="channel != null">
         <template v-slot:loading>
           <div class="row justify-center q-my-md">
             <q-spinner-dots color="primary" size="40px" />
@@ -12,9 +12,6 @@
           <Message v-bind="message" v-if="channel != null"/>
         </div>
       </q-infinite-scroll>
-      <!-- <div v-for="message in messages" v-bind:key="message.id" class="q-pa-md">
-        <Message v-bind="message" v-if="channel != null"/>
-      </div> -->
     </q-page>
 
     <ChannelName v-bind="channel" v-if="channel != null"/>
@@ -29,8 +26,11 @@ import ChannelName from 'components/ChannelName.vue'
 import CommandLine from 'components/CommandLine.vue'
 import Message from 'components/Message.vue'
 import { defineComponent } from 'vue'
-import { Channel, Channel as ChannelInterface, Message as MessageInterface } from 'src/contracts'
+import { Channel, Channel as ChannelInterface } from 'src/contracts'
 import { useQuasar } from 'quasar'
+
+let self: any = null
+let canLoad = true
 
 export default defineComponent({
   name: 'ChatPage',
@@ -41,11 +41,16 @@ export default defineComponent({
     Message
   },
 
+  created () {
+    self = this
+  },
+
   mounted () {
     const channelName = this.$route.params.channelName
     if (this.$store.getters['channels/joinedChannels'].includes(channelName)) {
       void this.$store.dispatch('channels/setActiveChannel', channelName)
     }
+    self.scrollToBottom()
   },
 
   watch: {
@@ -74,7 +79,6 @@ export default defineComponent({
         }
 
         this.useQuasar.notify({
-          // If longer, replace rest with ...
           message: messageContent,
           caption: `${message.author.nickname} ${channel.name}`,
           color: 'accent',
@@ -87,6 +91,14 @@ export default defineComponent({
           ]
         })
       }
+    },
+
+    // watch store for channel change
+    '$store.state.channels.active': function () {
+      const infiScroll: any = self.$refs.infiScroll
+      if (infiScroll) {
+        infiScroll.resume()
+      }
     }
   },
 
@@ -96,8 +108,9 @@ export default defineComponent({
         this.$route.params.channelName
       )
     },
-    messages (): MessageInterface[] {
-      return this.$store.getters['channels/currentMessages']
+
+    messages () {
+      return self.$store.getters['channels/currentMessages']
     }
   },
 
@@ -105,32 +118,18 @@ export default defineComponent({
     const $q = useQuasar()
     return {
       scrollKey: 0,
-      useQuasar: $q
-      // onLoad (index: number, done: (arg: boolean) => void) {
-      //   setTimeout(() => {
-      //     this.messages.splice(0, 0,
-      //       {
-      //         id: 100 + index * 2 + 1,
-      //         authorNickname: 'petrzlak',
-      //         author_id: 1,
-      //         initials: 'P',
-      //         time: String(100 + index * 2 + 1).concat(' minutes ago'),
-      //         text: 'Wasuuup'
-      //       },
-      //       {
-      //         id: 100 + index * 2,
-      //         authorNickname: 'kablis',
-      //         author_id: 0,
-      //         initials: 'K',
-      //         time: String(100 + index * 2).concat(' minutes ago'),
-      //         text: 'Zdarec starec'
-      //       }
-      //     )
-      //     done(true)
-      //     // NOT DONE YET
-      //     // done(false)
-      //   }, 1000)
-      // }
+      useQuasar: $q,
+
+      async onLoad (index: number, done: (arg: boolean) => void) {
+        if (canLoad) {
+          canLoad = false
+          const result = await self.$store.dispatch('channels/loadMessages')
+          canLoad = true
+          done(!result)
+        }
+
+        done(false)
+      }
     }
   },
 
