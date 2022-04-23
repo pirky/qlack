@@ -7,7 +7,13 @@ export default class UserChannels extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.integer('user_id').notNullable().unsigned().references('id').inTable('users')
-      table.integer('channel_id').notNullable().unsigned().references('id').inTable('channels').onDelete('CASCADE')
+      table
+        .integer('channel_id')
+        .notNullable()
+        .unsigned()
+        .references('id')
+        .inTable('channels')
+        .onDelete('CASCADE')
 
       table.timestamp('invited_at', { useTz: true }).defaultTo(null)
       table.timestamp('joined_at', { useTz: true }).defaultTo(null)

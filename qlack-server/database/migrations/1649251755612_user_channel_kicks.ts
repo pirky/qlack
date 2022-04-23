@@ -9,7 +9,12 @@ export default class UserChannelKicks extends BaseSchema {
 
       table.integer('user_id').notNullable().unsigned().references('users.id')
       table.integer('kicker_id').notNullable().unsigned().references('users.id')
-      table.integer('channel_id').notNullable().unsigned().references('channels.id').onDelete('CASCADE')
+      table
+        .integer('channel_id')
+        .notNullable()
+        .unsigned()
+        .references('channels.id')
+        .onDelete('CASCADE')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
