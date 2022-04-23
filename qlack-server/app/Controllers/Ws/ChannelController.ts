@@ -34,6 +34,15 @@ export default class ChannelController {
             kickerId: kicker.id,
             channelId: channel.id,
           })
+          const kicks = await UserChannelKick.query()
+            .where('user_id', victim.id)
+            .where('channel_id', channel.id)
+            .select('kicker_id')
+          let kickIds = kicks.map((kick) => kick.kickerId)
+          let unique = kickIds.filter((v, i, a) => a.indexOf(v) === i)
+          if (unique.length >= 3) {
+            userChannel.bannedAt = DateTime.now()
+          }
         }
         await userChannel.save()
         // broadcast user to other users in channel and to the user itself
