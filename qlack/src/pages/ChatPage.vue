@@ -43,10 +43,6 @@ export default defineComponent({
 
   created () {
     self = this
-    const infiScroll: any = self.$refs.infiScroll
-    if (infiScroll) {
-      infiScroll.resume()
-    }
   },
 
   mounted () {
@@ -99,10 +95,6 @@ export default defineComponent({
 
     // watch store for channel change
     '$store.state.channels.active': function () {
-      const infiScroll: any = self.$refs.infiScroll
-      if (infiScroll) {
-        infiScroll.resume()
-      }
       if (!this.$store.state.channels.active && this.$store.state.channels.users.length === 0) {
         void this.$router.push('/')
       }
@@ -117,7 +109,14 @@ export default defineComponent({
     },
 
     messages () {
-      return self.$store.getters['channels/currentMessages']
+      const messages = self.$store.getters['channels/currentMessages']
+      if (messages.length === 0) {
+        const infiScroll: any = self.$refs.infiScroll
+        if (infiScroll) {
+          infiScroll.resume()
+        }
+      }
+      return messages
     }
   },
 
