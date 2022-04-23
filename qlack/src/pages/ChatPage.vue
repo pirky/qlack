@@ -43,6 +43,10 @@ export default defineComponent({
 
   created () {
     self = this
+    const infiScroll: any = self.$refs.infiScroll
+    if (infiScroll) {
+      infiScroll.resume()
+    }
   },
 
   mounted () {
@@ -98,6 +102,9 @@ export default defineComponent({
       const infiScroll: any = self.$refs.infiScroll
       if (infiScroll) {
         infiScroll.resume()
+      }
+      if (!this.$store.state.channels.active && this.$store.state.channels.users.length === 0) {
+        void this.$router.push('/')
       }
     }
   },

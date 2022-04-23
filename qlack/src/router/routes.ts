@@ -13,6 +13,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'channel/:channelName',
+        meta: { validChannelName: true },
         component: () => import('src/pages/ChatPage.vue')
       }
     ]

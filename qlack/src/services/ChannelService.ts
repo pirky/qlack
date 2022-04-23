@@ -23,6 +23,8 @@ class ChannelSocketManager extends SocketManager {
           // opened channel and I am kicked
           store.dispatch('channels/leave', channelName)
         }
+      } else {
+        store.commit('channels/DELETE_CHANNEL', channelName)
       }
     })
   }

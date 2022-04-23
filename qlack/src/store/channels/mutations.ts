@@ -16,8 +16,12 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     state.loading = false
     state.error = error
   },
+  DELETE_CHANNEL (state, channelName: string) {
+    delete state.channels[channelName]
+  },
   CLEAR_CHANNEL (state, channelName: string) {
     state.active = null
+    state.users = []
     delete state.channels[channelName]
   },
   SET_ACTIVE (state, channelName) {

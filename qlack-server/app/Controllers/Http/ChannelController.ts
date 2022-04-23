@@ -20,6 +20,9 @@ export default class ChannelController {
         .select('*')
         .where('user_id', auth.user.id)
         .where('channel_id', channel.id)
+        .whereNull('kicked_at')
+        .whereNull('banned_at')
+        .whereNotNull('joined_at')
         .first()
 
       if (userChannel) {
@@ -56,6 +59,9 @@ export default class ChannelController {
       return Channel.query()
         .select('name')
         .fullOuterJoin('user_channels', 'channels.id', 'channel_id')
+        .whereNull('kicked_at')
+        .whereNull('banned_at')
+        .whereNotNull('joined_at')
         .where('user_id', auth.user.id)
     }
   }
