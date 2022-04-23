@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
-import { Channel, RawMessage, ExtraChannel } from 'src/contracts'
+import { Channel, ExtraChannel, RawMessage } from 'src/contracts'
 import ChannelService from 'src/services/ChannelService'
 
 const parseChannel = (channel: ExtraChannel | null) => {
@@ -52,13 +52,13 @@ const CommandHandler = {
 
     if (message.trim().startsWith('/cancel')) {
       if (message.trim() === '/cancel') {
-        return await this.cancelCommand(dispatch, state, router)
+        return await this.cancelCommand(dispatch, rootState, router)
       }
     }
 
-    // if (message.trim().startsWith('/kick ')) {
-    //   return await this.kickCommand(state, message)
-    // }
+    if (message.trim().startsWith('/kick ')) {
+      return await this.kickCommand(dispatch, rootState, message)
+    }
 
     return `Unknown command: ${message}`
   },
@@ -99,8 +99,7 @@ const CommandHandler = {
     if (existingChannel.state === 'private') {
       return `${channelName} is private, and you're not invited.`
     } else {
-      const result = await channelService.joinExisting(channelName)
-      console.log('result', result)
+      await channelService.joinExisting(channelName)
       await dispatch('join', channelName)
       router.push(`/channel/${channelName}`)
       return true
@@ -126,9 +125,9 @@ const CommandHandler = {
     return true
   },
 
-  async cancelCommand (dispatch: any, state: any, router: any) {
-    const isOwner = state.channels[state.active].createdBy === state.user.id
-    const success = await dispatch('deleteChannel', state.active)
+  async cancelCommand (dispatch: any, rootState: any, router: any) {
+    const isOwner = rootState.channels.channels[rootState.channels.active].createdBy === rootState.auth.user.id
+    const success = await dispatch('deleteChannel', rootState.channels.active)
     if (!success) {
       return isOwner ? 'Error deleting channel' : 'Error leaving channel'
     }
@@ -136,12 +135,17 @@ const CommandHandler = {
     return true
   },
 
-  // async kickCommand (state: any, message: RawMessage) {
-  //   const channelName = state.active
-  //   const nickname = message.slice(6)
-  //
-  //   return true
-  // },
+  async kickCommand (dispatch: any, rootState: any, message: RawMessage) {
+    const channelName: string = rootState.channels.active
+    const nickname = message.slice(6)
+    const channelUsers = rootState.channels.users
+    for (const user of channelUsers) {
+      if (user.nickname === nickname) {
+        return await dispatch('kickUser', { channelName, nickname })
+      }
+    }
+    return `User ${nickname} is not in channel ${channelName}`
+  },
 
   sleep (ms: number) {
     return new Promise((resolve) => {
@@ -213,7 +217,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async acceptInvite ({ commit, dispatch }, channelName: string) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await channelService.acceptInvite(channelName)
-    commit('updateUserChannelState', { value: 'joined', channelName })
+    commit('UPDATE_USER_CHANNEL_STATE', { value: 'joined', channelName })
     await dispatch('setActiveChannel', channelName)
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -223,9 +227,13 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('removeChannel', { channelName })
   },
 
-  async updateState ({ commit }, newState: string) {
-    await channelService.updateState(newState)
-    return commit('auth/updateActiveState', newState, { root: true })
+  async updateState ({ state, commit }, newState: string) {
+    const channelName = state.active
+    if (channelName === null) {
+      return
+    }
+    await channelService.in(channelName)?.updateState(newState)
+    commit('auth/updateActiveState', newState, { root: true })
   },
 
   async updateNotification ({ commit }, notificationType: string) {
@@ -254,6 +262,11 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('SET_ACTIVE', channelName)
     const users = await channelService.getUsers(channelName)
     commit('SET_USERS', users)
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async kickUser ({ commit }, { channelName, nickname }: { channelName: string, nickname: string }) {
+    return channelService.in(channelName)?.kickUser(channelName, nickname)
   }
 }
 

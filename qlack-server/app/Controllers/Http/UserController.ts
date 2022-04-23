@@ -51,19 +51,6 @@ export default class UserController {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  async updateState({ auth, request }: HttpContextContract) {
-    if (auth.user !== undefined) {
-      const user = await User.query().where('id', auth.user.id).first()
-      if (user) {
-        user.activeState = request.input('activeState')
-        user.save()
-        return true
-      }
-    }
-    return false
-  }
-
-  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async updateNotification({ auth, request }: HttpContextContract) {
     if (auth.user !== undefined) {
       const user = await User.query().where('id', auth.user.id).first()

@@ -11,6 +11,20 @@ class ChannelSocketManager extends SocketManager {
     this.socket.on('message', (message: Message) => {
       store.commit('channels/NEW_MESSAGE', { channelName, message })
     })
+
+    this.socket.on('changeUserState', (user: { nickname: string, activeState: string }) => {
+      store.commit('channels/CHANGE_USER_STATE', { nickname: user.nickname, activeState: user.activeState })
+    })
+
+    this.socket.on('kickUser', ({ victimNickname, channelName }: {victimNickname: string, channelName: string}) => {
+      if (store.state.channels.active === channelName) {
+        store.commit('channels/KICK_USER', { victimNickname, channelName })
+        if (victimNickname === store.state.auth.user.nickname) {
+          // opened channel and I am kicked
+          store.dispatch('channels/leave', channelName)
+        }
+      }
+    })
   }
 
   public addMessage (message: RawMessage): Promise<Message> {
@@ -19,6 +33,14 @@ class ChannelSocketManager extends SocketManager {
 
   public loadMessages (id: number): Promise<Message[]> {
     return this.emitAsync('loadMessages', id)
+  }
+
+  public updateState (newState: string): Promise<boolean> {
+    return this.emitAsync('changeUserState', newState)
+  }
+
+  public kickUser (channelName: string, nickname: string) {
+    return this.emitAsync('kickUser', { channelName, nickname })
   }
 }
 
@@ -36,7 +58,6 @@ class ChannelService {
     return channel
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   public leave (name: string) {
     const channel = this.channels.get(name)
     if (!channel) {
@@ -63,10 +84,6 @@ class ChannelService {
 
   async declineInvite (channelName: string) :Promise<void> {
     await api.post('user/declineInvite', { channelName })
-  }
-
-  async updateState (activeState: string): Promise<void> {
-    await api.post('user/updateState', { activeState })
   }
 
   async updateNotification (notificationType: string): Promise<void> {
