@@ -20,7 +20,7 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     state.active = null
     delete state.channels[channelName]
   },
-  SET_ACTIVE (state, channelName: string) {
+  SET_ACTIVE (state, channelName) {
     state.active = channelName
     state.channels[channelName].messages = []
   },
@@ -57,9 +57,7 @@ const mutation: MutationTree<ChannelsStateInterface> = {
           else users.push(user)
         }
       }
-      console.log('before', state.users)
       state.users = users
-      console.log('after', state.users)
     }
   }
 }

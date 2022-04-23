@@ -171,7 +171,6 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   // eslint-disable-next-line @typescript-eslint/require-await
   async leave ({ getters, commit }, channelName: string | null) {
     const leaving: string[] = channelName !== null ? [channelName] : getters.joinedChannels
-
     for (const c of leaving) {
       channelService.leave(c)
       commit('CLEAR_CHANNEL', c)

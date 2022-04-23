@@ -62,14 +62,7 @@
 
       </q-list>
 
-<!--      <div>-->
-<!--        <q-btn color="purple" @click="showNotifFero" label="Petrzlak Tuna Kto Notification" />-->
-<!--        <q-btn color="purple" @click="showNotifFero2" label="Pele Tuna Kto Notification" />-->
-<!--        <q-btn color="purple" @click="showNotifJozo" label="Pele Else Notification" />-->
-<!--      </div>-->
-
     </q-drawer>
-
     <q-drawer
       v-if="activeChannel"
       class="drawer"
@@ -128,8 +121,10 @@ export default defineComponent({
   },
 
   computed: {
-    activeChannel () {
-      return this.$store.state.channels.active
+    activeChannel (): ChannelInterface {
+      return this.$store.getters['channels/activeChannel'](
+        this.$route.params.channelName
+      )
     },
     leftDrawerState: {
       get () {
