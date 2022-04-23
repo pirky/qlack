@@ -6,7 +6,7 @@
       :bg-color="authorId === currentUserId? 'amber': 'primary'"
     >
       <template v-slot:name>{{ author.nickname }}</template>
-      <template v-slot:stamp>{{ parseTime(new Date(createdAt)) }}</template>
+      <template v-slot:stamp>{{ currentTimestamp }}</template>
       <template v-slot:avatar>
         <q-avatar color="secondary" text-color="black" style="margin: 0 10px;">
           {{ author.nickname[0].toUpperCase() }}
@@ -57,12 +57,27 @@ export default defineComponent({
     isTagged () {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       return this.content.split(' ').includes('@' + this.currentUserNickname)
+    },
+    currentTimestamp () {
+      return this.parseTime(new Date(this.createdAt))
+    }
+  },
+
+  created () {
+    setInterval(function (self) {
+      self.now = Date.now()
+    }, 500, this)
+  },
+
+  data () {
+    return {
+      now: Date.now()
     }
   },
 
   methods: {
     parseTime (sendTime: Date) {
-      const minDiff = Math.floor((Date.now() - sendTime.getTime()) / 1000 / 60)
+      const minDiff = Math.floor((this.now - sendTime.getTime()) / 1000 / 60)
 
       if (minDiff < 1) {
         return 'just now.'
