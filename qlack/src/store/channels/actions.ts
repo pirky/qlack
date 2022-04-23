@@ -28,19 +28,19 @@ const parseChannel = (channel: ExtraChannel | null) => {
 
 // Function to handle commands
 const CommandHandler = {
-  async handleCommand (state: any, rootState: any, dispatch: any, message: RawMessage, router: any) {
+  async handleCommand (state: any, rootState: any, dispatch: any, message: RawMessage, router: any, rootGetters: any) {
     console.log('handling command', message)
 
     if (message.trim().startsWith('/join ')) {
       return await this.joinCommand(state, dispatch, message.trim(), router)
     }
 
+    const activeChannel = rootGetters['channels/activeChannel'](router.currentRoute._value.params.channelName)
+    if (!activeChannel) return 'No active channel'
+
     if (message.trim().startsWith('/list')) {
       if (message.trim() !== '/list') {
         return 'Invalid command'
-      }
-      if (state.active === null) {
-        return 'No active channel'
       }
       await this.listCommand(rootState, dispatch)
       return true
@@ -58,6 +58,10 @@ const CommandHandler = {
 
     if (message.trim().startsWith('/kick ')) {
       return await this.kickCommand(dispatch, rootState, message)
+    }
+
+    if (message.trim().startsWith('/quit')) {
+      return await this.quitCommand(dispatch, rootState, router)
     }
 
     return `Unknown command: ${message}`
@@ -147,6 +151,19 @@ const CommandHandler = {
     return `User ${nickname} is not in channel ${channelName}`
   },
 
+  async quitCommand (dispatch: any, rootState: any, router: any) {
+    const isOwner = rootState.channels.channels[rootState.channels.active].createdBy === rootState.auth.user.id
+    if (!isOwner) {
+      return 'You are not the owner of this channel'
+    }
+    const success = await dispatch('deleteChannel', rootState.channels.active)
+    if (!success) {
+      return 'Error quiting channel'
+    }
+    router.push('/')
+    return true
+  },
+
   sleep (ms: number) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms)
@@ -177,16 +194,16 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     }
   },
 
-  async addMessage ({ state, rootState, dispatch, commit }, { channelName, message, router }: { channelName: string, message: RawMessage, router: any }) {
+  async addMessage ({ state, rootState, dispatch, commit, rootGetters }, { channelName, message, router }: { channelName: string, message: RawMessage, router: any }) {
     // If message starts with a slash, it's a command
     if (message.startsWith('/')) {
-      return await CommandHandler.handleCommand(state, rootState, dispatch, message, router)
+      return await CommandHandler.handleCommand(state, rootState, dispatch, message, router, rootGetters)
     }
 
     // No channel - can't send message
-    if (state.active === null) {
-      return 'no channel'
-    }
+    const activeChannel = rootGetters['channels/activeChannel'](router.currentRoute._value.params.channelName)
+    if (!activeChannel) return 'No active channel'
+
     const newMessage = await channelService.in(channelName)?.addMessage(message)
     commit('NEW_MESSAGE', { channelName, message: newMessage })
 
