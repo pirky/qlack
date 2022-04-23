@@ -52,7 +52,7 @@ const CommandHandler = {
 
     if (message.trim().startsWith('/cancel')) {
       if (message.trim() === '/cancel') {
-        return await this.cancelCommand(dispatch, state, router)
+        return await this.cancelCommand(dispatch, rootState, router)
       }
     }
 
@@ -99,8 +99,7 @@ const CommandHandler = {
     if (existingChannel.state === 'private') {
       return `${channelName} is private, and you're not invited.`
     } else {
-      const result = await channelService.joinExisting(channelName)
-      console.log('result', result)
+      await channelService.joinExisting(channelName)
       await dispatch('join', channelName)
       router.push(`/channel/${channelName}`)
       return true
@@ -126,9 +125,9 @@ const CommandHandler = {
     return true
   },
 
-  async cancelCommand (dispatch: any, state: any, router: any) {
-    const isOwner = state.channels[state.active].createdBy === state.user.id
-    const success = await dispatch('deleteChannel', state.active)
+  async cancelCommand (dispatch: any, rootState: any, router: any) {
+    const isOwner = rootState.channels.channels[rootState.channels.active].createdBy === rootState.auth.user.id
+    const success = await dispatch('deleteChannel', rootState.channels.active)
     if (!success) {
       return isOwner ? 'Error deleting channel' : 'Error leaving channel'
     }
@@ -202,9 +201,13 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('removeChannel', { channelName })
   },
 
-  async updateState ({ commit }, newState: string) {
-    await channelService.updateState(newState)
-    return commit('auth/updateActiveState', newState, { root: true })
+  async updateState ({ state, commit }, newState: string) {
+    const channelName = state.active
+    if (channelName === null) {
+      return
+    }
+    await channelService.in(channelName)?.updateState(newState)
+    commit('auth/updateActiveState', newState, { root: true })
   },
 
   async updateNotification ({ commit }, notificationType: string) {

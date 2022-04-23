@@ -30,6 +30,15 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     state.channels[channelName].messages.push(message)
     state.latestMessage = message
   },
+  CHANGE_USER_STATE (state, { nickname, activeState }: { nickname: string, activeState: string }) {
+    if (state.users) {
+      for (const user of state.users) {
+        if (user.nickname === nickname) {
+          user.activeState = activeState
+        }
+      }
+    }
+  },
   updateUserChannelState (state: ChannelsStateInterface, { value, channelName }: { value: string, channelName: string }) {
     if (state.channels) {
       state.channels[channelName].userState = value

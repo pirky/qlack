@@ -1,5 +1,5 @@
 import { api } from 'src/boot/axios'
-import { ExtraChannel, Message, RawMessage } from 'src/contracts'
+import { ExtraChannel, Message, RawMessage, User } from 'src/contracts'
 import { BootParams, SocketManager } from './SocketManager'
 
 class ChannelSocketManager extends SocketManager {
@@ -11,6 +11,10 @@ class ChannelSocketManager extends SocketManager {
     this.socket.on('message', (message: Message) => {
       store.commit('channels/NEW_MESSAGE', { channelName, message })
     })
+
+    this.socket.on('changeUserState', (user: User) => {
+      store.commit('channels/CHANGE_USER_STATE', { nickname: user.nickname, activeState: user.activeState })
+    })
   }
 
   public addMessage (message: RawMessage): Promise<Message> {
@@ -19,6 +23,10 @@ class ChannelSocketManager extends SocketManager {
 
   public loadMessages (): Promise<Message[]> {
     return this.emitAsync('loadMessages')
+  }
+
+  public updateState (newState: string): Promise<boolean> {
+    return this.emitAsync('changeUserState', newState)
   }
 }
 
@@ -63,10 +71,6 @@ class ChannelService {
 
   async declineInvite (channelName: string) :Promise<void> {
     await api.post('user/declineInvite', { channelName })
-  }
-
-  async updateState (activeState: string): Promise<void> {
-    await api.post('user/updateState', { activeState })
   }
 
   async updateNotification (notificationType: string): Promise<void> {

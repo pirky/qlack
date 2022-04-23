@@ -14,6 +14,7 @@ Ws.namespace('channels/:name')
   // .middleware('channel') // check if user can join given channel
   .on('loadMessages', 'MessageController.loadMessages')
   .on('addMessage', 'MessageController.addMessage')
+  .on('changeUserState', 'UserController.changeUserState')
 
 Ws.namespace('/')
   .connected(({ socket }) => {
