@@ -130,10 +130,7 @@ export default defineComponent({
       async onLoad (index: number, done: (arg: boolean) => void) {
         if (canLoad) {
           canLoad = false
-          console.log('load', self.$store.state.channels.channels[self.$store.state.channels.active].messages)
           const result = await self.$store.dispatch('channels/loadMessages')
-          console.log('loaded', result)
-          console.log('loaded2', self.$store.state.channels.channels[self.$store.state.channels.active].messages)
           canLoad = true
           done(!result)
         }

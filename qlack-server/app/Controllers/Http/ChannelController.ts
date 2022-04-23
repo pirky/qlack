@@ -148,4 +148,13 @@ export default class ChannelController {
       return false
     }
   }
+
+  public async isBanned({ auth, request }) {
+    const userChannel = await UserChannel.query()
+      .where('user_id', auth.user.id)
+      .where('channel_id', request.input('channelId'))
+      .whereNull('banned_at')
+      .first()
+    return !userChannel
+  }
 }

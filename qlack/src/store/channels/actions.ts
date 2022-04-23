@@ -103,6 +103,11 @@ const CommandHandler = {
     if (existingChannel.state === 'private') {
       return `${channelName} is private, and you're not invited.`
     } else {
+      const isBanned = await channelService.isBanned(existingChannel.id)
+      console.log('isBanned joinCommand:', isBanned)
+      if (isBanned) {
+        return `User is banned from "${channelName}" channel`
+      }
       await channelService.joinExisting(channelName)
       await dispatch('join', channelName)
       router.push(`/channel/${channelName}`)

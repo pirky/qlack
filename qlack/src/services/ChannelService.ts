@@ -49,6 +49,10 @@ class ChannelSocketManager extends SocketManager {
 class ChannelService {
   private channels: Map<string, ChannelSocketManager> = new Map()
 
+  public isBanned (channelId: number) {
+    return api.post('channel/isBanned', { channelId }).then((response) => response.data)
+  }
+
   public join (name: string): ChannelSocketManager {
     if (this.channels.has(name)) {
       throw new Error(`User is already joined in channel "${name}"`)
