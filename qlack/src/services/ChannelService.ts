@@ -53,7 +53,6 @@ class ChannelSocketManager extends SocketManager {
       if (store.state.channels.active === channelName) {
         store.commit('channels/KICK_USER', { victimNickname, channelName })
       }
-      channelService.leave(channelName)
     })
   }
 
