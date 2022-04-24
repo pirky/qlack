@@ -37,6 +37,7 @@ export default class UserController {
   async declineInvite({ auth, request }: HttpContextContract) {
     const channel = await Channel.query().where('name', request.input('channelName')).first()
     if (channel && auth.user !== undefined) {
+      console.log('user', auth.user, 'channel', channel)
       await UserChannel.query()
         .select('*')
         .where('user_id', auth.user.id)

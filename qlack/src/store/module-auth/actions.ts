@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { AuthStateInterface } from './state'
-import { authService, authManager } from 'src/services'
+import { authService, authManager, channelService } from 'src/services'
 import { LoginCredentials, RegisterData } from 'src/contracts'
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
@@ -46,6 +46,7 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       console.log('LOGIN CLIENT')
       commit('AUTH_START')
       const apiToken = await authService.login(credentials)
+      channelService.initInviteSocket()
       commit('AUTH_SUCCESS', null)
       // save api token to local storage and notify listeners
       authManager.setToken(apiToken.token)
@@ -62,6 +63,7 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       commit('AUTH_START')
       await authService.logout()
       await dispatch('channels/leave', null, { root: true })
+      channelService.destroyInviteSocket()
       commit('AUTH_SUCCESS', null)
       // remove api token and notify listeners
       authManager.removeToken()

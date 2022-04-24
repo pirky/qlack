@@ -19,14 +19,4 @@ Ws.namespace('channels/:name')
   .on('joinExisting', 'ChannelController.joinExisting')
 
 Ws.namespace('/')
-  .connected(({ socket }) => {
-    console.log('new websocket connection: ', socket.id)
-  })
-  .disconnected(({ socket }, reason) => {
-    console.log('websocket disconnecting: ', socket.id, reason)
-  })
-  .on('hello', ({ socket }, msg: string) => {
-    console.log('websocket greeted: ', socket.id, msg)
-    return 'hi'
-  })
   .on('inviteUser', 'ChannelController.inviteUser')

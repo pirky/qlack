@@ -147,7 +147,7 @@ const CommandHandler = {
     const isBanned = await channelService.isBanned(channel.id, invitedUser)
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     if (isBanned && channel.createdBy !== rootState.auth.user.id) return `User is banned from "${channel.name}" channel`
-    return channelService.getInviteSocket().inviteUser(channel.name, invitedUser)
+    return channelService.getInviteSocket()?.inviteUser(channel.name, invitedUser)
   },
 
   async cancelCommand (dispatch: any, rootState: any, router: any) {
