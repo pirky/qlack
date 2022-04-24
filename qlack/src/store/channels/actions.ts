@@ -50,6 +50,10 @@ const CommandHandler = {
       return await this.inviteCommand(state, message, rootState)
     }
 
+    if (message.trim().startsWith('/revoke ')) {
+      return await this.revokeCommand(rootState, message)
+    }
+
     if (message.trim().startsWith('/cancel')) {
       if (message.trim() === '/cancel') {
         return await this.cancelCommand(dispatch, rootState, router)
@@ -148,6 +152,22 @@ const CommandHandler = {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     if (isBanned && channel.createdBy !== rootState.auth.user.id) return `User is banned from "${channel.name}" channel`
     return channelService.getInviteSocket()?.inviteUser(channel.name, invitedUser)
+  },
+
+  async revokeCommand (rootState: any, message: RawMessage) {
+    const isOwner = rootState.channels.channels[rootState.channels.active].createdBy === rootState.auth.user.id
+    if (!isOwner) {
+      return 'You are not the owner of this channel'
+    }
+    const channelName: string = rootState.channels.active
+    const nickname = message.slice(8)
+    const channelUsers = rootState.channels.users
+    for (const user of channelUsers) {
+      if (user.nickname === nickname) {
+        return channelService.in(channelName)?.revokeUser(channelName, nickname)
+      }
+    }
+    return `User ${nickname} is not in channel ${channelName}`
   },
 
   async cancelCommand (dispatch: any, rootState: any, router: any) {

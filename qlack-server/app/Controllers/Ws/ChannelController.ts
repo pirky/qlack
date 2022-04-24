@@ -126,4 +126,25 @@ export default class ChannelController {
       return false
     }
   }
+
+  public async revokeUser(
+    { socket, auth }: WsContextContract,
+    { channelName, nickname }: { channelName: string; nickname: string }
+  ) {
+    const kicker = await User.query().where('id', auth.user!.id).firstOrFail()
+    const victim = await User.query().where('nickname', nickname).firstOrFail()
+    const channel = await Channel.query().where('name', channelName).firstOrFail()
+    if (kicker && victim && channel) {
+      if (kicker.id === victim.id) {
+        return 'You cannot revoke yourself!'
+      }
+      await UserChannel.query().where('user_id', victim.id).where('channel_id', channel.id).delete()
+      socket.nsp.emit('kickUser', {
+        victimNickname: victim.nickname,
+        channelName: channel.name,
+      })
+      return true
+    }
+    return false
+  }
 }

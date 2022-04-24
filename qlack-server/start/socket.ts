@@ -17,5 +17,6 @@ Ws.namespace('channels/:name')
   .on('changeUserState', 'UserController.changeUserState')
   .on('kickUser', 'ChannelController.kickUser')
   .on('joinExisting', 'ChannelController.joinExisting')
+  .on('revokeUser', 'ChannelController.revokeUser')
 
 Ws.namespace('/').on('inviteUser', 'ChannelController.inviteUser')

@@ -20,7 +20,6 @@ class ChannelSocketManager extends SocketManager {
       if (store.state.channels.active === channelName) {
         store.commit('channels/KICK_USER', { victimNickname, channelName })
         if (victimNickname === store.state.auth.user.nickname) {
-          // opened channel and I am kicked
           store.dispatch('channels/leave', channelName)
         }
       } else {
@@ -63,6 +62,10 @@ class ChannelSocketManager extends SocketManager {
 
   public inviteUser (channelName: string, invitedUser: string): Promise<boolean> {
     return this.emitAsync('inviteUser', { channelName, invitedUser })
+  }
+
+  public revokeUser (channelName: string, nickname: string) {
+    return this.emitAsync('revokeUser', { channelName, nickname })
   }
 }
 
