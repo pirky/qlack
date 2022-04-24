@@ -14,6 +14,7 @@
       @keyup.shift="shiftDown = false"
       @keydown.enter="send"
       @keyup="onChange"
+      @focusin="setMessage"
       >
       <q-item v-show="someoneIsTyping" class="typing_name" clickable>Someone is typing...
         <q-menu fit anchor="top middle" self="bottom middle">
@@ -130,6 +131,10 @@ export default {
         'Shift'
       ]
       if (dontPrint.includes(key.key)) return
+      void this.currWriting(this.newMessage.trim())
+    },
+
+    setMessage () {
       void this.currWriting(this.newMessage.trim())
     }
   }

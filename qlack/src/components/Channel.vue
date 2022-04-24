@@ -82,6 +82,7 @@ export default defineComponent({
       if (this.userState === 'invited') {
         this.confirm = true
       } else {
+        await this.$store.dispatch('channels/currWriting', '')
         await this.setActiveChannel(this.name)
         void await this.$router.push('/channel/' + String(this.name))
         if (this.$q.screen.width < 1024) {
