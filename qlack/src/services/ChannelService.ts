@@ -1,6 +1,7 @@
 import { api } from 'src/boot/axios'
 import { Channel, ExtraChannel, Message, RawMessage } from 'src/contracts'
 import { BootParams, SocketManager } from './SocketManager'
+import { channelService } from 'src/services/index'
 
 class ChannelSocketManager extends SocketManager {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -38,6 +39,22 @@ class ChannelSocketManager extends SocketManager {
         store.commit('channels/ADD_CHANNEL', { channel })
       }
     })
+
+    this.socket.on('deleteChannel', ({ channelName }: {channelName: string}) => {
+      if (store.state.channels.active === channelName) {
+        store.commit('channels/CLEAR_CHANNEL', channelName)
+      } else {
+        store.commit('channels/DELETE_CHANNEL', channelName)
+      }
+      channelService.leave(channelName)
+    })
+
+    this.socket.on('cancelChannel', ({ victimNickname, channelName }: {victimNickname: string, channelName: string}) => {
+      if (store.state.channels.active === channelName) {
+        store.commit('channels/KICK_USER', { victimNickname, channelName })
+      }
+      channelService.leave(channelName)
+    })
   }
 
   public addMessage (message: RawMessage): Promise<Message> {
@@ -66,6 +83,14 @@ class ChannelSocketManager extends SocketManager {
 
   public revokeUser (channelName: string, nickname: string) {
     return this.emitAsync('revokeUser', { channelName, nickname })
+  }
+
+  public acceptInvite (channelName: string): Promise<boolean> {
+    return this.emitAsync('acceptInvite', { channelName })
+  }
+
+  public deleteChannel (channelName: string): Promise<boolean> {
+    return this.emitAsync('deleteChannel', { channelName })
   }
 }
 
@@ -112,10 +137,6 @@ class ChannelService {
     return this.channels.get(name)
   }
 
-  async acceptInvite (channelName: string):Promise<void> {
-    await api.post('user/acceptInvite', { channelName })
-  }
-
   async declineInvite (channelName: string) :Promise<void> {
     await api.post('user/declineInvite', { channelName })
   }
@@ -138,10 +159,6 @@ class ChannelService {
 
   async createChannel (channelName: string, isPrivate: boolean): Promise<ExtraChannel> {
     return api.post('channel/createChannel', { channelName, isPrivate }).then((response) => response.data)
-  }
-
-  async deleteChannel (channelName: string): Promise<boolean> {
-    return api.post('channel/deleteChannel', { channelName }).then((response) => response.data)
   }
 }
 

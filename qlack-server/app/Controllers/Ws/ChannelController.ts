@@ -4,6 +4,7 @@ import { Channel } from 'App/Models/Channel'
 import UserChannel from 'App/Models/UserChannel'
 import { DateTime } from 'luxon'
 import UserChannelKick from 'App/Models/UserChannelKick'
+import Message from 'App/Models/Message'
 
 export default class ChannelController {
   public async kickUser(
@@ -146,5 +147,61 @@ export default class ChannelController {
       return true
     }
     return false
+  }
+
+  public async acceptInvite(
+    { socket, auth }: WsContextContract,
+    { channelName }: { channelName: string }
+  ) {
+    const channel = await Channel.query().where('name', channelName).first()
+    if (channel && auth.user !== undefined) {
+      const userChannel = await UserChannel.query()
+        .select('*')
+        .where('user_id', auth.user.id)
+        .where('channel_id', channel.id)
+        .firstOrFail()
+
+      userChannel.joinedAt = DateTime.now()
+      userChannel?.save()
+      socket.broadcast.emit('joinUser', {
+        userNickname: auth.user!.nickname,
+        activeState: auth.user!.activeState,
+        channelName: channel.name,
+      })
+      return true
+    }
+    return false
+  }
+
+  public async deleteChannel(
+    { socket, auth }: WsContextContract,
+    { channelName }: { channelName: string }
+  ) {
+    try {
+      const channel = await Channel.query().where('name', channelName).first()
+      if (channel && auth.user !== undefined) {
+        await UserChannel.query()
+          .where('user_id', auth.user.id)
+          .where('channel_id', channel.id)
+          .delete()
+        if (channel.createdBy === auth.user.id) {
+          await Message.query().where('channel_id', channel.id).delete()
+          await UserChannelKick.query().where('channel_id', channel.id).delete()
+          await channel.delete()
+          socket.broadcast.emit('deleteChannel', {
+            channelName: channel.name,
+          })
+          return true
+        }
+        socket.broadcast.emit('cancelChannel', {
+          channelName: channel.name,
+          victimNickname: auth.user.nickname,
+        })
+        return true
+      }
+      return false
+    } catch (error) {
+      return false
+    }
   }
 }

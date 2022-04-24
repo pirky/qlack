@@ -107,7 +107,7 @@ const CommandHandler = {
     if (existingChannel.state === 'private') {
       return `${channelName} is private, and you're not invited.`
     } else {
-      const isBanned = await channelService.isBanned(existingChannel.id, rootState.auth.user?.name)
+      const isBanned = await channelService.isBanned(existingChannel.id, rootState.auth.user?.nickname)
       if (isBanned) return `User is banned from "${channelName}" channel`
 
       await dispatch('join', channelName)
@@ -226,8 +226,8 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       throw err
     }
   },
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async leave ({ getters, commit }, channelName: string | null) {
+
+  leave ({ getters, commit }, channelName: string | null) {
     const leaving: string[] = channelName !== null ? [channelName] : getters.joinedChannels
     for (const c of leaving) {
       channelService.leave(c)
@@ -272,8 +272,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   },
 
   async acceptInvite ({ commit, dispatch }, channelName: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    await channelService.acceptInvite(channelName)
+    void channelService.getInviteSocket()?.acceptInvite(channelName)
     commit('UPDATE_USER_CHANNEL_STATE', { value: 'joined', channelName })
     await dispatch('setActiveChannel', channelName)
   },
@@ -305,8 +304,9 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     } else return false
   },
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async deleteChannel ({ commit }, channelName: string) {
-    const success = await channelService.deleteChannel(channelName)
+    const success = channelService.in(channelName)?.deleteChannel(channelName)
     if (success) {
       channelService.leave(channelName)
       commit('CLEAR_CHANNEL', channelName)

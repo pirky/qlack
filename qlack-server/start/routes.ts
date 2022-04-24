@@ -13,7 +13,6 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('getAllUsers', 'UserController.getAllUsers')
-  Route.post('acceptInvite', 'UserController.acceptInvite').middleware('auth')
   Route.post('declineInvite', 'UserController.declineInvite').middleware('auth')
   Route.post('updateNotification', 'UserController.updateNotification').middleware('auth')
 }).prefix('user')
@@ -23,7 +22,6 @@ Route.group(() => {
   Route.get('getUsers/:channelName', 'ChannelController.getUsers').middleware('auth')
   Route.get('channelNames', 'ChannelController.getChannelNames').middleware('auth')
   Route.post('createChannel', 'ChannelController.createChannel').middleware('auth')
-  Route.post('deleteChannel', 'ChannelController.deleteChannel').middleware('auth')
   Route.post('isBanned', 'ChannelController.isBanned').middleware('auth')
   Route.post('isInvited', 'ChannelController.isInvited').middleware('auth')
 }).prefix('channel')

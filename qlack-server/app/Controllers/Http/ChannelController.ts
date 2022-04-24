@@ -3,8 +3,6 @@ import { Channel, States } from 'App/Models/Channel'
 import UserChannel from 'App/Models/UserChannel'
 import { DateTime } from 'luxon'
 import Database from '@ioc:Adonis/Lucid/Database'
-import Message from 'App/Models/Message'
-import UserChannelKick from 'App/Models/UserChannelKick'
 import User from 'App/Models/User'
 
 export default class ChannelController {
@@ -80,28 +78,6 @@ export default class ChannelController {
       return channel
     } catch (error) {
       return null
-    }
-  }
-
-  public async deleteChannel({ auth, request }) {
-    try {
-      const channel = await Channel.query().where('name', request.input('channelName')).first()
-      if (channel) {
-        await UserChannel.query()
-          .where('user_id', auth.user.id)
-          .where('channel_id', channel.id)
-          .delete()
-        if (channel.createdBy === auth.user.id) {
-          await Message.query().where('channel_id', channel.id).delete()
-          await UserChannelKick.query().where('channel_id', channel.id).delete()
-          await channel.delete()
-          return true
-        }
-        return true
-      }
-      return false
-    } catch (error) {
-      return false
     }
   }
 
