@@ -5,7 +5,12 @@ import RegisterUserValidator from 'App/Validators/RegisterUserValidator'
 export default class AuthController {
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async register({ auth, request }: HttpContextContract) {
-    const data = await request.validate(RegisterUserValidator)
+    let data
+    try {
+      data = await request.validate(RegisterUserValidator)
+    } catch (error) {
+      return { error: error.messages }
+    }
     const user = await User.create(data)
     const token = await auth.use('api').generate(user)
 

@@ -55,7 +55,11 @@
 </template>
 
 <script lang="ts">
+import AuthService from 'src/services/AuthService'
 import { defineComponent } from 'vue'
+// import { User } from 'src/contracts'
+
+// let users: any = []
 
 export default defineComponent({
   name: 'LoginRegister',
@@ -86,7 +90,49 @@ export default defineComponent({
   },
 
   methods: {
-    submitForm () {
+    async submitForm () {
+      if (this.tab === 'register') {
+        const users = await AuthService.getAllUsers()
+        const sameName = users.find(user => user.nickname === this.form.nickname)
+        const sameEmail = users.find(user => user.email === this.form.email)
+
+        if (this.form.firstName === '' || this.form.lastName === '' || this.form.nickname === '' || this.form.email === '' || this.form.password === '') {
+          this.$q.notify({
+            color: 'negative',
+            message: 'Please fill all the fields'
+          })
+          return
+        }
+        if (sameName) {
+          this.$q.notify({
+            color: 'negative',
+            message: 'Nickname already exists'
+          })
+          return
+        }
+        if (sameEmail) {
+          this.$q.notify({
+            color: 'negative',
+            message: 'Email already exists'
+          })
+          return
+        }
+        if (this.form.password.length < 6) {
+          this.$q.notify({
+            color: 'negative',
+            message: 'Password must be at least 6 characters'
+          })
+          return
+        }
+        if (this.form.nickname.length < 3 || this.form.nickname.length > 15) {
+          this.$q.notify({
+            color: 'negative',
+            message: 'Nickname must be between 3 and 15 characters'
+          })
+          return
+        }
+      }
+
       this.$store.dispatch(`auth/${this.tab}`, this.form).then(
         () => this.$router.push('/')
       ).catch((e) => { console.log('submit error: ', e) }

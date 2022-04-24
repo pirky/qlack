@@ -12,6 +12,7 @@ Route.group(() => {
 }).prefix('auth')
 
 Route.group(() => {
+  Route.get('all', 'UserController.getAll')
   Route.get('getAllUsers', 'UserController.getAllUsers')
   Route.post('declineInvite', 'UserController.declineInvite').middleware('auth')
   Route.post('updateNotification', 'UserController.updateNotification').middleware('auth')

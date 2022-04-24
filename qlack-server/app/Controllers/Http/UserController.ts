@@ -4,6 +4,10 @@ import { Channel } from 'App/Models/Channel'
 import User from 'App/Models/User'
 
 export default class UserController {
+  async getAll({}: HttpContextContract) {
+    return await User.query().select('nickname', 'email')
+  }
+
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async getAllUsers({}: HttpContextContract) {
     const users = await User.query().select('nickname')

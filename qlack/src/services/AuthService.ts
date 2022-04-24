@@ -22,6 +22,11 @@ class AuthService {
       })
   }
 
+  async getAllUsers (): Promise<User[]> {
+    const response = await api.get<User[]>('user/all')
+    return response.data
+  }
+
   async register (data: RegisterData): Promise<RegisterReturnInterface> {
     const response = await api.post<RegisterReturnInterface>('auth/register', data)
     return response.data

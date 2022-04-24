@@ -31,6 +31,10 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       console.log('REG CLIENT')
       commit('AUTH_START')
       const data = await authService.register(form)
+      if ('error' in data) {
+        commit('AUTH_ERROR', data)
+        return false
+      }
       commit('AUTH_SUCCESS', data.user)
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       authManager.setToken(data.apiToken.token)
