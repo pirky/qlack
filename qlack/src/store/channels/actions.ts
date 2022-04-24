@@ -318,6 +318,13 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('SET_ACTIVE', channelName)
     const users = await channelService.getUsers(channelName)
     commit('SET_USERS', users)
+  },
+
+  async currWriting ({ state }, message: string) {
+    if (!state.active) {
+      return
+    }
+    await channelService.in(state.active)?.currWriting(state.active, message)
   }
 }
 

@@ -54,6 +54,12 @@ class ChannelSocketManager extends SocketManager {
         store.commit('channels/KICK_USER', { victimNickname, channelName })
       }
     })
+
+    this.socket.on('currWriting', ({ writer, channelName, message }: {writer: string, channelName: string, message: string}) => {
+      if (store.state.channels.active === channelName) {
+        store.commit('channels/CURR_WRITING', { writer, message })
+      }
+    })
   }
 
   public addMessage (message: RawMessage): Promise<Message> {
@@ -90,6 +96,10 @@ class ChannelSocketManager extends SocketManager {
 
   public deleteChannel (channelName: string): Promise<boolean> {
     return this.emitAsync('deleteChannel', { channelName })
+  }
+
+  public currWriting (channelName: string, message: string): Promise<boolean> {
+    return this.emitAsync('currWriting', { channelName, message })
   }
 }
 

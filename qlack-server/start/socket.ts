@@ -19,6 +19,7 @@ Ws.namespace('channels/:name')
   .on('joinExisting', 'ChannelController.joinExisting')
   .on('revokeUser', 'ChannelController.revokeUser')
   .on('deleteChannel', 'ChannelController.deleteChannel')
+  .on('currWriting', 'ChannelController.currWriting')
 
 Ws.namespace('/')
   .on('inviteUser', 'ChannelController.inviteUser')

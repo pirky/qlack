@@ -21,10 +21,12 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   CLEAR_CHANNEL (state, channelName: string) {
     state.active = null
     state.users = []
+    state.writingUsers = []
     delete state.channels[channelName]
   },
   SET_ACTIVE (state, channelName) {
     state.active = channelName
+    state.writingUsers = []
     state.channels[channelName].messages = []
   },
   SET_USERS (state, users: [{ nickname: string, activeState: string}]) {
@@ -67,6 +69,18 @@ const mutation: MutationTree<ChannelsStateInterface> = {
         }
       }
       state.users = users
+    }
+  },
+  CURR_WRITING (state: ChannelsStateInterface, { writer, message }: { writer: string, message: string }) {
+    const users = state.writingUsers.map(user => user.nickname)
+    if (users.includes(writer)) {
+      for (const user of state.writingUsers) {
+        if (user.nickname === writer) {
+          user.message = message
+        }
+      }
+    } else {
+      state.writingUsers.push({ nickname: writer, message })
     }
   }
 }

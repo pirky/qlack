@@ -13,40 +13,19 @@
       @keydown.shift="shiftDown = true"
       @keyup.shift="shiftDown = false"
       @keydown.enter="send"
+      @keyup="onChange"
       >
-
-      <q-item class="typing_name" clickable>Someone is typing...
+      <q-item v-show="someoneIsTyping" class="typing_name" clickable>Someone is typing...
         <q-menu fit anchor="top middle" self="bottom middle">
           <q-list style="min-width: 100px">
-
-            <q-item class="q-pt-sm q-pb-sm q-pl-md q-pr-md" style="min-height: 0">
-              Roman
-              <q-tooltip anchor="top middle" self="bottom middle">
-                Pisem daco
-              </q-tooltip>
-            </q-item>
-
-            <q-item class="q-pt-sm q-pb-sm q-pl-md q-pr-md" style="min-height: 0">
-              Gábor
-              <q-tooltip anchor="top middle" self="bottom middle">
-                Pisem daco pekne
-              </q-tooltip>
-            </q-item>
-
-            <q-item class="q-pt-sm q-pb-sm q-pl-md q-pr-md" style="min-height: 0">
-              Ctibor
-              <q-tooltip anchor="top middle" self="bottom middle">
-                Pisem daco skarede
-              </q-tooltip>
-            </q-item>
-
-            <q-item class="q-pt-sm q-pb-sm q-pl-md q-pr-md" style="min-height: 0">
-              Jerguš
-              <q-tooltip anchor="top middle" self="bottom middle">
-                Pisem daco barz dluhe dluhe dlu
-              </q-tooltip>
-            </q-item>
-
+            <template v-for="writer in writingUsers" :key="writer.nickname">
+              <q-item v-show="writer.message !== ''" class="q-pt-sm q-pb-sm q-pl-md q-pr-md" style="min-height: 0">
+                {{ writer.nickname.length > 10 ? writer.nickname.substring(0, 10) + '...' : writer.nickname }}
+                <q-tooltip anchor="top middle" self="bottom middle">
+                  {{ writer.message.length > 20 ? writer.message.substring(0, 20) + '...' : writer.message }}
+                </q-tooltip>
+              </q-item>
+            </template>
           </q-list>
         </q-menu>
       </q-item>
@@ -95,13 +74,29 @@ export default {
     }
   },
 
+  computed: {
+    writingUsers () {
+      return this.$store.state.channels.writingUsers
+    },
+    someoneIsTyping () {
+      for (const user of this.$store.state.channels.writingUsers) {
+        if (user.message !== '') {
+          return true
+        }
+      }
+      return false
+    }
+  },
+
   mounted () {
     this.focusInput()
   },
 
   methods: {
     ...mapActions('channels', ['addMessage']),
+    ...mapActions('channels', ['currWriting']),
     async send () {
+      void await this.currWriting('')
       if (this.newMessage.trim().length === 0) return
 
       if (this.shiftDown) return
@@ -122,6 +117,20 @@ export default {
 
     focusInput () {
       this.$refs.commandLine.$el.focus()
+    },
+
+    onChange (key) {
+      const dontPrint = [
+        'ArrowLeft',
+        'ArrowRight',
+        'ArrowUp',
+        'ArrowDown',
+        'Control',
+        'Alt',
+        'Shift'
+      ]
+      if (dontPrint.includes(key.key)) return
+      void this.currWriting(this.newMessage.trim())
     }
   }
 }

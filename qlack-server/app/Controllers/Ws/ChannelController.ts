@@ -204,4 +204,23 @@ export default class ChannelController {
       return false
     }
   }
+
+  public async currWriting(
+    { socket, auth }: WsContextContract,
+    { channelName, message }: { channelName: string; message: string }
+  ) {
+    try {
+      if (auth.user) {
+        socket.broadcast.emit('currWriting', {
+          writer: auth.user.nickname,
+          channelName,
+          message,
+        })
+        return true
+      }
+      return false
+    } catch (error) {
+      return false
+    }
+  }
 }
