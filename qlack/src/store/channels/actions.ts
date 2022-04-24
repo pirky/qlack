@@ -257,11 +257,10 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('UPDATE_USER_CHANNEL_STATE', { value: 'joined', channelName })
     await dispatch('setActiveChannel', channelName)
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   async declineInvite ({ commit }, channelName: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await channelService.declineInvite(channelName)
-    commit('removeChannel', { channelName })
+    commit('DELETE_CHANNEL', channelName)
   },
 
   async updateState ({ state, commit }, newState: string) {

@@ -18,5 +18,4 @@ Ws.namespace('channels/:name')
   .on('kickUser', 'ChannelController.kickUser')
   .on('joinExisting', 'ChannelController.joinExisting')
 
-Ws.namespace('/')
-  .on('inviteUser', 'ChannelController.inviteUser')
+Ws.namespace('/').on('inviteUser', 'ChannelController.inviteUser')

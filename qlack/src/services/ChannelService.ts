@@ -68,18 +68,7 @@ class ChannelSocketManager extends SocketManager {
 
 class ChannelService {
   private channels: Map<string, ChannelSocketManager> = new Map()
-  private inviteSocket: ChannelSocketManager | null = null
-
-  public initInviteSocket (): void {
-    this.inviteSocket = new ChannelSocketManager('/')
-  }
-
-  public destroyInviteSocket (): void {
-    if (this.inviteSocket) {
-      this.inviteSocket.destroy()
-      this.inviteSocket = null
-    }
-  }
+  private inviteSocket: ChannelSocketManager = new ChannelSocketManager('/')
 
   public getInviteSocket (): ChannelSocketManager | null {
     return this.inviteSocket
