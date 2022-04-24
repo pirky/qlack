@@ -220,6 +220,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       channelService.join(channelName)
       const channel = parseChannel(await channelService.getChannel(channelName))
       commit('LOADING_SUCCESS', { channelName, channel })
+      await dispatch('channels/currWriting', '')
       await dispatch('setActiveChannel', channelName)
     } catch (err) {
       commit('LOADING_ERROR', err)
@@ -304,8 +305,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     } else return false
   },
 
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async deleteChannel ({ commit }, channelName: string) {
+  deleteChannel ({ commit }, channelName: string) {
     const success = channelService.in(channelName)?.deleteChannel(channelName)
     if (success) {
       channelService.leave(channelName)
