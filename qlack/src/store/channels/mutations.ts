@@ -10,7 +10,6 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   LOADING_SUCCESS (state, { channelName, channel }: { channelName: string, messages: Message[], channel: Channel }) {
     state.loading = false
     state.channels[channelName] = channel
-    state.channels[channelName].messages = []
   },
   LOADING_ERROR (state, error) {
     state.loading = false
@@ -30,6 +29,12 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   },
   SET_USERS (state, users: [{ nickname: string, activeState: string}]) {
     state.users = users
+  },
+  ADD_USER (state, { userNickname, activeState }: { userNickname: string, activeState: string}) {
+    state.users.push({ nickname: userNickname, activeState })
+  },
+  ADD_CHANNEL (state, { channel }: { channel: Channel }) {
+    state.channels[channel.name] = channel
   },
   LOAD_MESSAGES (state, { channelName, messages }: { channelName: string, messages: Message[] }) {
     state.channels[channelName].messages.splice(0, 0, ...messages)

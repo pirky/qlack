@@ -28,11 +28,11 @@ const parseChannel = (channel: ExtraChannel | null) => {
 
 // Function to handle commands
 const CommandHandler = {
-  async handleCommand (state: any, rootState: any, dispatch: any, message: RawMessage, router: any, rootGetters: any) {
+  async handleCommand (state: any, rootState: any, dispatch: any, message: RawMessage, router: any, rootGetters: any, commit: any) {
     console.log('handling command', message)
 
     if (message.trim().startsWith('/join ')) {
-      return await this.joinCommand(state, dispatch, message.trim(), router)
+      return await this.joinCommand(state, dispatch, message.trim(), router, commit, rootState)
     }
 
     const activeChannel = rootGetters['channels/activeChannel'](router.currentRoute._value.params.channelName)
@@ -47,7 +47,7 @@ const CommandHandler = {
     }
 
     if (message.trim().startsWith('/invite ')) {
-      return await this.inviteCommand(message)
+      return await this.inviteCommand(state, message, rootState)
     }
 
     if (message.trim().startsWith('/cancel')) {
@@ -57,7 +57,7 @@ const CommandHandler = {
     }
 
     if (message.trim().startsWith('/kick ')) {
-      return await this.kickCommand(dispatch, rootState, message)
+      return await this.kickCommand(rootState, message)
     }
 
     if (message.trim().startsWith('/quit')) {
@@ -67,7 +67,7 @@ const CommandHandler = {
     return `Unknown command: ${message}`
   },
 
-  async joinCommand (state: any, dispatch: any, message: RawMessage, router: any) {
+  async joinCommand (state: any, dispatch: any, message: RawMessage, router: any, commit: any, rootState: any) {
     let channelName = message.slice(6)
 
     // If message ends with -p or --private, then it's a private channel
@@ -103,13 +103,12 @@ const CommandHandler = {
     if (existingChannel.state === 'private') {
       return `${channelName} is private, and you're not invited.`
     } else {
-      const isBanned = await channelService.isBanned(existingChannel.id)
-      console.log('isBanned joinCommand:', isBanned)
-      if (isBanned) {
-        return `User is banned from "${channelName}" channel`
-      }
-      await channelService.joinExisting(channelName)
+      const isBanned = await channelService.isBanned(existingChannel.id, rootState.auth.user?.name)
+      if (isBanned) return `User is banned from "${channelName}" channel`
+
       await dispatch('join', channelName)
+      await channelService.in(channelName)?.joinExisting(channelName)
+      commit('UPDATE_USER_CHANNEL_STATE', { value: 'joined', channelName })
       router.push(`/channel/${channelName}`)
       return true
     }
@@ -123,15 +122,32 @@ const CommandHandler = {
     dispatch('mainStore/updateRightDrawerState', true, { root: true })
   },
 
-  // invite az nakoniec lebo treba riesit ci nema ban user nahodou, tak aby sme to vedeli aj otestovat ked sa to bude kodit
-  // nefungiruje este
-  async inviteCommand (message: RawMessage) {
-    const users = await channelService.getAllUsers()
-    const currUser = message.slice(8)
-    if (!(users.includes(currUser))) {
-      return `User ${currUser} does not exist`
+  async inviteCommand (state: any, message: RawMessage, rootState: any) {
+    const channel = state.channels[state.active]
+    if (channel.state === 'private' && channel.createdBy !== rootState.auth.user.id) {
+      return 'Only the channel owner can invite users'
     }
-    return true
+
+    const users = await channelService.getAllUsers()
+    const invitedUser = message.slice(8)
+    if (!(users.includes(invitedUser))) {
+      return `User ${invitedUser} does not exist`
+    }
+
+    const currentUsers = (await channelService.getUsers(channel.name)).map(user => user.nickname)
+    if (currentUsers.includes(invitedUser)) {
+      return `User ${invitedUser} is already in channel`
+    }
+
+    const isInvited = await channelService.isInvited(channel.id, invitedUser)
+    if (isInvited) {
+      return `User ${invitedUser} is already invited to channel`
+    }
+
+    const isBanned = await channelService.isBanned(channel.id, invitedUser)
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    if (isBanned && channel.createdBy !== rootState.auth.user.id) return `User is banned from "${channel.name}" channel`
+    return channelService.getInviteSocket().inviteUser(channel.name, invitedUser)
   },
 
   async cancelCommand (dispatch: any, rootState: any, router: any) {
@@ -144,13 +160,13 @@ const CommandHandler = {
     return true
   },
 
-  async kickCommand (dispatch: any, rootState: any, message: RawMessage) {
+  async kickCommand (rootState: any, message: RawMessage) {
     const channelName: string = rootState.channels.active
     const nickname = message.slice(6)
     const channelUsers = rootState.channels.users
     for (const user of channelUsers) {
       if (user.nickname === nickname) {
-        return await dispatch('kickUser', { channelName, nickname })
+        return channelService.in(channelName)?.kickUser(channelName, nickname)
       }
     }
     return `User ${nickname} is not in channel ${channelName}`
@@ -202,7 +218,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async addMessage ({ state, rootState, dispatch, commit, rootGetters }, { channelName, message, router }: { channelName: string, message: RawMessage, router: any }) {
     // If message starts with a slash, it's a command
     if (message.startsWith('/')) {
-      return await CommandHandler.handleCommand(state, rootState, dispatch, message, router, rootGetters)
+      return await CommandHandler.handleCommand(state, rootState, dispatch, message, router, rootGetters, commit)
     }
 
     // No channel - can't send message
@@ -283,11 +299,6 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('SET_ACTIVE', channelName)
     const users = await channelService.getUsers(channelName)
     commit('SET_USERS', users)
-  },
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async kickUser ({ commit }, { channelName, nickname }: { channelName: string, nickname: string }) {
-    return channelService.in(channelName)?.kickUser(channelName, nickname)
   }
 }
 

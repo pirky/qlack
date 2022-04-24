@@ -3,7 +3,7 @@ import { LocalStorage } from 'quasar'
 type ChangeListener = (newToken: string | null, oldToken: string | null) => void
 
 // this handles token storing to localstorage and notifying about changes
-// also triggereing listeners when storage key is changed from another browser tab
+// also triggering listeners when storage key is changed from another browser tab
 class AuthManager {
   private currentToken: string | null = this.getToken()
   private onChangeListeners: ChangeListener[] = []

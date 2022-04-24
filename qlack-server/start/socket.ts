@@ -16,6 +16,7 @@ Ws.namespace('channels/:name')
   .on('addMessage', 'MessageController.addMessage')
   .on('changeUserState', 'UserController.changeUserState')
   .on('kickUser', 'ChannelController.kickUser')
+  .on('joinExisting', 'ChannelController.joinExisting')
 
 Ws.namespace('/')
   .connected(({ socket }) => {
@@ -28,3 +29,4 @@ Ws.namespace('/')
     console.log('websocket greeted: ', socket.id, msg)
     return 'hi'
   })
+  .on('inviteUser', 'ChannelController.inviteUser')

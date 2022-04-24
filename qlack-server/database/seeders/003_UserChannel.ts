@@ -8,21 +8,25 @@ export default class UserChannelSeeder extends BaseSeeder {
       {
         userId: 1,
         channelId: 1,
+        invitedAt: DateTime.now(),
         joinedAt: DateTime.now(),
       },
       {
         userId: 1,
         channelId: 2,
+        invitedAt: DateTime.now(),
         joinedAt: DateTime.now(),
       },
       {
         userId: 2,
         channelId: 3,
+        invitedAt: DateTime.now(),
         joinedAt: DateTime.now(),
       },
       {
         userId: 2,
         channelId: 1,
+        invitedAt: DateTime.now(),
         joinedAt: DateTime.now(),
       },
       {
@@ -38,6 +42,7 @@ export default class UserChannelSeeder extends BaseSeeder {
       {
         userId: 3,
         channelId: 3,
+        invitedAt: DateTime.now(),
         joinedAt: DateTime.now(),
       },
     ])

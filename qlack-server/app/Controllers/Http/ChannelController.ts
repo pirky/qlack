@@ -22,7 +22,6 @@ export default class ChannelController {
         .where('channel_id', channel.id)
         .whereNull('kicked_at')
         .whereNull('banned_at')
-        .whereNotNull('joined_at')
         .first()
 
       if (userChannel) {
@@ -61,7 +60,6 @@ export default class ChannelController {
         .fullOuterJoin('user_channels', 'channels.id', 'channel_id')
         .whereNull('kicked_at')
         .whereNull('banned_at')
-        .whereNotNull('joined_at')
         .where('user_id', auth.user.id)
     }
   }
@@ -76,6 +74,7 @@ export default class ChannelController {
       await UserChannel.create({
         userId: auth.user.id,
         channelId: channel.id,
+        invitedAt: DateTime.now(),
         joinedAt: DateTime.now(),
       })
       return channel
@@ -131,30 +130,23 @@ export default class ChannelController {
     }
   }
 
-  public async joinExisting({ auth, request }) {
-    try {
-      const channelName = request.input('channelName').replace('%20', ' ')
-      const channel = await Channel.query().where('name', channelName).first()
-      if (channel) {
-        await UserChannel.create({
-          userId: auth.user.id,
-          channelId: channel.id,
-          joinedAt: DateTime.now(),
-        })
-        return true
-      }
-      return false
-    } catch (error) {
-      return false
-    }
-  }
-
-  public async isBanned({ auth, request }) {
+  public async isBanned({ request }) {
+    const user = await User.query().where('nickname', request.input('invitedUser')).firstOrFail()
     const userChannel = await UserChannel.query()
-      .where('user_id', auth.user.id)
+      .where('user_id', user.id)
       .where('channel_id', request.input('channelId'))
       .whereNull('banned_at')
       .first()
-    return !userChannel
+    return !!userChannel
+  }
+
+  public async isInvited({ request }) {
+    const user = await User.query().where('nickname', request.input('invitedUser')).firstOrFail()
+    const userChannel = await UserChannel.query()
+      .where('user_id', user.id)
+      .where('channel_id', request.input('channelId'))
+      .whereNotNull('invited_at')
+      .first()
+    return !!userChannel
   }
 }

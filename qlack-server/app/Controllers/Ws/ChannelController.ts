@@ -55,4 +55,75 @@ export default class ChannelController {
     }
     return false
   }
+
+  public async joinExisting(
+    { socket, auth }: WsContextContract,
+    { channelName }: { channelName: string }
+  ) {
+    try {
+      const channel = await Channel.query().where('name', channelName).first()
+      if (channel) {
+        await UserChannel.create({
+          userId: auth.user!.id,
+          channelId: channel.id,
+          invitedAt: DateTime.now(),
+          joinedAt: DateTime.now(),
+        })
+        socket.nsp.emit('joinUser', {
+          userNickname: auth.user!.nickname,
+          activeState: auth.user!.activeState,
+          channelName: channel.name,
+        })
+        return true
+      }
+      return false
+    } catch (error) {
+      return false
+    }
+  }
+
+  public async inviteUser(
+    { socket }: WsContextContract,
+    { channelName, invitedUser }: { channelName: string; invitedUser: string }
+  ) {
+    try {
+      const channel = await Channel.query().where('name', channelName).first()
+      const user = await User.query().where('nickname', invitedUser).first()
+      if (channel && user) {
+        const userChannel = await UserChannel.query()
+          .where('user_id', user.id)
+          .where('channel_id', channel.id)
+          .first()
+        if (userChannel) {
+          userChannel.invitedAt = DateTime.now()
+          userChannel.joinedAt = null
+          userChannel.kickedAt = null
+          userChannel.bannedAt = null
+          await userChannel.save()
+        } else {
+          await UserChannel.create({
+            userId: user.id,
+            channelId: channel.id,
+            invitedAt: DateTime.now(),
+          })
+        }
+
+        socket.broadcast.emit('inviteUser', {
+          invitedUser,
+          channel: {
+            id: channel.id,
+            name: channel.name,
+            state: channel.state,
+            createdBy: channel.createdBy,
+            userState: 'invited',
+            messages: [],
+          },
+        })
+        return true
+      }
+      return false
+    } catch (error) {
+      return false
+    }
+  }
 }

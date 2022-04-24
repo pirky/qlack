@@ -37,14 +37,11 @@ export default class UserController {
   async declineInvite({ auth, request }: HttpContextContract) {
     const channel = await Channel.query().where('name', request.input('channelName')).first()
     if (channel && auth.user !== undefined) {
-      const userChannel = await UserChannel.query()
+      await UserChannel.query()
         .select('*')
         .where('user_id', auth.user.id)
         .where('channel_id', channel.id)
-        .firstOrFail()
-      userChannel.invitedAt = null
-      // userChannel.joinedAt = DateTime.now()
-      userChannel?.save()
+        .delete()
       return true
     }
     return false

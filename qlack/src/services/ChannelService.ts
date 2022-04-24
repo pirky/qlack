@@ -1,5 +1,5 @@
 import { api } from 'src/boot/axios'
-import { ExtraChannel, Message, RawMessage } from 'src/contracts'
+import { Channel, ExtraChannel, Message, RawMessage } from 'src/contracts'
 import { BootParams, SocketManager } from './SocketManager'
 
 class ChannelSocketManager extends SocketManager {
@@ -27,6 +27,18 @@ class ChannelSocketManager extends SocketManager {
         store.commit('channels/DELETE_CHANNEL', channelName)
       }
     })
+
+    this.socket.on('joinUser', ({ userNickname, activeState, channelName }: {userNickname: string, activeState: string, channelName: string}) => {
+      if (store.state.channels.active === channelName) {
+        store.commit('channels/ADD_USER', { userNickname, activeState })
+      }
+    })
+
+    this.socket.on('inviteUser', ({ invitedUser, channel }: {invitedUser: string, channel: Channel}) => {
+      if (store.state.auth.user.nickname === invitedUser) {
+        store.commit('channels/ADD_CHANNEL', { channel })
+      }
+    })
   }
 
   public addMessage (message: RawMessage): Promise<Message> {
@@ -44,13 +56,30 @@ class ChannelSocketManager extends SocketManager {
   public kickUser (channelName: string, nickname: string) {
     return this.emitAsync('kickUser', { channelName, nickname })
   }
+
+  public joinExisting (channelName: string): Promise<boolean> {
+    return this.emitAsync('joinExisting', { channelName })
+  }
+
+  public inviteUser (channelName: string, invitedUser: string): Promise<boolean> {
+    return this.emitAsync('inviteUser', { channelName, invitedUser })
+  }
 }
 
 class ChannelService {
   private channels: Map<string, ChannelSocketManager> = new Map()
+  private inviteSocket: ChannelSocketManager = new ChannelSocketManager('/')
 
-  public isBanned (channelId: number) {
-    return api.post('channel/isBanned', { channelId }).then((response) => response.data)
+  public getInviteSocket (): ChannelSocketManager {
+    return this.inviteSocket
+  }
+
+  public isBanned (channelId: number, invitedUser: string) {
+    return api.post('channel/isBanned', { channelId, invitedUser }).then((response) => response.data)
+  }
+
+  public async isInvited (channelId: number, invitedUser: string) {
+    return await api.post('channel/isInvited', { channelId, invitedUser }).then((response) => response.data)
   }
 
   public join (name: string): ChannelSocketManager {
@@ -78,10 +107,6 @@ class ChannelService {
 
   public in (name: string): ChannelSocketManager | undefined {
     return this.channels.get(name)
-  }
-
-  async joinExisting (channelName: string): Promise<void> {
-    return api.post('channel/joinExisting', { channelName }).then((response) => response.data)
   }
 
   async acceptInvite (channelName: string):Promise<void> {

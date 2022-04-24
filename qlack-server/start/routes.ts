@@ -24,6 +24,6 @@ Route.group(() => {
   Route.get('channelNames', 'ChannelController.getChannelNames').middleware('auth')
   Route.post('createChannel', 'ChannelController.createChannel').middleware('auth')
   Route.post('deleteChannel', 'ChannelController.deleteChannel').middleware('auth')
-  Route.post('joinExisting', 'ChannelController.joinExisting').middleware('auth')
   Route.post('isBanned', 'ChannelController.isBanned').middleware('auth')
+  Route.post('isInvited', 'ChannelController.isInvited').middleware('auth')
 }).prefix('channel')
