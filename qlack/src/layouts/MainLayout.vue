@@ -102,11 +102,21 @@ import { useQuasar } from 'quasar'
 import CreateChannel from 'components/CreateChannel.vue'
 import { Channel as ChannelInterface } from 'src/contracts'
 
-function compare (a: { nickname: string, activeState: string}, b: { nickname: string, activeState: string}) {
+function userCompare (a: { nickname: string}, b: { nickname: string}) {
   if (a.nickname < b.nickname) {
     return -1
   }
   if (a.nickname > b.nickname) {
+    return 1
+  }
+  return 0
+}
+
+function channelCompare (a: { name: string }, b: { name: string }) {
+  if (a.name < b.name) {
+    return -1
+  }
+  if (a.name > b.name) {
     return 1
   }
   return 0
@@ -146,14 +156,14 @@ export default defineComponent({
     invitedChannels (): ChannelInterface[] {
       if (this.$store.state.channels.channels) {
         const channels = Object.values(this.$store.state.channels.channels)
-        return channels.filter(channel => channel.userState === 'invited')
+        return channels.filter(channel => channel.userState === 'invited').sort(channelCompare)
       }
       return []
     },
     joinedChannels (): ChannelInterface[] {
       if (this.$store.state.channels.channels) {
         const channels = Object.values(this.$store.state.channels.channels)
-        return channels.filter(channel => channel.userState === 'joined')
+        return channels.filter(channel => channel.userState === 'joined').sort(channelCompare)
       }
       return []
     },
@@ -171,9 +181,9 @@ export default defineComponent({
         if (user.activeState === 'offline') offlineUserList.push(user)
       })
 
-      onlineUserList.sort(compare)
-      dndUserList.sort(compare)
-      offlineUserList.sort(compare)
+      onlineUserList.sort(userCompare)
+      dndUserList.sort(userCompare)
+      offlineUserList.sort(userCompare)
 
       return [...onlineUserList, ...dndUserList, ...offlineUserList]
     }

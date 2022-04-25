@@ -30,7 +30,7 @@ import { Channel, Channel as ChannelInterface } from 'src/contracts'
 import { useQuasar } from 'quasar'
 
 let self: any = null
-let canLoad = true
+let canLoad = false
 
 export default defineComponent({
   name: 'ChatPage',
@@ -50,7 +50,9 @@ export default defineComponent({
     if (this.$store.getters['channels/joinedChannels'].includes(channelName)) {
       void this.$store.dispatch('channels/setActiveChannel', channelName)
     }
-    self.scrollToBottom()
+    console.log('mounted')
+    console.log('pageLoaded', canLoad)
+    canLoad = true
   },
 
   watch: {
@@ -93,12 +95,26 @@ export default defineComponent({
       }
     },
 
-    // watch store for channel change
     '$store.state.channels.active': function () {
-      if (!this.$store.state.channels.active && this.$store.state.channels.users.length === 0) {
-        void this.$router.push('/')
+      const infiScroll: any = self.$refs.infiScroll
+      console.log('active change')
+      if (infiScroll) {
+        infiScroll.resume()
+        console.log('resume')
+      }
+
+      if (self.$store.state.channels.active) {
+        console.log('load')
+        canLoad = true
       }
     }
+
+    // watch store for channel change
+    // '$store.state.channels.active': function () {
+    //   if (!this.$store.state.channels.active && this.$store.state.channels.users.length === 0) {
+    //     void this.$router.push('/')
+    //   }
+    // }
   },
 
   computed: {
@@ -110,13 +126,13 @@ export default defineComponent({
 
     messages () {
       const messages = self.$store.getters['channels/currentMessages']
-      if (messages.length === 0) {
-        const infiScroll: any = self.$refs.infiScroll
-        if (infiScroll && canLoad) {
-          infiScroll.resume()
-          console.log('resume')
-        }
-      }
+      // if (messages.length === 0) {
+      //   const infiScroll: any = self.$refs.infiScroll
+      //   if (infiScroll && canLoad) {
+      //     infiScroll.resume()
+      //     console.log('resume')
+      //   }
+      // }
       return messages
     }
   },
@@ -128,11 +144,16 @@ export default defineComponent({
       useQuasar: $q,
 
       async onLoad (index: number, done: (arg: boolean) => void) {
+        console.log('onload')
         if (canLoad) {
+          console.log('loading')
           canLoad = false
           const result = await self.$store.dispatch('channels/loadMessages')
           canLoad = true
+          console.log('done loading')
+
           done(!result)
+          return
         }
 
         done(false)
