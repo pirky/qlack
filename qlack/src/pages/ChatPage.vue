@@ -32,6 +32,10 @@ import { useQuasar } from 'quasar'
 let self: any = null
 let canLoad = false
 
+function timeout (ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 export default defineComponent({
   name: 'ChatPage',
 
@@ -144,6 +148,8 @@ export default defineComponent({
       useQuasar: $q,
 
       async onLoad (index: number, done: (arg: boolean) => void) {
+        console.log('onload-1')
+        await timeout(50)
         console.log('onload')
         if (canLoad) {
           console.log('loading')
