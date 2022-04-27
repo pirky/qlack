@@ -12,7 +12,6 @@ declare module '@ioc:Repositories/MessageRepository' {
   }
 
   export interface MessageRepositoryContract {
-    loadSome(channelName: string, id: number): Promise<Message[]>
     create(channelName: string, userId: number, content: string): Promise<Message>
   }
 

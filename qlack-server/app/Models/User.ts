@@ -38,6 +38,9 @@ export default class User extends BaseModel {
   @column()
   public activeState: ActiveStates
 
+  @column()
+  public stateChangedAt: Date
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

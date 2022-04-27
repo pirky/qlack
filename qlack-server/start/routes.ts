@@ -25,4 +25,5 @@ Route.group(() => {
   Route.post('createChannel', 'ChannelController.createChannel').middleware('auth')
   Route.post('isBanned', 'ChannelController.isBanned').middleware('auth')
   Route.post('isInvited', 'ChannelController.isInvited').middleware('auth')
+  Route.post('loadMessages', 'ChannelController.loadMessages').middleware('auth')
 }).prefix('channel')

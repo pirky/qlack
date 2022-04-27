@@ -257,11 +257,21 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       return
     }
 
+    const currentTimestamp = state.currentTimestamp ? state.currentTimestamp : new Date()
+
     let loadedMessages
     if (state.channels[state.active].messages.length === 0) {
-      loadedMessages = (await channelService.in(state.active)?.loadMessages(-1))?.reverse()
+      loadedMessages = (await channelService.in(state.active)?.loadMessages(
+        state.active,
+        -1,
+        currentTimestamp
+      ))?.reverse()
     } else {
-      loadedMessages = (await channelService.in(state.active)?.loadMessages(state.channels[state.active].messages[0].id))?.reverse()
+      loadedMessages = (await channelService.in(state.active)?.loadMessages(
+        state.active,
+        state.channels[state.active].messages[0].id,
+        currentTimestamp
+      ))?.reverse()
     }
 
     if (loadedMessages !== undefined && loadedMessages.length === 0) {
@@ -283,13 +293,22 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('DELETE_CHANNEL', channelName)
   },
 
-  async updateState ({ state, commit }, newState: string) {
+  async updateState ({ state, commit, rootState }, newState: string) {
     const channelName = state.active
     if (channelName === null) {
       return
     }
-    await channelService.in(channelName)?.updateState(newState)
     commit('auth/updateActiveState', newState, { root: true })
+    if (rootState.auth.user) {
+      await channelService.in(channelName)?.updateState(rootState.auth.user.stateChangedAt, newState)
+    }
+
+    // TODO
+    // if (newState === 'offline') {
+    //   await dispatch('goOffline')
+    // } else {
+    //   await dispatch('goOnline')
+    // }
   },
 
   async updateNotification ({ commit }, notificationType: string) {

@@ -1,4 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { DateTime } from 'luxon'
 
 export default class UsersSchema extends BaseSchema {
   protected tableName = 'users'
@@ -13,10 +14,11 @@ export default class UsersSchema extends BaseSchema {
       table.string('password', 180).notNullable()
       table.enum('notification_type', ['all', 'tagged']).defaultTo('all')
       table.enum('active_state', ['online', 'dnd', 'offline']).defaultTo('online')
-
+      
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
        */
+      table.timestamp('state_changed_at', { useTz: true }).notNullable().defaultTo(this.now())
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()
     })

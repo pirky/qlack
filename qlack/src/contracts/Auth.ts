@@ -24,4 +24,5 @@ export interface User {
   email: string
   notificationType: string
   activeState: string
+  stateChangedAt: Date
 }

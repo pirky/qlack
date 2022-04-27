@@ -8,6 +8,7 @@ export interface ChannelsStateInterface {
   active: string | null,
   users: { nickname: string, activeState: string }[]
   writingUsers: { nickname: string, message: string }[]
+  currentTimestamp: Date | null
 }
 
 function state (): ChannelsStateInterface {
@@ -18,7 +19,8 @@ function state (): ChannelsStateInterface {
     latestMessage: null,
     active: null,
     users: [],
-    writingUsers: []
+    writingUsers: [],
+    currentTimestamp: null
   }
 }
 

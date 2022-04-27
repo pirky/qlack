@@ -3,7 +3,8 @@ import { Channel, States } from 'App/Models/Channel'
 import UserChannel from 'App/Models/UserChannel'
 import { DateTime } from 'luxon'
 import Database from '@ioc:Adonis/Lucid/Database'
-import User from 'App/Models/User'
+import User, { ActiveStates } from 'App/Models/User'
+import Message from 'App/Models/Message'
 
 export default class ChannelController {
   public async getChannel({ auth, request }: HttpContextContract) {
@@ -124,5 +125,59 @@ export default class ChannelController {
       .whereNotNull('invited_at')
       .first()
     return !!userChannel
+  }
+
+  public async loadMessages({ auth, request }): Promise<Message[]> {
+    const channelName = request.input('channelName').replace('%20', ' ')
+    const messageId = request.input('messageId')
+    let timestamp: Date
+    const user = await User.query().where('id', auth.user.id).firstOrFail()
+
+    if (user.activeState === ActiveStates.ONLINE || user.activeState === ActiveStates.DND) {
+      timestamp = new Date()
+    } else {
+      timestamp = user.stateChangedAt
+    }
+
+    if (!channelName || !messageId || !timestamp) {
+      return []
+    }
+
+    let channel = await Channel.query().where('name', channelName).first()
+
+    if (!channel) {
+      return []
+    }
+
+    const userChannel = await UserChannel.query()
+      .select('*')
+      .where('channel_id', channel.id)
+      .where('user_id', user.id)
+      .whereNull('kicked_at')
+      .whereNull('banned_at')
+      .whereNotNull('joined_at')
+      .first()
+
+    if (!userChannel) {
+      return []
+    }
+
+    if (messageId === -1) {
+      channel = await Channel.query().where('name', channelName)
+        .preload('messages', (messagesQuery) =>
+          messagesQuery.where('created_at', '<', timestamp)
+            .orderBy('id', 'desc').limit(25).preload('author')
+        )
+        .firstOrFail()
+    } else {
+      channel = await Channel.query().where('name', channelName)
+        .preload('messages', (messagesQuery) =>
+          messagesQuery.where('id', '<', messageId).where('created_at', '<', timestamp)
+            .orderBy('id', 'desc').limit(25).preload('author')
+        )
+        .firstOrFail()
+    }
+
+    return channel.messages.map((message) => message.serialize() as Message)
   }
 }

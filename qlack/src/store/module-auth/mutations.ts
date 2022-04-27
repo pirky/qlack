@@ -23,6 +23,7 @@ const mutation: MutationTree<AuthStateInterface> = {
   updateActiveState (state: AuthStateInterface, value: string) {
     if (state.user) {
       state.user.activeState = value
+      state.user.stateChangedAt = new Date()
     }
   }
 }

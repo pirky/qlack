@@ -82,6 +82,12 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     } else {
       state.writingUsers.push({ nickname: writer, message })
     }
+  },
+  SET_CURRENT_TIMESTAMP (state: ChannelsStateInterface) {
+    state.currentTimestamp = new Date()
+  },
+  RESET_CURRENT_TIMESTAMP (state: ChannelsStateInterface) {
+    state.currentTimestamp = null
   }
 }
 

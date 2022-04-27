@@ -66,12 +66,13 @@ class ChannelSocketManager extends SocketManager {
     return this.emitAsync('addMessage', message)
   }
 
-  public loadMessages (id: number): Promise<Message[]> {
-    return this.emitAsync('loadMessages', id)
+  public loadMessages (channelName: string, messageId: number, timestamp: Date): Promise<Message[]> {
+    return api.post('channel/loadMessages', { channelName, messageId, timestamp }).then((response) => response.data)
+    // return this.emitAsync('loadMessages', id)
   }
 
-  public updateState (newState: string): Promise<boolean> {
-    return this.emitAsync('changeUserState', newState)
+  public updateState (stateChangedAt: Date, newState: string): Promise<boolean> {
+    return this.emitAsync('changeUserState', newState, stateChangedAt)
   }
 
   public kickUser (channelName: string, nickname: string) {
