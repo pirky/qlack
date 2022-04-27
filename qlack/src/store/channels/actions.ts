@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
-import { channelService } from 'src/services'
+import { authService, channelService } from 'src/services'
 import { Channel, ExtraChannel, RawMessage } from 'src/contracts'
 import ChannelService from 'src/services/ChannelService'
 
@@ -213,15 +213,15 @@ const CommandHandler = {
 }
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
-  async join ({ commit, dispatch }, channelName: string) {
+  async join ({ commit, dispatch, rootState }, channelName: string) {
     try {
       commit('LOADING_START')
       console.log('joining channel', channelName)
-      channelService.join(channelName)
+      channelService.join(rootState, channelName)
       const channel = parseChannel(await channelService.getChannel(channelName))
       commit('LOADING_SUCCESS', { channelName, channel })
-      await dispatch('channels/currWriting', '')
-      await dispatch('setActiveChannel', channelName)
+      await dispatch('currWriting', '')
+      // await dispatch('setActiveChannel', channelName)
     } catch (err) {
       commit('LOADING_ERROR', err)
       throw err
@@ -236,10 +236,21 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     }
   },
 
+  offlineLeave ({ getters }, channelName: string | null) {
+    const leaving: string[] = channelName !== null ? [channelName] : getters.joinedChannels
+    for (const c of leaving) {
+      channelService.leave(c)
+    }
+  },
+
   async addMessage ({ state, rootState, dispatch, commit, rootGetters }, { channelName, message, router }: { channelName: string, message: RawMessage, router: any }) {
     // If message starts with a slash, it's a command
     if (message.startsWith('/')) {
       return await CommandHandler.handleCommand(state, rootState, dispatch, message, router, rootGetters, commit)
+    }
+
+    if (rootState.auth.user?.activeState === 'offline') {
+      return 'You are offline'
     }
 
     // No channel - can't send message
@@ -261,20 +272,20 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
 
     let loadedMessages
     if (state.channels[state.active].messages.length === 0) {
-      loadedMessages = (await channelService.in(state.active)?.loadMessages(
+      loadedMessages = (await channelService.loadMessages(
         state.active,
         -1,
         currentTimestamp
       ))?.reverse()
     } else {
-      loadedMessages = (await channelService.in(state.active)?.loadMessages(
+      loadedMessages = (await channelService.loadMessages(
         state.active,
         state.channels[state.active].messages[0].id,
         currentTimestamp
       ))?.reverse()
     }
 
-    if (loadedMessages !== undefined && loadedMessages.length === 0) {
+    if (loadedMessages === undefined || loadedMessages.length === 0) {
       return false
     }
 
@@ -293,22 +304,35 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('DELETE_CHANNEL', channelName)
   },
 
-  async updateState ({ state, commit, rootState }, newState: string) {
-    const channelName = state.active
-    if (channelName === null) {
-      return
-    }
+  async updateState ({ state, commit, rootState, dispatch }, newState: string) {
+    const oldState = rootState.auth.user?.activeState
+    console.log('old state', oldState)
+    console.log('updating state', newState)
     commit('auth/updateActiveState', newState, { root: true })
-    if (rootState.auth.user) {
-      await channelService.in(channelName)?.updateState(rootState.auth.user.stateChangedAt, newState)
+
+    // If user is not in any channels, join all
+    if (oldState === 'offline' && rootState.auth.user) {
+      await channelService.updateState(rootState.auth.user.stateChangedAt, newState)
+
+      const channelNames = await authService.getChannelNames()
+      for (const channelName of channelNames) {
+        console.log('join??')
+        await dispatch('join', channelName)
+      }
     }
 
-    // TODO
-    // if (newState === 'offline') {
-    //   await dispatch('goOffline')
-    // } else {
-    //   await dispatch('goOnline')
-    // }
+    const channelName = state.active
+    if (channelName === null || !rootState.auth.user) {
+      return
+    }
+    await channelService.in(channelName)?.changeState(rootState.auth.user.stateChangedAt, newState)
+
+    if (newState === 'offline') {
+      const channelNames = await authService.getChannelNames()
+      for (const channelName of channelNames) {
+        await dispatch('offlineLeave', channelName)
+      }
+    }
   },
 
   async updateNotification ({ commit }, notificationType: string) {
@@ -339,8 +363,8 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     commit('SET_USERS', users)
   },
 
-  async currWriting ({ state }, message: string) {
-    if (!state.active) {
+  async currWriting ({ state, rootState }, message: string) {
+    if (!state.active || rootState.auth.user?.activeState === 'offline') {
       return
     }
     await channelService.in(state.active)?.currWriting(state.active, message)

@@ -44,4 +44,20 @@ export default class UserController {
     }
     return false
   }
+
+  async updateState({ auth, request }: HttpContextContract) {
+    console.log('oi')
+    if (auth.user !== undefined) {
+      const user = await User.query().where('id', auth.user.id).first()
+      if (user) {
+        user.stateChangedAt = request.input('stateChangedAt')
+        user.activeState = request.input('newState')
+        user.save()
+
+        console.log(request.input('newState'))
+        return true
+      }
+    }
+    return false
+  }
 }

@@ -66,12 +66,7 @@ class ChannelSocketManager extends SocketManager {
     return this.emitAsync('addMessage', message)
   }
 
-  public loadMessages (channelName: string, messageId: number, timestamp: Date): Promise<Message[]> {
-    return api.post('channel/loadMessages', { channelName, messageId, timestamp }).then((response) => response.data)
-    // return this.emitAsync('loadMessages', id)
-  }
-
-  public updateState (stateChangedAt: Date, newState: string): Promise<boolean> {
+  public changeState (stateChangedAt: Date, newState: string): Promise<boolean> {
     return this.emitAsync('changeUserState', newState, stateChangedAt)
   }
 
@@ -108,6 +103,15 @@ class ChannelService {
   private channels: Map<string, ChannelSocketManager> = new Map()
   private inviteSocket: ChannelSocketManager = new ChannelSocketManager('/')
 
+  public loadMessages (channelName: string, messageId: number, timestamp: Date): Promise<Message[]> {
+    return api.post('channel/loadMessages', { channelName, messageId, timestamp }).then((response) => response.data)
+    // return this.emitAsync('loadMessages', id)
+  }
+
+  async updateState (stateChangedAt: Date, newState: string) {
+    return await api.post('user/updateState', { stateChangedAt, newState })
+  }
+
   public getInviteSocket (): ChannelSocketManager | null {
     return this.inviteSocket
   }
@@ -120,9 +124,14 @@ class ChannelService {
     return await api.post('channel/isInvited', { channelId, invitedUser }).then((response) => response.data)
   }
 
-  public join (name: string): ChannelSocketManager {
+  public join (rootState: any, name: string): ChannelSocketManager | null {
     if (this.channels.has(name)) {
       throw new Error(`User is already joined in channel "${name}"`)
+    }
+
+    // if user is offline, don't join channel
+    if (rootState.auth.user.activeState === 'offline') {
+      return null
     }
 
     // connect to given channel namespace

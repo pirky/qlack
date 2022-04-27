@@ -54,8 +54,6 @@ export default defineComponent({
     if (this.$store.getters['channels/joinedChannels'].includes(channelName)) {
       void this.$store.dispatch('channels/setActiveChannel', channelName)
     }
-    console.log('mounted')
-    console.log('pageLoaded', canLoad)
     canLoad = true
   },
 
@@ -101,14 +99,11 @@ export default defineComponent({
 
     '$store.state.channels.active': function () {
       const infiScroll: any = self.$refs.infiScroll
-      console.log('active change')
       if (infiScroll) {
         infiScroll.resume()
-        console.log('resume')
       }
 
       if (self.$store.state.channels.active) {
-        console.log('load')
         canLoad = true
       }
     }
@@ -148,15 +143,11 @@ export default defineComponent({
       useQuasar: $q,
 
       async onLoad (index: number, done: (arg: boolean) => void) {
-        console.log('onload-1')
         await timeout(50)
-        console.log('onload')
         if (canLoad) {
-          console.log('loading')
           canLoad = false
           const result = await self.$store.dispatch('channels/loadMessages')
           canLoad = true
-          console.log('done loading')
 
           done(!result)
           return

@@ -10,16 +10,16 @@
 
         <q-select
           class="statusSelect"
-          v-model="status"
+          v-model="this.localStatus"
           :options="options"
-          model-value="{{status}}"
+          model-value="{{this.localStatus}}"
           filled
           @update:model-value="changeStatus()"
         >
           <template v-slot:append>
-            <q-icon v-if="status === 'online'" name="fa fa-solid fa-circle" size="0.5em" color="positive" />
-            <q-icon v-if="status === 'dnd'" name="fa fa-solid fa-circle" size="0.5em" color="negative" />
-            <q-icon v-if="status === 'offline'" name="fa fa-solid fa-circle" size="0.5em" color="gray" />
+            <q-icon v-if="this.localStatus === 'online'" name="fa fa-solid fa-circle" size="0.5em" color="positive" />
+            <q-icon v-if="this.localStatus === 'dnd'" name="fa fa-solid fa-circle" size="0.5em" color="negative" />
+            <q-icon v-if="this.localStatus === 'offline'" name="fa fa-solid fa-circle" size="0.5em" color="gray" />
           </template>
         </q-select>
 
@@ -76,7 +76,7 @@ export default defineComponent({
     },
 
     async changeStatus () {
-      await this.$store.dispatch('channels/updateState', this.status)
+      await this.$store.dispatch('channels/updateState', this.localStatus)
     },
 
     async changeNotificationType () {
@@ -117,14 +117,6 @@ export default defineComponent({
         this.$store.commit('auth/updateEmail', val)
       }
     },
-    status: {
-      get () {
-        return this.$store.state.auth.user.activeState
-      },
-      set (val) {
-        this.$store.commit('auth/updateActiveState', val)
-      }
-    },
     notificationType: {
       get () {
         return this.$store.state.auth.user.notificationType
@@ -136,8 +128,12 @@ export default defineComponent({
   },
   data () {
     return {
+      localStatus: '',
       options: ['online', 'dnd', 'offline']
     }
+  },
+  mounted () {
+    this.localStatus = this.$store.state.auth.user.activeState
   }
 })
 </script>
