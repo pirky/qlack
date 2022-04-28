@@ -93,6 +93,7 @@ const CommandHandler = {
     if (!existingChannel) {
       // Create channel
       await dispatch('createChannel', { channelName, isPrivate })
+      await commit('SET_ACTIVE', channelName)
       router.push(`/channel/${channelName}`)
       return true
     }
@@ -100,6 +101,7 @@ const CommandHandler = {
     // If user is invited to channel, accept invite
     if (existingChannel.userState === 'invited') {
       await dispatch('acceptInvite', channelName)
+      await commit('SET_ACTIVE', channelName)
       router.push(`/channel/${channelName}`)
       return true
     }
@@ -112,7 +114,8 @@ const CommandHandler = {
 
       await dispatch('join', channelName)
       await channelService.in(channelName)?.joinExisting(channelName)
-      commit('UPDATE_USER_CHANNEL_STATE', { value: 'joined', channelName })
+      await commit('UPDATE_USER_CHANNEL_STATE', { value: 'joined', channelName })
+      await commit('SET_ACTIVE', channelName)
       router.push(`/channel/${channelName}`)
       return true
     }
@@ -316,16 +319,18 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
 
       const channelNames = await authService.getChannelNames()
       for (const channelName of channelNames) {
-        console.log('join??')
         await dispatch('join', channelName)
       }
     }
 
     const channelName = state.active
-    if (channelName === null || !rootState.auth.user) {
-      return
+    if (rootState.auth.user) {
+      if (channelName !== null) {
+        await channelService.in(channelName)?.changeState(rootState.auth.user.stateChangedAt, newState)
+      } else {
+        await channelService.updateState(rootState.auth.user.stateChangedAt, newState)
+      }
     }
-    await channelService.in(channelName)?.changeState(rootState.auth.user.stateChangedAt, newState)
 
     if (newState === 'offline') {
       const channelNames = await authService.getChannelNames()

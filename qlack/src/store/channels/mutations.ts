@@ -11,6 +11,8 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     state.loading = false
     if (!state.channels[channelName]) {
       state.channels[channelName] = channel
+    } else {
+      state.channels[channelName].messages = []
     }
   },
   LOADING_ERROR (state, error) {
@@ -27,8 +29,14 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     delete state.channels[channelName]
   },
   SET_ACTIVE (state, channelName) {
+    console.log('io')
+    if (state.active) {
+      console.log('remove old')
+      state.channels[state.active].messages = []
+    }
     state.active = channelName
     state.writingUsers = []
+    console.log('remove new')
     state.channels[channelName].messages = []
   },
   SET_USERS (state, users: [{ nickname: string, activeState: string}]) {
