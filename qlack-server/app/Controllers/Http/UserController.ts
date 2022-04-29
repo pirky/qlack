@@ -48,15 +48,12 @@ export default class UserController {
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async updateState({ auth, request }: HttpContextContract) {
-    console.log('oi')
     if (auth.user !== undefined) {
       const user = await User.query().where('id', auth.user.id).first()
       if (user) {
         user.stateChangedAt = request.input('stateChangedAt')
         user.activeState = request.input('newState')
-        user.save()
-
-        console.log(request.input('newState'))
+        await user.save()
         return true
       }
     }
