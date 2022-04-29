@@ -13,7 +13,6 @@
         </div>
       </q-infinite-scroll>
     </q-page>
-
     <ChannelName v-bind="channel" v-if="channel != null"/>
     <CommandLine v-bind="channel ? channel : null"/>
   </q-page>
@@ -144,6 +143,12 @@ export default defineComponent({
 
       async onLoad (index: number, done: (arg: boolean) => void) {
         await timeout(50)
+        if (self.$store.getters['mainStore/channelDialog'] ||
+          (window.innerWidth < 1024 && (self.$store.getters['mainStore/leftSideDrawer'] || self.$store.getters['mainStore/rightSideDrawer']))) {
+          done(false)
+          return
+        }
+
         if (canLoad) {
           canLoad = false
           const result = await self.$store.dispatch('channels/loadMessages')

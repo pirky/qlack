@@ -163,17 +163,26 @@ export default class ChannelController {
     }
 
     if (messageId === -1) {
-      channel = await Channel.query().where('name', channelName)
+      channel = await Channel.query()
+        .where('name', channelName)
         .preload('messages', (messagesQuery) =>
-          messagesQuery.where('created_at', '<', timestamp)
-            .orderBy('id', 'desc').limit(25).preload('author')
+          messagesQuery
+            .where('created_at', '<', timestamp)
+            .orderBy('id', 'desc')
+            .limit(25)
+            .preload('author')
         )
         .firstOrFail()
     } else {
-      channel = await Channel.query().where('name', channelName)
+      channel = await Channel.query()
+        .where('name', channelName)
         .preload('messages', (messagesQuery) =>
-          messagesQuery.where('id', '<', messageId).where('created_at', '<', timestamp)
-            .orderBy('id', 'desc').limit(25).preload('author')
+          messagesQuery
+            .where('id', '<', messageId)
+            .where('created_at', '<', timestamp)
+            .orderBy('id', 'desc')
+            .limit(25)
+            .preload('author')
         )
         .firstOrFail()
     }

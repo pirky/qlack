@@ -8,6 +8,9 @@ const getters: GetterTree<MainStateInterface, StateInterface> = {
   },
   rightSideDrawer (state: MainStateInterface) {
     return state.rightDrawerState
+  },
+  channelDialog (state: MainStateInterface) {
+    return state.createChannelDialog
   }
 }
 

@@ -14,7 +14,7 @@ export default class UsersSchema extends BaseSchema {
       table.string('password', 180).notNullable()
       table.enum('notification_type', ['all', 'tagged']).defaultTo('all')
       table.enum('active_state', ['online', 'dnd', 'offline']).defaultTo('online')
-      
+
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
        */

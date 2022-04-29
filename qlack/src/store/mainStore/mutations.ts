@@ -7,6 +7,9 @@ const mutation: MutationTree<MainStateInterface> = {
   },
   updateRightDrawerState (state: MainStateInterface, value: boolean) {
     state.rightDrawerState = value
+  },
+  updateCreateChannelDialog (state: MainStateInterface, value: boolean) {
+    state.createChannelDialog = value
   }
 }
 

@@ -50,7 +50,7 @@
             icon="fa fa-solid fa-plus"
             size="0.5em"
             style="min-height: 0;"
-            @click="showDialog(createChannel, this.$router)"
+            @click="showDialog(createChannel, this.$router, updateCreateChannelDialog)"
           />
         </div>
 
@@ -193,7 +193,8 @@ export default defineComponent({
     const $q = useQuasar()
     return {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      showDialog (createChannel: any, router: any) {
+      showDialog (createChannel: any, router: any, updateCreateChannelDialog: any) {
+        updateCreateChannelDialog(true)
         $q.dialog({
           component: CreateChannel,
           componentProps: {
@@ -214,7 +215,9 @@ export default defineComponent({
               color: 'negative'
             })
           }
+          updateCreateChannelDialog(false)
         }).onCancel(() => {
+          updateCreateChannelDialog(false)
           console.log('cancel')
         })
       }
@@ -227,6 +230,10 @@ export default defineComponent({
         channelName,
         isPrivate
       })
+    },
+
+    updateCreateChannelDialog (val: boolean) {
+      void this.$store.dispatch('mainStore/updateCreateChannelDialog', val)
     }
   }
 })

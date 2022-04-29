@@ -4,6 +4,7 @@ import { Channel } from 'App/Models/Channel'
 import User from 'App/Models/User'
 
 export default class UserController {
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async getAll({}: HttpContextContract) {
     return await User.query().select('nickname', 'email')
   }
@@ -45,6 +46,7 @@ export default class UserController {
     return false
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   async updateState({ auth, request }: HttpContextContract) {
     console.log('oi')
     if (auth.user !== undefined) {
