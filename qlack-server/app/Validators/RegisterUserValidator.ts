@@ -30,7 +30,7 @@ export default class RegisterUserValidator {
       rules.required(),
       rules.unique({ table: 'users', column: 'email' }),
       rules.maxLength(15),
-      rules.minLength(3)
+      rules.minLength(3),
     ]),
     email: schema.string({}, [rules.email(), rules.unique({ table: 'users', column: 'email' })]),
     password: schema.string({}, [rules.minLength(8)]),
