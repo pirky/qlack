@@ -92,7 +92,7 @@ export default defineComponent({
         if (Notification.permission === 'granted') {
           const notification = new Notification(channel.name, {
             body: messageContent,
-            icon: 'https://quasar.dev/img/logo-square.png'
+            icon: 'https://icons-for-free.com/download-icon-quasar-1324440220466918651_512.png'
           })
           notification.onclick = async function () {
             await self.$store.dispatch('channels/setActiveChannel', channel.name)
