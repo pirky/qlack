@@ -54,6 +54,14 @@ export default defineComponent({
       void this.$store.dispatch('channels/setActiveChannel', channelName)
     }
     canLoad = true
+
+    if (Notification.permission === 'default') {
+      Notification.requestPermission().then(function (result) {
+        console.log('notifications', result)
+      }).catch(function (err) {
+        console.log('notifications err', err)
+      })
+    }
   },
 
   watch: {
@@ -81,18 +89,31 @@ export default defineComponent({
           messageContent = message.content.slice(0, 75) + '...'
         }
 
-        this.useQuasar.notify({
-          message: messageContent,
-          caption: `${message.author.nickname} ${channel.name}`,
-          color: 'accent',
-          textColor: 'black',
-          icon: 'fa fa-solid fa-message',
-          group: channel.name,
-          position: 'top',
-          actions: [
-            { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
-          ]
-        })
+        if (Notification.permission === 'granted') {
+          const notification = new Notification(channel.name, {
+            body: messageContent,
+            icon: 'https://quasar.dev/img/logo-square.png'
+          })
+          notification.onclick = async function () {
+            await self.$store.dispatch('channels/setActiveChannel', channel.name)
+            void await self.$router.push('/channel/' + String(channel.name))
+            notification.close()
+          }
+        }
+        // else {
+        //   this.useQuasar.notify({
+        //     message: messageContent,
+        //     caption: `${message.author.nickname} ${channel.name}`,
+        //     color: 'accent',
+        //     textColor: 'black',
+        //     icon: 'fa fa-solid fa-message',
+        //     group: channel.name,
+        //     position: 'top',
+        //     actions: [
+        //       { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
+        //     ]
+        //   })
+        // }
       }
     },
 
