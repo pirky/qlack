@@ -90,7 +90,7 @@ export default defineComponent({
         }
 
         if (Notification.permission === 'granted') {
-          const notification = new Notification(channel.name, {
+          const notification = new Notification(`${message.author.nickname} ${channel.name}`, {
             body: messageContent,
             icon: 'https://icons-for-free.com/download-icon-quasar-1324440220466918651_512.png'
           })
@@ -100,20 +100,6 @@ export default defineComponent({
             notification.close()
           }
         }
-        // else {
-        //   this.useQuasar.notify({
-        //     message: messageContent,
-        //     caption: `${message.author.nickname} ${channel.name}`,
-        //     color: 'accent',
-        //     textColor: 'black',
-        //     icon: 'fa fa-solid fa-message',
-        //     group: channel.name,
-        //     position: 'top',
-        //     actions: [
-        //       { label: 'Dismiss', color: 'primary', handler: () => { /* ... */ } }
-        //     ]
-        //   })
-        // }
       }
     },
 
@@ -127,13 +113,6 @@ export default defineComponent({
         canLoad = true
       }
     }
-
-    // watch store for channel change
-    // '$store.state.channels.active': function () {
-    //   if (!this.$store.state.channels.active && this.$store.state.channels.users.length === 0) {
-    //     void this.$router.push('/')
-    //   }
-    // }
   },
 
   computed: {
@@ -145,13 +124,6 @@ export default defineComponent({
 
     messages () {
       const messages = self.$store.getters['channels/currentMessages']
-      // if (messages.length === 0) {
-      //   const infiScroll: any = self.$refs.infiScroll
-      //   if (infiScroll && canLoad) {
-      //     infiScroll.resume()
-      //     console.log('resume')
-      //   }
-      // }
       return messages
     }
   },
