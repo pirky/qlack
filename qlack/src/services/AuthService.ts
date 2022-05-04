@@ -18,7 +18,7 @@ class AuthService {
           return null
         }
 
-        return Promise.reject(error)
+        return null
       })
   }
 
